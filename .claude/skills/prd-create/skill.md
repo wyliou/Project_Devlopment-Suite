@@ -31,7 +31,7 @@ description: Create comprehensive PRDs optimized for AI-powered development
 4. **Non-Functional Requirements** - Single-line format
 5. **Data Entities** - Table with key attributes and FR mapping
 6. **Technology Constraints** - Decided vs. Open decisions
-7. **Quick Reference** - FR summary with priorities and dependencies
+7. **Quick Reference** - FR summary with dependencies
 8. **Implementation Reference** (Optional) - Config schemas, output formats, error catalogs, algorithms, examples
 
 ---
@@ -42,7 +42,7 @@ description: Create comprehensive PRDs optimized for AI-powered development
 - **AI-Optimized FR Format:** Input/Rules/Output/Error/Log structure for clear implementation
 - **Single-Line NFRs:** Measurable metrics with target and condition
 - **Integrated Validation:** Quality checks throughout, no separate optimization step
-- **Quick Reference:** Summary table with priorities and dependencies
+- **Quick Reference:** Summary table with dependencies
 - **Implementation Reference:** Optional Section 8 for config schemas, output formats, error catalogs, and algorithms
 
 ---

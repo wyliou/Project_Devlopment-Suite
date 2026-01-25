@@ -160,17 +160,11 @@ For projects with 5+ FRs, add a summary table:
 ```markdown
 ## Quick Reference
 
-| FR ID | Summary | Priority | Depends |
-|-------|---------|----------|---------|
-| FR-AUTH-001 | User registration | P0-Critical | - |
-| FR-AUTH-002 | Password reset | P1-High | FR-AUTH-001 |
+| FR ID | Summary | Depends |
+|-------|---------|---------|
+| FR-AUTH-001 | User registration | - |
+| FR-AUTH-002 | Password reset | FR-AUTH-001 |
 ```
-
-**Priority Levels:**
-- P0-Critical: Blocks other work
-- P1-High: Must have for MVP
-- P2-Medium: Should have
-- P3-Low: Nice to have
 
 ---
 

@@ -49,7 +49,7 @@ Sections included based on project type. See `_prd-data/prd-purpose.md` for guid
 | 4. Non-Functional Requirements | Single-line with metric/target | Production systems |
 | 5. Data Entities | Entity, Attributes, Related FRs | Persistent storage |
 | 6. Technology Constraints | Decided vs Open | When constraints exist |
-| 7. Quick Reference | FR summary with Priority/Depends | 5+ FRs |
+| 7. Quick Reference | FR summary with Depends | 5+ FRs |
 | 8. Implementation Reference | Config schemas, output formats, error catalogs, algorithms | Complex systems with defined specs |
 
 ---

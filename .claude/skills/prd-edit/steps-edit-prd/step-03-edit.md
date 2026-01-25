@@ -159,7 +159,7 @@ Analyze FRs to identify entities:
 
 **If Quick Reference missing:**
 Create summary table from FRs:
-| FR ID | Summary | Priority | Depends |
+| FR ID | Summary | Depends |
 
 **If Technology Constraints missing:**
 Create section with:

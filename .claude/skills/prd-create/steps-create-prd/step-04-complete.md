@@ -37,7 +37,7 @@ Perform comprehensive validation:
 | 4. Non-Functional Requirements | At least 2 NFRs |
 | 5. Data Entities | At least 1 entity |
 | 6. Technology Constraints | Decided and Open sections |
-| 7. Quick Reference | All FRs with priority |
+| 7. Quick Reference | All FRs with dependencies |
 
 #### Quality Checks
 | Check | Validation |
@@ -56,7 +56,6 @@ PRD Summary:
 - Non-Functional Requirements: {count}
 - Data Entities: {count}
 - Capability Areas: {list areas}
-- Priority Distribution: P0={n}, P1={n}, P2={n}, P3={n}
 ```
 
 ### 3. Update Frontmatter

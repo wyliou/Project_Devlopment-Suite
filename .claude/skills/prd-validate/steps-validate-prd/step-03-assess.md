@@ -118,7 +118,7 @@ Identify the 3 most impactful improvements:
 | FR Error → Error taxonomy | {status} |
 | Data Entities → Schema | {status} |
 | Tech Constraints → Stack | {status} |
-| Quick Reference → Priority | {status} |
+| Quick Reference → FR Summary | {status} |
 | Dependencies → Sequence | {status} |
 
 **Readiness Score:** {percentage}%

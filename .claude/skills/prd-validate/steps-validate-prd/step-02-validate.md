@@ -149,7 +149,6 @@ Severity: Critical (>5) / Warning (2-5) / Pass (<2)
 #### B6. Quick Reference Quality
 
 - All FRs in table?
-- Priority uses P0/P1/P2/P3?
 - Dependencies valid?
 
 #### B7. Implementation Reference Quality (If Section 8 Present)

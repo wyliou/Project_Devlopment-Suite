@@ -153,16 +153,10 @@ Create summary table with all FRs:
 ```markdown
 ## 7. Quick Reference
 
-| FR ID | Summary | Priority | Depends |
-|-------|---------|----------|---------|
-| FR-xxx | {brief summary} | {P0/P1/P2/P3} | {FR-xxx or -} |
+| FR ID | Summary | Depends |
+|-------|---------|---------|
+| FR-xxx | {brief summary} | {FR-xxx or -} |
 ```
-
-**Priority Assignment:**
-- P0-Critical: Blocks other FRs or is core to MVP
-- P1-High: Must have for MVP
-- P2-Medium: Should have for MVP
-- P3-Low: Nice to have
 
 ### 8. Generate Implementation Reference (If Needed)
 
@@ -194,7 +188,7 @@ Validate before completion:
 | NFR Format | All NFRs are single-line with metric/target/condition |
 | Entities | At least 1 entity per major FR area |
 | Dependencies | All `Depends:` references exist |
-| Quick Reference | All FRs in table with priority |
+| Quick Reference | All FRs in table with dependencies |
 | Section 8 | If applicable, all identified sub-sections populated with sufficient detail |
 
 **If validation fails:** Fix issues before proceeding.
@@ -208,7 +202,6 @@ Show the user:
 
 Ask for feedback on:
 - Missing capabilities?
-- Priority adjustments?
 - Constraint clarifications?
 - Implementation details need more depth?
 

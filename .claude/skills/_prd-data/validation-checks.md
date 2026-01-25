@@ -138,7 +138,6 @@ Flag as info/warning (not error) - sometimes intentional:
 ### Quick Reference Validation (If Section 7 Present)
 
 - All FRs from Section 3 should appear
-- Priority should use P0/P1/P2/P3 format
 - Dependencies should reference valid FR IDs
 
 ---

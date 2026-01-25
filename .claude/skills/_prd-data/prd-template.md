@@ -140,17 +140,11 @@ documentChecksum: ''
 
 ## 7. Quick Reference
 
-| FR ID | Summary | Priority | Depends |
-|-------|---------|----------|---------|
-| FR-AREA-001 | {{brief summary}} | P0-Critical | - |
-| FR-AREA-002 | {{brief summary}} | P1-High | FR-AREA-001 |
-| FR-AREA-003 | {{brief summary}} | P2-Medium | - |
-
-**Priority Levels:**
-- P0-Critical: Must have for MVP, blocks other work
-- P1-High: Must have for MVP
-- P2-Medium: Should have for MVP
-- P3-Low: Nice to have, can defer
+| FR ID | Summary | Depends |
+|-------|---------|---------|
+| FR-AREA-001 | {{brief summary}} | - |
+| FR-AREA-002 | {{brief summary}} | FR-AREA-001 |
+| FR-AREA-003 | {{brief summary}} | - |
 
 ---
 
