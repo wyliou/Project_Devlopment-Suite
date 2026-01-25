@@ -251,124 +251,161 @@ System built, preparing for deployment.
 
 ## Practical Examples
 
-### Example 1: Healthcare Application (Compliance-Driven)
+### Example 1: ETL Pipeline for Data Warehouse
 
-Building a patient portal with HIPAA requirements.
+Building a batch ETL pipeline to populate an enterprise data warehouse.
 
 ```bash
-/create-business-case           # Budget justification
-/stakeholder-research           # Map stakeholders
-/create-project-charter         # Define scope
+/create-business-case           # ROI: reduced reporting time, data quality
+/stakeholder-research           # Data owners, analysts, BI team
 
-# CRITICAL: Security architecture FIRST (HIPAA)
-/create-security-architecture   # Auth, encryption, audit logging, PHI handling
-                                # → Output feeds into architecture decisions
+/create-project-charter         # Define scope: sources, targets, SLAs
 
-/create-architecture            # Uses security decisions for tech choices
-/create-cicd-pipeline           # HIPAA-compliant artifact storage, security gates
-/create-deployment-strategy     # Phase 1: Single clinic → Phase 2: Regional → Phase 3: Full
+/create-security-architecture   # Data classification, encryption at rest
+                                # Access controls for PII columns
+                                # Audit logging for data access
+
+/prd-create                     # FRs: extraction, transformation, loading rules
+                                # NFRs: processing time < 4 hours, 99.9% accuracy
+
+/create-architecture            # Tech stack: Airflow, dbt, Snowflake
+                                # Batch scheduling, retry logic, monitoring
+
+/create-cicd-pipeline           # dbt test gates, data quality checks
+                                # Staging → Production promotion
+
+/create-deployment-strategy     # Phase 1: Sales data → Phase 2: Finance → Phase 3: All sources
 ```
 
-**Key Flow:** Security Architecture → Architecture → CI/CD → Deployment
+**Key Flow:** Security → Architecture → CI/CD → Phased Deployment
 
 ---
 
-### Example 2: Legacy System Modernization (Brownfield)
+### Example 2: Real-time Data Streaming Platform
 
-Migrating from Oracle ERP to modern microservices.
+Building a real-time event processing system with Kafka.
 
 ```bash
-/stakeholder-research           # Discovers: 3 Oracle DBs, 15 years of data
-/analyze-integrations           # Maps: Data flows, API dependencies
+/create-project-charter         # Event-driven architecture for order processing
+
+/create-security-architecture   # mTLS for Kafka, schema registry auth
+                                # Data masking for sensitive fields
+
+/prd-create                     # FRs: event schemas, processing rules, dead letter handling
+                                # NFRs: < 100ms latency, 10K events/sec throughput
+
+/create-architecture            # Kafka, Flink/Spark Streaming, Schema Registry
+                                # Exactly-once semantics, partition strategy
+
+/create-cicd-pipeline           # Schema compatibility checks
+                                # Canary deployment for consumers
+                                # Performance benchmarks as gates
+
+/create-deployment-strategy     # Canary: 1% traffic → 10% → 50% → 100%
+                                # Rollback: revert consumer offset
+```
+
+**Key Flow:** Security → Architecture → CI/CD → Canary Deployment
+
+---
+
+### Example 3: Data Lake Migration (Brownfield)
+
+Migrating from on-prem Hadoop to cloud-based data lake.
+
+```bash
+/stakeholder-research           # Discovers: 5 Hadoop clusters, 50TB data
+                                # 200+ Hive tables, 50 Spark jobs
+
+/analyze-integrations           # Maps: upstream sources, downstream consumers
+                                # Job dependencies, scheduling
 
 /create-data-migration          # Output:
-                                #   - Data inventory (500 tables, 2TB)
-                                #   - Field mappings with transforms
-                                #   - Validation rules
-                                #   - Migration sequence
-                                #   - Rollback procedures
+                                #   - Table inventory (200 tables, partitioning)
+                                #   - Schema mappings (Hive → Delta Lake)
+                                #   - Data validation: row counts, checksums
+                                #   - Job migration sequence
+                                #   - Parallel run strategy
 
-/create-deployment-strategy     # Aligned with migration phases:
-                                #   Phase 1: Reference data, parallel run
-                                #   Phase 2: Customers, limited pilot
-                                #   Phase 3: Transactions, cutover weekend
+/create-architecture            # Target: Databricks, Delta Lake, Unity Catalog
+                                # Coexistence: dual-write during transition
 
-/create-change-request          # References migration + deployment plans
+/create-deployment-strategy     # Phase 1: Reference/dimension tables
+                                # Phase 2: Fact tables (parallel validation)
+                                # Phase 3: Job migration, cutover
+                                # Phase 4: Decommission Hadoop
+
+/create-change-request          # Includes rollback to Hadoop if needed
 ```
 
-**Key Flow:** Integrations → Data Migration → Deployment Strategy → Change Request
+**Key Flow:** Integrations → Data Migration → Architecture → Phased Cutover
 
 ---
 
-### Example 3: Public API Platform (DevOps Focus)
+### Example 4: ML Feature Store (Quick Internal Tool)
 
-Building a public API with strict SLAs.
-
-```bash
-/create-security-architecture   # OAuth2, rate limiting, WAF, DDoS protection
-
-/create-architecture            # API gateway selection, auth service design
-
-/create-cicd-pipeline           # Platform: GitHub Actions
-                                # Gates: 90% coverage, 0 critical vulns
-                                # Output: Actual workflow YAML files
-
-/create-deployment-strategy     # Canary: 1% → 10% → 50% → 100%
-                                # Feature flags, rollback triggers
-```
-
-**Key Flow:** Security → Architecture → CI/CD → Deployment
-
----
-
-### Example 4: Quick Internal Tool (Minimal Path)
-
-Simple dashboard for internal team.
+Internal feature store for ML team.
 
 ```bash
-/create-project-charter         # Define scope
-/prd-create                     # Requirements
-/create-architecture            # Simple architecture
-/create-cicd-pipeline           # Basic CI/CD
+/create-project-charter         # Centralized feature management
+/prd-create                     # Feature registration, versioning, serving APIs
 
-# Skip: security-architecture (internal, low risk)
+/create-architecture            # Feast/Tecton, Redis for online, S3 for offline
+                                # Point-in-time correctness
+
+/create-cicd-pipeline           # Feature validation tests
+                                # Schema drift detection
+
+# Skip: security-architecture (internal ML team only)
 # Skip: data-migration (greenfield)
-# Skip: deployment-strategy (small user base)
+# Skip: deployment-strategy (single team rollout)
 ```
 
 ---
 
-### Example 5: High-Risk Financial System (Full Workflow)
+### Example 5: Enterprise Data Hub (Full Workflow)
 
-Trading platform with regulatory requirements.
+Central data platform consolidating multiple business units with regulatory requirements.
 
 ```bash
-/create-business-case
-/stakeholder-research
+/create-business-case           # Single source of truth, reduced redundancy
+/stakeholder-research           # 5 business units, compliance team, IT
 
-/create-security-architecture   # SOX, PCI-DSS compliance
-                                # Encryption, tokenization, audit logging
+/create-security-architecture   # GDPR, SOX compliance
+                                # Column-level encryption, data masking
+                                # Row-level security per business unit
+                                # Full audit trail, data lineage
 
-/analyze-integrations           # Market data feeds, clearing houses
-/prd-create → /prd-validate
+/analyze-integrations           # SAP, Salesforce, 3 legacy databases
+                                # Real-time CDC, batch extracts, APIs
 
-/create-architecture            # Informed by security requirements
+/prd-create → /prd-validate     # Data domains, ownership, quality rules
+                                # SLAs per data product
 
-/create-cicd-pipeline           # 95% coverage, 0 vulnerabilities
-                                # Mandatory code review, audit trail
+/create-architecture            # Medallion architecture (Bronze/Silver/Gold)
+                                # Data mesh principles, domain ownership
+                                # Unity Catalog for governance
 
-/create-data-migration          # Historical trade data
-                                # Zero tolerance for data loss
+/create-data-migration          # 3 legacy DBs → Bronze layer
+                                # Historical data: 10 years, 5TB
+                                # Validation: business rule checks
 
-/create-deployment-strategy     # Blue-green (zero downtime)
-                                # Paper trading pilot
-                                # Regulatory sign-off gates
+/create-cicd-pipeline           # Data quality gates (Great Expectations)
+                                # Schema evolution checks
+                                # Lineage tracking updates
 
-/create-test-plan
-/security-checklist             # Validate against security architecture
-/create-runbook
-/create-change-request          # Multiple approvals required
+/create-deployment-strategy     # Phase 1: Sales domain (pilot)
+                                # Phase 2: Finance domain
+                                # Phase 3: Operations, HR
+                                # Phase 4: Self-service analytics
+
+/create-test-plan               # Data quality UAT per domain
+/security-checklist             # GDPR compliance validation
+/create-runbook                 # Data ops procedures, incident response
+/create-change-request          # CAB approval with compliance sign-off
 ```
+
+**Key Flow:** Full enterprise workflow with data governance focus
 
 ---
 
