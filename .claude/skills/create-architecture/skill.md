@@ -123,8 +123,8 @@ These principles ensure reliable execution. Deviate only with explicit reasoning
 
 ## Paths
 
-- `template_path` = `{installed_path}/architecture-decision-template.md`
-- `data_files_path` = `{installed_path}/data/`
+- `template_path` = `{skill_base}/architecture-decision-template.md`
+- `data_files_path` = `{skill_base}/data/`
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: 'step-03-implement'
 description: 'Parallel module implementation via Task subagents, layer by layer'
-nextStepFile: './step-04-validate.md'
+nextStepFile: '{skill_base}/steps/step-04-validate.md'
 stateFile: '{project_root}/build-state.json'
 maxConcurrentTasks: 3
 maxRetries: 3

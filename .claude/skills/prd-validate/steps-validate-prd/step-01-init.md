@@ -3,9 +3,9 @@ name: 'step-01-init'
 description: 'Load PRD, discover input documents, initialize validation report'
 
 # File references
-nextStepFile: './step-02-validate.md'
-prdPurpose: '../../_prd-data/prd-purpose.md'
-validationChecks: '../../_prd-data/validation-checks.md'
+nextStepFile: '{skill_base}/steps-validate-prd/step-02-validate.md'
+prdPurpose: '{skills_root}/_prd-data/prd-purpose.md'
+validationChecks: '{skills_root}/_prd-data/validation-checks.md'
 ---
 
 # Step 1: Init

@@ -1,7 +1,7 @@
 ---
 name: 'step-02-scaffold'
 description: 'Create project structure, install dependencies, setup database, configure environment'
-nextStepFile: './step-03-implement.md'
+nextStepFile: '{skill_base}/steps/step-03-implement.md'
 stateFile: '{project_root}/build-state.json'
 ---
 

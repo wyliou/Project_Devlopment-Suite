@@ -3,10 +3,10 @@ name: 'step-01-init'
 description: 'Initialize stakeholder research workflow - detect state, gather project concept, setup document'
 
 # File references
-nextStepFile: './step-02-discovery.md'
-continueStepFile: './step-01b-continue.md'
+nextStepFile: '{skill_base}/steps/step-02-discovery.md'
+continueStepFile: '{skill_base}/steps/step-01b-continue.md'
 outputFile: '{planning_artifacts}/stakeholder-research-{{project_name}}.md'
-researchTemplate: '../stakeholder-research.template.md'
+researchTemplate: '{skill_base}/stakeholder-research.template.md'
 ---
 
 # Step 1: Init

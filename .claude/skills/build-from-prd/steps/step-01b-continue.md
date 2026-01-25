@@ -2,9 +2,9 @@
 name: 'step-01b-continue'
 description: 'Resume interrupted build workflow from last completed step'
 stateFile: '{project_root}/build-state.json'
-step02File: './step-02-scaffold.md'
-step03File: './step-03-implement.md'
-step04File: './step-04-validate.md'
+step02File: '{skill_base}/steps/step-02-scaffold.md'
+step03File: '{skill_base}/steps/step-03-implement.md'
+step04File: '{skill_base}/steps/step-04-validate.md'
 ---
 
 # Step 1b: Continue

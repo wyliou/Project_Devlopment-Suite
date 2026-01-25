@@ -1,9 +1,9 @@
 ---
 name: 'step-01-discovery'
 description: 'Identify users, tasks, and documentation needs'
-nextStepFile: './step-02-generate.md'
+nextStepFile: '{skill_base}/steps/step-02-generate.md'
 outputFile: '{project_root}/docs/user-guide.md'
-template: '../user-guide.template.md'
+template: '{skill_base}/user-guide.template.md'
 ---
 
 # Step 1: Discovery

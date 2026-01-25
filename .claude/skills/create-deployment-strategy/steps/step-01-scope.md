@@ -3,7 +3,7 @@ name: 'step-01-scope'
 description: 'Define phases, pilot groups, and rollout criteria'
 
 # File references
-nextStepFile: './step-02-plan.md'
+nextStepFile: '{skill_base}/steps/step-02-plan.md'
 outputFile: '{project_root}/docs/deployment-strategy.md'
 ---
 

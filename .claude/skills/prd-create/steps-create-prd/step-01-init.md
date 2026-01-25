@@ -3,11 +3,11 @@ name: 'step-01-init'
 description: 'Initialize PRD workflow - detect state, discover inputs, setup document'
 
 # File references
-nextStepFile: './step-02-discovery.md'
-continueStepFile: './step-01b-continue.md'
+nextStepFile: '{skill_base}/steps-create-prd/step-02-discovery.md'
+continueStepFile: '{skill_base}/steps-create-prd/step-01b-continue.md'
 outputFile: '{project_root}/docs/prd.md'
-prdTemplate: '../../_prd-data/prd-template.md'
-prdPurpose: '../../_prd-data/prd-purpose.md'
+prdTemplate: '{skills_root}/_prd-data/prd-template.md'
+prdPurpose: '{skills_root}/_prd-data/prd-purpose.md'
 ---
 
 # Step 1: Init

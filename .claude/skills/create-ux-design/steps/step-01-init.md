@@ -3,10 +3,10 @@ name: 'step-01-init'
 description: 'Initialize UX workflow - detect state, discover inputs, setup document'
 
 # File references
-nextStepFile: './step-02-discovery.md'
-continueStepFile: './step-01b-continue.md'
+nextStepFile: '{skill_base}/steps/step-02-discovery.md'
+continueStepFile: '{skill_base}/steps/step-01b-continue.md'
 outputFile: '{planning_artifacts}/ux-design-specification.md'
-uxTemplate: '../ux-design-template.md'
+uxTemplate: '{skill_base}/ux-design-template.md'
 ---
 
 # Step 1: Init

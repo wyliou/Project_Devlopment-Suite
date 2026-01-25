@@ -505,6 +505,58 @@ When working with existing systems (brownfield), skills automatically capture ad
 
 ---
 
+## Human Involvement Levels
+
+Skills vary in how much human participation they require. Choose based on your available time and domain expertise.
+
+### High Involvement
+User actively participates throughout, provides domain expertise. Best when you have deep context to share.
+
+| Skill | Why High |
+|-------|----------|
+| `/prd-create` | User drives requirements, defines scope, validates FRs |
+| `/create-product-brief` | User defines vision, problem, solution |
+| `/create-research` | User provides institutional knowledge |
+| `/create-ux-design` | Collaborative visual exploration |
+| `/create-architecture` | User confirms technology decisions |
+
+### Medium Involvement
+User provides input at checkpoints, AI generates content. Good balance of guidance and automation.
+
+| Skill | Why Medium |
+|-------|------------|
+| `/prd-edit` | User approves plan, AI executes edits |
+| `/prd-validate` | AI validates, user reviews findings |
+| `/generate-project-context` | AI discovers patterns, user validates rules |
+| `/create-business-case` | User provides data, AI structures case |
+| `/analyze-integrations` | User describes systems, AI documents spec |
+| `/create-security-architecture` | User provides context, AI designs controls |
+| `/create-data-migration` | User describes sources, AI creates plan |
+| `/create-deployment-strategy` | User provides context, AI creates strategy |
+| `/create-cicd-pipeline` | User provides tech stack, AI generates config |
+| `/create-test-plan` | AI derives from PRD, user validates |
+| `/security-checklist` | AI assesses, user confirms findings |
+| `/create-change-request` | User provides details, AI formats CR |
+| `/create-runbook` | User provides ops details, AI creates runbook |
+| `/create-user-docs` | User provides context, AI generates docs |
+
+### Low Involvement
+Autonomous execution with minimal human input. Ideal for well-defined inputs.
+
+| Skill | Why Low |
+|-------|---------|
+| `/build-from-prd` | Fully autonomous from PRD + architecture |
+
+### Enhancement Tools
+These are helper skills invoked within other workflows, not standalone.
+
+| Skill | Purpose |
+|-------|---------|
+| `/_deep-dive` | Apply 50+ elicitation methods to enhance content |
+| `/_party-mode` | Multi-agent discussion for diverse perspectives |
+
+---
+
 ## Workflow Continuity
 
 All skills support interruption and resumption:

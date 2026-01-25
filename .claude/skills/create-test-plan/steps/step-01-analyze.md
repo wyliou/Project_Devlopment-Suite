@@ -1,9 +1,9 @@
 ---
 name: 'step-01-analyze'
 description: 'Analyze PRD and extract test scenarios'
-nextStepFile: './step-02-generate.md'
+nextStepFile: '{skill_base}/steps/step-02-generate.md'
 outputFile: '{project_root}/docs/test-plan.md'
-template: '../test-plan.template.md'
+template: '{skill_base}/test-plan.template.md'
 ---
 
 # Step 1: Analyze

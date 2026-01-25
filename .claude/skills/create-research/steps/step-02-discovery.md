@@ -3,10 +3,10 @@ name: 'step-02-discovery'
 description: 'Conduct comprehensive research - market, competitors, and users'
 
 # File references
-nextStepFile: './step-03-complete.md'
+nextStepFile: '{skill_base}/steps/step-03-complete.md'
 outputFile: '{planning_artifacts}/research-{{project_name}}.md'
-deepDiveSkill: '{skills_dir}/_deep-dive/skill.md'
-partyModeSkill: '{skills_dir}/_party-mode/skill.md'
+deepDiveSkill: '{skills_root}/_deep-dive/skill.md'
+partyModeSkill: '{skills_root}/_party-mode/skill.md'
 ---
 
 # Step 2: Discovery

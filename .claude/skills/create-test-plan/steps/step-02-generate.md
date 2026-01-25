@@ -2,7 +2,7 @@
 name: 'step-02-generate'
 description: 'Generate test plan document'
 outputFile: '{project_root}/docs/test-plan.md'
-template: '../test-plan.template.md'
+template: '{skill_base}/test-plan.template.md'
 ---
 
 # Step 2: Generate

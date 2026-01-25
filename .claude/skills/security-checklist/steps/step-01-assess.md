@@ -1,9 +1,9 @@
 ---
 name: 'step-01-assess'
 description: 'Assess security context and identify risks'
-nextStepFile: './step-02-generate.md'
+nextStepFile: '{skill_base}/steps/step-02-generate.md'
 outputFile: '{project_root}/docs/security-checklist.md'
-template: '../security-checklist.template.md'
+template: '{skill_base}/security-checklist.template.md'
 ---
 
 # Step 1: Assess

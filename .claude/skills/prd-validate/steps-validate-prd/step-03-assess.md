@@ -3,7 +3,7 @@ name: 'step-03-assess'
 description: 'Holistic assessment: document flow, dual-audience, architecture readiness, overall rating'
 
 # File references
-nextStepFile: './step-04-complete.md'
+nextStepFile: '{skill_base}/steps-validate-prd/step-04-complete.md'
 ---
 
 # Step 3: Assess

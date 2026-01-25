@@ -3,7 +3,7 @@ name: 'step-01-discovery'
 description: 'Identify source systems, data volumes, and mapping needs'
 
 # File references
-nextStepFile: './step-02-generate.md'
+nextStepFile: '{skill_base}/steps/step-02-generate.md'
 outputFile: '{project_root}/docs/data-migration.md'
 ---
 

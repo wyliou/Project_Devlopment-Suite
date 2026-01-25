@@ -3,9 +3,9 @@ name: 'step-03-requirements'
 description: 'Generate FRs, NFRs, Data Entities, Tech Constraints, and Quick Reference'
 
 # File references
-nextStepFile: './step-04-complete.md'
+nextStepFile: '{skill_base}/steps-create-prd/step-04-complete.md'
 outputFile: '{project_root}/docs/prd.md'
-prdPurpose: '../../_prd-data/prd-purpose.md'
+prdPurpose: '{skills_root}/_prd-data/prd-purpose.md'
 ---
 
 # Step 3: Requirements

@@ -2,7 +2,7 @@
 name: 'step-02-generate'
 description: 'Generate change request document'
 outputFile: '{project_root}/docs/change-request.md'
-template: '../change-request.template.md'
+template: '{skill_base}/change-request.template.md'
 ---
 
 # Step 2: Generate

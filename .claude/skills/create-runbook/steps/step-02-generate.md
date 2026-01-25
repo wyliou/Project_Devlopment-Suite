@@ -2,7 +2,7 @@
 name: 'step-02-generate'
 description: 'Generate runbook document'
 outputFile: '{project_root}/docs/runbook.md'
-template: '../runbook.template.md'
+template: '{skill_base}/runbook.template.md'
 ---
 
 # Step 2: Generate

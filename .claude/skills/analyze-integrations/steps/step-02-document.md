@@ -2,7 +2,7 @@
 name: 'step-02-document'
 description: 'Generate integration specification document'
 outputFile: '{project_root}/docs/integration-spec.md'
-template: '../integration-spec.template.md'
+template: '{skill_base}/integration-spec.template.md'
 ---
 
 # Step 2: Document

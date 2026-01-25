@@ -1,7 +1,7 @@
 ---
 name: 'step-03-scope'
 description: 'Define success metric, MVP scope, and context'
-nextStepFile: './step-04-complete.md'
+nextStepFile: '{skill_base}/steps/step-04-complete.md'
 outputFile: '{project_root}/docs/project-charter.md'
 ---
 

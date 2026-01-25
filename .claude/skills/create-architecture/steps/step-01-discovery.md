@@ -1,9 +1,9 @@
 ---
 name: 'step-01-discovery'
 description: 'Discover PRD, extract constraints, select technology stack'
-nextStepFile: './step-02-structure.md'
+nextStepFile: '{skill_base}/steps/step-02-structure.md'
 outputFile: '{planning_artifacts}/architecture.md'
-templateFile: '{installed_path}/architecture-decision-template.md'
+templateFile: '{skill_base}/architecture-decision-template.md'
 ---
 
 # Step 1: Discovery & Technology Selection

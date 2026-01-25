@@ -3,8 +3,8 @@ name: 'step-03-edit'
 description: 'Apply approved changes to PRD'
 
 # File references
-nextStepFile: './step-04-complete.md'
-prdPurpose: '../../_prd-data/prd-purpose.md'
+nextStepFile: '{skill_base}/steps-edit-prd/step-04-complete.md'
+prdPurpose: '{skills_root}/_prd-data/prd-purpose.md'
 ---
 
 # Step 3: Edit

@@ -3,8 +3,8 @@ name: 'step-04-complete'
 description: 'Finalize validation report, summarize findings, present results'
 
 # File references
-prdEditSkill: '../../prd-edit/skill.md'
-createArchSkill: '../../create-architecture/skill.md'
+prdEditSkill: '{skills_root}/prd-edit/skill.md'
+createArchSkill: '{skills_root}/create-architecture/skill.md'
 ---
 
 # Step 4: Complete

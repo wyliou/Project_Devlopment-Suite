@@ -1,10 +1,10 @@
 ---
 name: 'step-01-analyze'
 description: 'Discover PRD and architecture, extract modules, build dependency graph, create execution plan'
-nextStepFile: './step-02-scaffold.md'
-continueStepFile: './step-01b-continue.md'
+nextStepFile: '{skill_base}/steps/step-02-scaffold.md'
+continueStepFile: '{skill_base}/steps/step-01b-continue.md'
 stateFile: '{project_root}/build-state.json'
-stateTemplate: '{installed_path}/build-state-template.json'
+stateTemplate: '{skill_base}/build-state-template.json'
 ---
 
 # Step 1: Analyze

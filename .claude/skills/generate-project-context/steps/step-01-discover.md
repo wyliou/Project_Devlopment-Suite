@@ -1,9 +1,9 @@
 ---
 name: 'step-01-discover'
 description: 'Discover project context, technology stack, and initialize output document'
-nextStepFile: './step-02-generate.md'
+nextStepFile: '{skill_base}/steps/step-02-generate.md'
 outputFile: '{project_root}/docs/project-context.md'
-templateFile: '{installed_path}/project-context-template.md'
+templateFile: '{skill_base}/project-context-template.md'
 ---
 
 # Step 1: Discovery & Initialization

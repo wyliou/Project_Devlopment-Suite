@@ -1,7 +1,7 @@
 ---
 name: 'step-02-generate'
 description: 'Collaboratively generate context rules per category'
-nextStepFile: './step-03-complete.md'
+nextStepFile: '{skill_base}/steps/step-03-complete.md'
 outputFile: '{project_root}/docs/project-context.md'
 ---
 

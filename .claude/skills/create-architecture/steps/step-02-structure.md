@@ -1,7 +1,7 @@
 ---
 name: 'step-02-structure'
 description: 'Define project structure, coding patterns, and module boundaries'
-nextStepFile: './step-03-specifications.md'
+nextStepFile: '{skill_base}/steps/step-03-specifications.md'
 outputFile: '{planning_artifacts}/architecture.md'
 ---
 

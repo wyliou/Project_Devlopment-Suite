@@ -114,7 +114,7 @@ These principles ensure reliable execution. Deviate only with explicit reasoning
 
 ## Paths
 
-- `template_path` = `{installed_path}/project-context-template.md`
+- `template_path` = `{skill_base}/project-context-template.md`
 - `output_path` = `{project_root}/docs/project-context.md`
 
 ---

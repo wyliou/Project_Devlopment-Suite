@@ -4,9 +4,9 @@ description: 'Resume interrupted PRD workflow from last completed step'
 
 # File references
 outputFile: '{project_root}/docs/prd.md'
-step02File: './step-02-discovery.md'
-step03File: './step-03-requirements.md'
-step04File: './step-04-complete.md'
+step02File: '{skill_base}/steps-create-prd/step-02-discovery.md'
+step03File: '{skill_base}/steps-create-prd/step-03-requirements.md'
+step04File: '{skill_base}/steps-create-prd/step-04-complete.md'
 ---
 
 # Step 1b: Continue

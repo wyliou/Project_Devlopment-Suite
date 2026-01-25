@@ -3,8 +3,8 @@ name: 'step-02-validate'
 description: 'Run all validation checks: structure, format, quality, compliance'
 
 # File references
-nextStepFile: './step-03-assess.md'
-validationChecks: '../../_prd-data/validation-checks.md'
+nextStepFile: '{skill_base}/steps-validate-prd/step-03-assess.md'
+validationChecks: '{skills_root}/_prd-data/validation-checks.md'
 ---
 
 # Step 2: Validate

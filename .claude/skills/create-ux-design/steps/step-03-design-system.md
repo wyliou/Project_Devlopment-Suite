@@ -3,10 +3,10 @@ name: 'step-03-design-system'
 description: 'Define visual foundation, components, patterns, and content guidelines'
 
 # File references
-nextStepFile: './step-04-complete.md'
+nextStepFile: '{skill_base}/steps/step-04-complete.md'
 outputFile: '{planning_artifacts}/ux-design-specification.md'
-deepDiveSkill: '{skills_dir}/_deep-dive/skill.md'
-partyModeSkill: '{skills_dir}/_party-mode/skill.md'
+deepDiveSkill: '{skills_root}/_deep-dive/skill.md'
+partyModeSkill: '{skills_root}/_party-mode/skill.md'
 ---
 
 # Step 3: Design System

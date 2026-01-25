@@ -1,7 +1,7 @@
 ---
 name: 'step-02-discovery'
 description: 'Gather vision, problem, solution, and users through focused conversation'
-nextStepFile: './step-03-scope.md'
+nextStepFile: '{skill_base}/steps/step-03-scope.md'
 outputFile: '{project_root}/docs/project-charter.md'
 ---
 

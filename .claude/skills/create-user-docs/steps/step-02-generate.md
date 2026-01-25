@@ -2,7 +2,7 @@
 name: 'step-02-generate'
 description: 'Generate user documentation'
 outputFile: '{project_root}/docs/user-guide.md'
-template: '../user-guide.template.md'
+template: '{skill_base}/user-guide.template.md'
 ---
 
 # Step 2: Generate

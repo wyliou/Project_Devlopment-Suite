@@ -3,8 +3,8 @@ name: 'step-01b-continue'
 description: 'Handle continuation of an interrupted research workflow'
 
 # File references
-step02File: './step-02-discovery.md'
-step03File: './step-03-complete.md'
+step02File: '{skill_base}/steps/step-02-discovery.md'
+step03File: '{skill_base}/steps/step-03-complete.md'
 outputFile: '{planning_artifacts}/research-{{project_name}}.md'
 ---
 

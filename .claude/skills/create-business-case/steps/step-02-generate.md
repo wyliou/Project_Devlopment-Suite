@@ -2,7 +2,7 @@
 name: 'step-02-generate'
 description: 'Generate business case document with ROI calculation'
 outputFile: '{project_root}/docs/business-case.md'
-template: '../business-case.template.md'
+template: '{skill_base}/business-case.template.md'
 ---
 
 # Step 2: Generate

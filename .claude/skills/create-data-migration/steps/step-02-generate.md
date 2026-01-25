@@ -4,8 +4,8 @@ description: 'Create migration spec with mapping, validation, and rollback'
 
 # File references
 outputFile: '{project_root}/docs/data-migration.md'
-deepDiveSkill: '{skills_dir}/_deep-dive/skill.md'
-partyModeSkill: '{skills_dir}/_party-mode/skill.md'
+deepDiveSkill: '{skills_root}/_deep-dive/skill.md'
+partyModeSkill: '{skills_root}/_party-mode/skill.md'
 ---
 
 # Step 2: Generate

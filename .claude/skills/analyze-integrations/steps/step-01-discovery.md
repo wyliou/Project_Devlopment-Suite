@@ -1,9 +1,9 @@
 ---
 name: 'step-01-discovery'
 description: 'Discover systems, data flows, and integration requirements'
-nextStepFile: './step-02-document.md'
+nextStepFile: '{skill_base}/steps/step-02-document.md'
 outputFile: '{project_root}/docs/integration-spec.md'
-template: '../integration-spec.template.md'
+template: '{skill_base}/integration-spec.template.md'
 ---
 
 # Step 1: Discovery

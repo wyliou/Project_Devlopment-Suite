@@ -139,7 +139,7 @@ Module implementation uses Claude Code's `Task` tool:
 ## Paths
 
 - `stateFile` = `{project_root}/build-state.json`
-- `stateTemplate` = `{installed_path}/build-state-template.json`
+- `stateTemplate` = `{skill_base}/build-state-template.json`
 - `reportFile` = `{project_root}/docs/build-report.md`
 
 ---

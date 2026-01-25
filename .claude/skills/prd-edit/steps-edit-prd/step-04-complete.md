@@ -3,9 +3,9 @@ name: 'step-04-complete'
 description: 'Present edit summary, offer validation or additional edits'
 
 # File references
-validateSkill: '../../prd-validate/skill.md'
-planStep: './step-02-plan.md'
-createArchSkill: '../../create-architecture/skill.md'
+validateSkill: '{skills_root}/prd-validate/skill.md'
+planStep: '{skill_base}/steps-edit-prd/step-02-plan.md'
+createArchSkill: '{skills_root}/create-architecture/skill.md'
 ---
 
 # Step 4: Complete

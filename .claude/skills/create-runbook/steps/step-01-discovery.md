@@ -1,9 +1,9 @@
 ---
 name: 'step-01-discovery'
 description: 'Gather operational details and procedures'
-nextStepFile: './step-02-generate.md'
+nextStepFile: '{skill_base}/steps/step-02-generate.md'
 outputFile: '{project_root}/docs/runbook.md'
-template: '../runbook.template.md'
+template: '{skill_base}/runbook.template.md'
 ---
 
 # Step 1: Discovery

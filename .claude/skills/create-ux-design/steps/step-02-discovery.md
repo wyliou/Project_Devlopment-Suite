@@ -3,10 +3,10 @@ name: 'step-02-discovery'
 description: 'Gather user context, information architecture, journeys, and core experience'
 
 # File references
-nextStepFile: './step-03-design-system.md'
+nextStepFile: '{skill_base}/steps/step-03-design-system.md'
 outputFile: '{planning_artifacts}/ux-design-specification.md'
-deepDiveSkill: '{skills_dir}/_deep-dive/skill.md'
-partyModeSkill: '{skills_dir}/_party-mode/skill.md'
+deepDiveSkill: '{skills_root}/_deep-dive/skill.md'
+partyModeSkill: '{skills_root}/_party-mode/skill.md'
 ---
 
 # Step 2: Discovery

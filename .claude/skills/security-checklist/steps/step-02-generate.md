@@ -2,7 +2,7 @@
 name: 'step-02-generate'
 description: 'Generate security checklist with findings'
 outputFile: '{project_root}/docs/security-checklist.md'
-template: '../security-checklist.template.md'
+template: '{skill_base}/security-checklist.template.md'
 ---
 
 # Step 2: Generate

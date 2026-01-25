@@ -3,7 +3,7 @@ name: 'step-01-discovery'
 description: 'Gather tech stack, environments, and quality gates'
 
 # File references
-nextStepFile: './step-02-generate.md'
+nextStepFile: '{skill_base}/steps/step-02-generate.md'
 outputFile: '{project_root}/docs/cicd-pipeline.md'
 ---
 

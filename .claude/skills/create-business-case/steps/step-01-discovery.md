@@ -1,9 +1,9 @@
 ---
 name: 'step-01-discovery'
 description: 'Gather business problem, solution, benefits, and costs'
-nextStepFile: './step-02-generate.md'
+nextStepFile: '{skill_base}/steps/step-02-generate.md'
 outputFile: '{project_root}/docs/business-case.md'
-template: '../business-case.template.md'
+template: '{skill_base}/business-case.template.md'
 ---
 
 # Step 1: Discovery

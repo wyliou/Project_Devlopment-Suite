@@ -3,9 +3,9 @@ name: 'step-01-init'
 description: 'Load PRD, detect format, discover edit requirements'
 
 # File references
-nextStepFile: './step-02-plan.md'
-prdPurpose: '../../_prd-data/prd-purpose.md'
-validationChecks: '../../_prd-data/validation-checks.md'
+nextStepFile: '{skill_base}/steps-edit-prd/step-02-plan.md'
+prdPurpose: '{skills_root}/_prd-data/prd-purpose.md'
+validationChecks: '{skills_root}/_prd-data/validation-checks.md'
 ---
 
 # Step 1: Init

@@ -3,9 +3,9 @@ name: 'step-02-discovery'
 description: 'Gather vision, users, success criteria, scope, and user journeys'
 
 # File references
-nextStepFile: './step-03-requirements.md'
+nextStepFile: '{skill_base}/steps-create-prd/step-03-requirements.md'
 outputFile: '{project_root}/docs/prd.md'
-prdPurpose: '../../_prd-data/prd-purpose.md'
+prdPurpose: '{skills_root}/_prd-data/prd-purpose.md'
 ---
 
 # Step 2: Discovery

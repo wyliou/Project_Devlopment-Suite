@@ -4,8 +4,8 @@ description: 'Create deployment strategy with schedules and gates'
 
 # File references
 outputFile: '{project_root}/docs/deployment-strategy.md'
-deepDiveSkill: '{skills_dir}/_deep-dive/skill.md'
-partyModeSkill: '{skills_dir}/_party-mode/skill.md'
+deepDiveSkill: '{skills_root}/_deep-dive/skill.md'
+partyModeSkill: '{skills_root}/_party-mode/skill.md'
 ---
 
 # Step 2: Plan

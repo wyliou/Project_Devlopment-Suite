@@ -1,10 +1,10 @@
 ---
 name: 'step-01-init'
 description: 'Initialize project charter workflow - detect state, discover docs, setup document'
-nextStepFile: './step-02-discovery.md'
-continueStepFile: './step-01b-continue.md'
+nextStepFile: '{skill_base}/steps/step-02-discovery.md'
+continueStepFile: '{skill_base}/steps/step-01b-continue.md'
 outputFile: '{project_root}/docs/project-charter.md'
-briefTemplate: '../project-charter.template.md'
+briefTemplate: '{skill_base}/project-charter.template.md'
 ---
 
 # Step 1: Workflow Initialization

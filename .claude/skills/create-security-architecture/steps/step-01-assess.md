@@ -3,7 +3,7 @@ name: 'step-01-assess'
 description: 'Gather security requirements, threats, and compliance needs'
 
 # File references
-nextStepFile: './step-02-design.md'
+nextStepFile: '{skill_base}/steps/step-02-design.md'
 outputFile: '{project_root}/docs/security-architecture.md'
 ---
 

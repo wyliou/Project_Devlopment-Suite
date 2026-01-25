@@ -3,8 +3,8 @@ name: 'step-02-plan'
 description: 'Deep review PRD, analyze validation findings, build change plan'
 
 # File references
-nextStepFile: './step-03-edit.md'
-validationChecks: '../../_prd-data/validation-checks.md'
+nextStepFile: '{skill_base}/steps-edit-prd/step-03-edit.md'
+validationChecks: '{skills_root}/_prd-data/validation-checks.md'
 ---
 
 # Step 2: Plan

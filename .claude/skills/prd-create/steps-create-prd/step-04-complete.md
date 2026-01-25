@@ -4,8 +4,8 @@ description: 'Finalize PRD with validation summary and handoff'
 
 # File references
 outputFile: '{project_root}/docs/prd.md'
-createArchSkill: '../../create-architecture/skill.md'
-validateSkill: '../../prd-validate/skill.md'
+createArchSkill: '{skills_root}/create-architecture/skill.md'
+validateSkill: '{skills_root}/prd-validate/skill.md'
 ---
 
 # Step 4: Complete
