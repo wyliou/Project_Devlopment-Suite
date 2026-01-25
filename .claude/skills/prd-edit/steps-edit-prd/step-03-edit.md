@@ -1,0 +1,219 @@
+---
+name: 'step-03-edit'
+description: 'Apply approved changes to PRD'
+
+# File references
+nextStepFile: './step-04-complete.md'
+prdPurpose: '../../_prd-data/prd-purpose.md'
+---
+
+# Step 3: Edit
+
+**Progress: Step 3 of 4** - Next: Complete
+
+## STEP GOAL
+
+Apply all approved changes from step 2 to the PRD, including content updates, format conversions, and structure changes.
+
+## EXECUTION RULES
+
+- **Auto-proceed step** - executes approved plan
+- Only implement approved changes - no additions
+- Follow PRD Guidelines for all edits
+
+## SEQUENCE (Follow Exactly)
+
+### 1. Retrieve Approved Plan
+
+From step 2, retrieve:
+- Approved changes (section-by-section)
+- Format conversions (FR, NFR, IDs)
+- Priority order
+- Conversion mode (if legacy)
+
+"**Starting Edits**
+Plan: {count} changes across {section count} sections
+Executing..."
+
+### 2. Execute Changes by Priority
+
+**For each change (in priority order):**
+
+**a) Load Section**
+- Read current PRD section
+- Note existing content
+
+**b) Apply Change**
+- Additions: Create new content following PRD Guidelines
+- Updates: Modify existing content per plan
+- Removals: Delete specified content
+- Restructure: Reformat to standard structure
+
+**c) Save and Verify**
+- Apply change to PRD
+- Verify change applied correctly
+
+**d) Report Progress**
+"**Updated:** {section_name}"
+
+### 3. FR Format Conversion (If in Plan)
+
+Convert each FR to Input/Rules/Output/Error format:
+
+**Before:**
+```
+**FR-001**: User can register
+- Given: visitor on registration page
+- When: submit valid email and password
+- Then: account created
+```
+
+**After:**
+```
+**FR-AUTH-001**: User registers with email and password
+- **Input:** email (valid format), password (8+ chars, 1 uppercase, 1 number)
+- **Rules:** Email must be unique; hash password before storage
+- **Output:** Account created, confirmation email sent within 30 seconds
+- **Error:** Duplicate email → "Email already registered"
+```
+
+**Conversion steps:**
+1. Update ID from FR-### to FR-[AREA]-### (assign appropriate area code)
+2. Extract inputs from Given/When → Input field with constraints
+3. Extract business logic → Rules field
+4. Extract success case from Then → Output field
+5. Identify error cases → Error field
+6. Add Depends field if references other FRs
+
+"**Converted:** {count} FRs to Input/Rules/Output/Error format"
+
+### 4. NFR Format Conversion (If in Plan)
+
+Convert each NFR to single-line format:
+
+**Before:**
+```
+**NFR-001**: Performance
+- The system should respond quickly
+- Page load under 3 seconds
+```
+
+**After:**
+```
+**NFR-PERF-001**: Page load time under 3 seconds for 95th percentile under normal load
+```
+
+**Conversion steps:**
+1. Update ID from NFR-### to NFR-[CAT]-### (PERF, SEC, SCALE, REL)
+2. Identify metric (response time, uptime, etc.)
+3. Extract or add specific target
+4. Add condition (under normal load, during peak, etc.)
+5. Combine into single line
+
+"**Converted:** {count} NFRs to single-line format"
+
+### 5. Restructure (If Conversion Mode)
+
+**If "Restructure" or "Both":**
+
+Reorganize PRD to structured format (sections based on project type):
+
+```markdown
+## 1. Overview
+### Vision
+### Classification
+### Users
+### Key Success Metric
+### MVP Scope
+
+## 2. User Journeys
+
+## 3. Functional Requirements
+
+## 4. Non-Functional Requirements
+
+## 5. Data Entities
+
+## 6. Technology Constraints
+### Decided (non-negotiable)
+### Open (agent can decide)
+
+## 7. Quick Reference
+```
+
+**Migration:**
+- Move Executive Summary content → Overview/Vision
+- Move Success Criteria → Key Success Metric
+- Move Product Scope → MVP Scope
+- Create Data Entities table from FR analysis
+- Create Quick Reference table from FRs
+
+"**Restructured to standard format.**"
+
+### 6. Generate Missing Sections (If in Plan)
+
+**If Data Entities missing:**
+Analyze FRs to identify entities:
+- Extract nouns from FR Inputs and Outputs
+- Create table with Entity, Key Attributes, Related FRs
+
+**If Quick Reference missing:**
+Create summary table from FRs:
+| FR ID | Summary | Priority | Depends |
+
+**If Technology Constraints missing:**
+Create section with:
+- Decided: (from PRD context or "No constraints specified")
+- Open: (list areas for agent decision)
+
+### 7. Update PRD Frontmatter
+
+```yaml
+---
+workflowType: 'prd'
+lastEdited: '{current_date}'
+editHistory:
+  - date: '{current_date}'
+    changes: '{summary}'
+---
+```
+
+### 8. Final Verification
+
+**Load complete updated PRD and verify:**
+- All approved changes applied
+- Section structure is sound for project type (if restructured)
+- FR format is Input/Rules/Output/Error
+- NFR format is single-line (if present)
+- Data Entities table present (if applicable)
+- Quick Reference table present (if 5+ FRs)
+- No unintended modifications
+
+**If issues found:** Fix immediately
+
+### 9. Proceed to Completion
+
+"**Edits Complete**
+- Sections updated: {count}
+- FRs converted: {count}
+- NFRs converted: {count}
+- IDs updated: {count}
+
+Finalizing..."
+
+→ Load and execute `{nextStepFile}`
+
+---
+
+## SUCCESS CRITERIA
+
+- All approved changes from step 2 applied
+- Changes executed in priority order
+- FR format converted to Input/Rules/Output/Error
+- NFR format converted to single-line
+- ID formats updated to FR-[AREA]-### and NFR-[CAT]-###
+- Restructuring completed (if conversion mode)
+- Missing sections generated
+- Frontmatter updated with edit history
+- Final verification confirms changes
+- Auto-proceeds to completion step

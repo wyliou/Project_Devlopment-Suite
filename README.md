@@ -235,7 +235,7 @@ System built, preparing for deployment.
                                           ▼
                           ┌─────────────────────────────────────┐
                           │       /create-change-request        │
-                          └─────────────────────────────────────┘
+                          └───────────  ──────────────────────────┘
 ```
 
 ### When to Use Each Skill
