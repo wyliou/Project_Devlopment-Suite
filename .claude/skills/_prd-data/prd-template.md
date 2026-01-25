@@ -66,6 +66,7 @@ documentChecksum: ''
 - **Rules:** IF condition THEN action; business logic
 - **Output:** success behavior
 - **Error:** error case → handling
+- **Log:** {{expected log message format, if applicable}}
 - **Depends:** FR-xxx (if any)
 
 **FR-AREA-002**: [Actor] [capability]
@@ -73,6 +74,7 @@ documentChecksum: ''
 - **Rules:** IF condition THEN action
 - **Output:** success behavior
 - **Error:** error case → handling
+- **Log:** {{if applicable}}
 
 ### {{Capability Area 2}}
 
@@ -149,3 +151,68 @@ documentChecksum: ''
 - P1-High: Must have for MVP
 - P2-Medium: Should have for MVP
 - P3-Low: Nice to have, can defer
+
+---
+
+## 8. Implementation Reference (Optional)
+
+> *Include sections below when your project has defined formats, codes, or algorithms that implementing agents need as reference. Skip sections that don't apply.*
+
+### 8.1 Configuration Schema
+
+> *Include when: Project has user-editable configuration files (YAML, JSON, env vars)*
+
+```yaml
+# Example structure - replace with actual schema
+{{config_section}}:
+  {{field}}: {{type}}  # {{description}}
+```
+
+### 8.2 Output Formats
+
+> *Include when: Project has defined console output, file formats, or API response structures*
+
+**{{Output Type}} Format:**
+```
+{{exact format specification with examples}}
+```
+
+### 8.3 Error/Status Code Catalog
+
+> *Include when: Project uses coded errors (ERR_001) or status codes for consistent reporting*
+
+| Code | Description | Cause | Resolution |
+|------|-------------|-------|------------|
+| {{ERR_001}} | {{description}} | {{what triggers it}} | {{how to fix}} |
+| {{ATT_001}} | {{description}} | {{what triggers it}} | {{action needed}} |
+
+### 8.4 Algorithm Details
+
+> *Include when: Project has multi-step logic, calculations, or processing pipelines that need exact specification*
+
+**{{Algorithm Name}}:**
+
+1. **Step 1:** {{description}}
+   - Input: {{what it receives}}
+   - Process: {{what it does}}
+   - Output: {{what it produces}}
+
+2. **Step 2:** {{description}}
+   - ...
+
+### 8.5 Examples & Edge Cases
+
+> *Include when: Complex rules benefit from concrete examples showing expected behavior*
+
+**Example: {{Scenario Name}}**
+```
+Input: {{example input}}
+Expected: {{expected behavior/output}}
+Reason: {{why this is correct}}
+```
+
+**Edge Case: {{Edge Case Name}}**
+```
+Situation: {{description}}
+Handling: {{how system should respond}}
+```

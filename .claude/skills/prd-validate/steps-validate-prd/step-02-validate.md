@@ -47,6 +47,7 @@ First, identify project type from Overview/Classification. Then check sections b
 | 5. Data Entities | Data Model, Entities | Persistent storage |
 | 6. Technology Constraints | Tech Stack, Constraints | When constraints exist |
 | 7. Quick Reference | Summary, Reference | 5+ FRs |
+| 8. Implementation Reference | Config Schema, Output Formats, Error Catalog, Algorithms | Complex systems with defined specs |
 
 **Classify:**
 - Complete: All recommended sections for project type
@@ -73,6 +74,7 @@ For each FR, verify:
 - [ ] Has Rules with business logic
 - [ ] Has Output with testable behavior
 - [ ] Has Error with handling
+- [ ] Has Log if FR describes logging behavior (optional)
 - [ ] Has Depends if references other FRs
 
 Calculate FR format compliance: (complete FRs / total FRs) * 100
@@ -150,6 +152,32 @@ Severity: Critical (>5) / Warning (2-5) / Pass (<2)
 - Priority uses P0/P1/P2/P3?
 - Dependencies valid?
 
+#### B7. Implementation Reference Quality (If Section 8 Present)
+
+For each sub-section present, verify:
+
+**8.1 Configuration Schema:**
+- [ ] Structure documented with field types
+- [ ] Validation rules specified where applicable
+
+**8.2 Output Formats:**
+- [ ] Exact format examples provided
+- [ ] Matches FR Output specifications
+
+**8.3 Error Code Catalog:**
+- [ ] All error codes from FRs documented
+- [ ] Each has Description, Cause, Resolution
+- [ ] Codes are consistent format (ERR_xxx, ATT_xxx)
+
+**8.4 Algorithm Details:**
+- [ ] Multi-step processes have numbered steps
+- [ ] Input/Process/Output for each step
+- [ ] Aligns with FR Rules
+
+**8.5 Examples & Edge Cases:**
+- [ ] Complex rules have concrete examples
+- [ ] Edge cases include expected handling
+
 ---
 
 ### PART C: COMPLIANCE
@@ -190,7 +218,7 @@ Based on Product Category, check required elements:
 ```markdown
 ## Structure & Format
 
-**Sections:** {count}/7 - {classification}
+**Sections:** {count}/8 - {classification}
 **FR Format:** {compliance}% ({count}/{total} with Input/Rules/Output/Error)
 **NFR Format:** {compliance}% ({count}/{total} single-line)
 **Dependencies:** {valid}/{total} valid
@@ -202,6 +230,7 @@ Based on Product Category, check required elements:
 | Has Rules | {n} | {n} |
 | Has Output | {n} | {n} |
 | Has Error | {n} | {n} |
+| Has Log (if applicable) | {n} | {n} |
 
 ## Content Quality
 
@@ -211,6 +240,7 @@ Based on Product Category, check required elements:
 **Implementation Leakage:** {severity} ({count} found)
 **Data Entities:** {count} entities, {orphans} orphaned
 **Quick Reference:** {coverage}% FR coverage
+**Implementation Reference:** {status} (Section 8: {sub-sections present or "N/A"})
 
 {If violations, list top 5 examples with locations}
 
@@ -232,14 +262,15 @@ Update frontmatter: add `'step-02-validate'` to `stepsCompleted`
 
 ### PART E: DISPLAY PROGRESS AND PROCEED
 
-"**Validation Complete**
-- Structure: {classification} ({count}/7 sections)
+**Validation Complete**
+- Structure: {classification} ({count}/8 sections)
 - FR Format: {severity} ({percentage}%)
 - NFR Format: {severity} ({percentage}%)
 - Quality: {severity}
 - Compliance: {severity}
+- Implementation Reference: {status if Section 8 present, else 'N/A'}
 
-Proceeding to assessment..."
+Proceeding to assessment...
 
 **Auto-proceed:** Load and execute `{nextStepFile}`
 

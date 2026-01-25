@@ -42,6 +42,7 @@ For each capability area identified from scope and journeys:
 - **Rules:** IF condition THEN action; business logic
 - **Output:** success behavior
 - **Error:** error case → handling
+- **Log:** expected log message format (optional - include when output needs specific logging)
 - **Depends:** FR-xxx (if any)
 ```
 
@@ -122,7 +123,30 @@ Discuss with user:
 
 If no constraints mentioned, note "No technology constraints specified."
 
-### 6. Generate Quick Reference Table
+### 6. Identify Implementation Reference Needs
+
+Assess whether the project needs detailed implementation specifications in Section 8.
+
+**Ask user about these indicators:**
+
+| Indicator | Section Needed | Question |
+|-----------|----------------|----------|
+| User-editable config files | 8.1 Configuration Schema | "Will users configure the system via files (YAML, JSON, etc.)?" |
+| Defined output formats | 8.2 Output Formats | "Does the system have specific console output, file formats, or API responses that must follow exact patterns?" |
+| Error/status codes | 8.3 Error Code Catalog | "Will the system use coded errors (ERR_001) or status classifications (SUCCESS/FAILED)?" |
+| Multi-step algorithms | 8.4 Algorithm Details | "Are there calculations, processing pipelines, or multi-step logic that need precise specification?" |
+| Complex edge cases | 8.5 Examples & Edge Cases | "Are there tricky scenarios where examples would clarify expected behavior?" |
+
+**For each "yes" answer:**
+- Note which Section 8 sub-sections are needed
+- Gather enough detail to populate those sections
+- These become reference material for implementing agents
+
+**If no implementation details needed:**
+- Skip Section 8 entirely
+- Note in PRD: "Section 8 not applicable - no complex implementation specs required"
+
+### 7. Generate Quick Reference Table
 
 Create summary table with all FRs:
 
@@ -140,7 +164,23 @@ Create summary table with all FRs:
 - P2-Medium: Should have for MVP
 - P3-Low: Nice to have
 
-### 7. Integrated Validation
+### 8. Generate Implementation Reference (If Needed)
+
+Based on Step 6 assessment, populate applicable Section 8 sub-sections:
+
+**8.1 Configuration Schema** - Document structure, field types, validation rules
+**8.2 Output Formats** - Exact console output, file formats, API response examples
+**8.3 Error Code Catalog** - All error/warning codes with descriptions, causes, resolutions
+**8.4 Algorithm Details** - Step-by-step logic for complex processing
+**8.5 Examples & Edge Cases** - Concrete scenarios showing expected behavior
+
+**Quality checks for Section 8:**
+- Each sub-section has enough detail for implementation without guesswork
+- Error codes cover all error cases mentioned in FRs
+- Output formats match what FRs describe as output
+- Algorithm steps align with FR rules
+
+### 9. Integrated Validation
 
 Validate before completion:
 
@@ -155,10 +195,11 @@ Validate before completion:
 | Entities | At least 1 entity per major FR area |
 | Dependencies | All `Depends:` references exist |
 | Quick Reference | All FRs in table with priority |
+| Section 8 | If applicable, all identified sub-sections populated with sufficient detail |
 
 **If validation fails:** Fix issues before proceeding.
 
-### 8. Present to User
+### 10. Present to User
 
 Show the user:
 1. Summary: "Generated X FRs across Y areas, Z NFRs, W entities"
@@ -169,8 +210,9 @@ Ask for feedback on:
 - Missing capabilities?
 - Priority adjustments?
 - Constraint clarifications?
+- Implementation details need more depth?
 
-### 9. Report & Menu
+### 11. Report & Menu
 
 **Menu:**
 
@@ -188,10 +230,11 @@ Ask for feedback on:
 
 ## SUCCESS CRITERIA
 
-- FRs generated with Input/Rules/Output/Error format
+- FRs generated with Input/Rules/Output/Error format (+ optional Log field)
 - NFRs generated in single-line format
 - Data Entities table created
 - Technology Constraints documented
 - Quick Reference table complete
+- Implementation Reference (Section 8) assessed and populated if needed
 - All validations pass
 - User confirmed requirements before proceeding

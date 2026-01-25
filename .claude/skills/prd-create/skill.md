@@ -23,25 +23,27 @@ description: Create comprehensive PRDs optimized for AI-powered development
 
 ---
 
-## OUTPUT STRUCTURE (7 Sections)
+## OUTPUT STRUCTURE (8 Sections)
 
 1. **Overview** - Vision, classification, users, success metric, scope
 2. **User Journeys** - Brief 3-5 step journeys per user type
-3. **Functional Requirements** - Input/Rules/Output/Error format
+3. **Functional Requirements** - Input/Rules/Output/Error/Log format
 4. **Non-Functional Requirements** - Single-line format
 5. **Data Entities** - Table with key attributes and FR mapping
 6. **Technology Constraints** - Decided vs. Open decisions
 7. **Quick Reference** - FR summary with priorities and dependencies
+8. **Implementation Reference** (Optional) - Config schemas, output formats, error catalogs, algorithms, examples
 
 ---
 
 ## KEY FEATURES
 
 - **Consolidated Discovery:** Vision, users, scope, and journeys in one conversation
-- **AI-Optimized FR Format:** Input/Rules/Output/Error structure for clear implementation
+- **AI-Optimized FR Format:** Input/Rules/Output/Error/Log structure for clear implementation
 - **Single-Line NFRs:** Measurable metrics with target and condition
 - **Integrated Validation:** Quality checks throughout, no separate optimization step
 - **Quick Reference:** Summary table with priorities and dependencies
+- **Implementation Reference:** Optional Section 8 for config schemas, output formats, error catalogs, and algorithms
 
 ---
 
