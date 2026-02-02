@@ -1,149 +1,315 @@
 ---
 name: build-from-prd
-description: Autonomous skill that builds a working application from PRD and architecture documents using parallel subagent delegation
+description: Implement a PRD with subagent delegation
 ---
 
-# Build from PRD Workflow
+# Build from PRD
 
-**Goal:** Take PRD.md and architecture.md as inputs and build a working application autonomously without human intervention.
+## Role & Output Style
 
-**Your Role:** Build Orchestrator - autonomous executor that delegates module implementation to specialized subagents.
+**You are a Tech Lead.** You plan, delegate, and integrate. You do NOT implement subsystems.
 
----
+**Output:** Terse. Use "Step N complete" format. Minimize verbose explanations.
 
-## What This Produces
+## What You Do vs Delegate
 
-| Output | Purpose |
-|--------|---------|
-| Project Structure | Directories and files per architecture |
-| Installed Dependencies | All packages from tech stack |
-| Database Setup | Tables/migrations from schema |
-| Implemented Modules | Code for all FR modules |
-| Unit Tests | Tests per module |
-| Build Report | Summary of build results |
+| Action | You | Subagent |
+|--------|:---:|:--------:|
+| Read PRD/architecture docs | Y | Y (assigned FRs/NFRs only) |
+| Create task list (TaskCreate) | Y | - |
+| Scaffold (dirs, init files, manifest) | Y | - |
+| Write subsystem code | - | Y |
+| Write tests | - | Y |
+| Write entry point / pipeline | Y | - |
+| Run commands (test, lint, **typecheck**) | Y | Y |
+| **Run real data validation** | **Y** | - |
+| **Fix code_bugs from validation** | **Y** | - |
 
----
+**Enforcement:** Do NOT edit subsystem implementation files. Only edit entry points and orchestration/pipeline files. All other source files must be delegated via Task tool.
 
-## Workflow Overview (4 Steps)
+**Exception:** During Step 5 (Real Data Validation), Tech Lead MAY directly fix code_bugs in any file to maintain iteration speed. These should be small, localized fixes that don't warrant full subagent delegation.
 
-| Step | Name | Purpose | Mode |
-|------|------|---------|------|
-| 1 | **Analyze** | Find PRD/arch, extract modules, build dependency graph, create plan | Autonomous |
-| 1b | **Continue** | Resume interrupted workflow (auto-triggered) | Autonomous |
-| 2 | **Scaffold** | Create directories, install deps, setup DB, configure testing | Autonomous |
-| 3 | **Implement** | Parallel module implementation via Task subagents (layer-by-layer) | Autonomous |
-| 4 | **Validate** | Run tests, validate FR coverage, generate build report | Autonomous |
+**Module Exports Ownership:** Subagents update their own module's export declarations. Tech Lead creates initial module scaffolding.
 
----
-
-## Input Sources
-
-| Source | Required | Content Used |
-|--------|----------|--------------|
-| PRD (docs/prd.md) | Yes | FRs, NFRs, Data Entities |
-| Architecture (docs/architecture.md) | Yes | Stack, structure, modules, schema |
+**Source of Truth:** Subagents must read docs/PRD.md directly for their assigned FRs and NFRs.
 
 ---
 
-## Design Principles
+## Workflow
 
-- **Fully Autonomous:** No menus, no user prompts. Runs to completion automatically.
-- **Auto-Retry:** Failed operations retry up to 3 times before marking as failed.
-- **Auto-Skip:** Persistently failing modules are skipped; others continue.
-- **HALT on Critical:** Only stops for missing inputs, circular deps, or total failure.
-- **Progress Reporting:** Status updates output as workflow progresses.
-- **Lean Context:** Subagents receive only relevant FRs and architecture sections.
+### 1. Pre-flight & Plan
 
----
+1. **Verify docs exist:** `ls docs/PRD.md docs/architecture.md` — STOP if missing
+2. **Extract from PRD:**
+   - FR numbers with one-line summaries
+   - NFRs categorized by type (performance, security, reliability, observability, maintainability)
+3. **Extract from architecture:** Tech stack, data models, interfaces, dependency graph
+4. **Classify NFRs:**
+   - **Cross-cutting** (apply to all subsystems): logging, error handling, input validation
+   - **Subsystem-specific**: e.g., caching in parser, auth in API layer
+5. **Map FRs + NFRs to subsystems** with acceptance criteria — GATE: every FR and subsystem-specific NFR must be mapped
+6. **Build dependency table:**
 
-## HALT Conditions
+| Subsystem | Dependencies | Batch |
+|-----------|--------------|-------|
+| config | (none) | 1 |
+| parser | config | 2 |
 
-The workflow will HALT (stop execution) only for these critical errors:
+Rules: Batch 1 = no deps. Batch N = all deps in batches < N. Max 3 per batch.
 
-| Condition | Message |
-|-----------|---------|
-| Missing PRD | "HALT: Build requires PRD. Not found at expected locations." |
-| Missing Architecture | "HALT: Build requires architecture. Not found at expected locations." |
-| Circular Dependencies | "HALT: Circular dependency detected: [cycle details]" |
-| All Modules Failed | "HALT: All modules failed after retry attempts." |
+7. **Build Interface Contract Registry** (NEW — critical for cross-module consistency):
+   - For each public function that will be called by OTHER modules, document:
+     ```
+     module.function(param: type, ...) -> return_type
+     Called by: [list of calling modules]
+     ```
+   - Include in delegation prompts for BOTH the implementing module AND calling modules
+   - This prevents signature mismatches discovered only at integration
 
----
+8. **Create task list** via TaskCreate: Scaffold → Batches → Integration → **Real Data Validation** → Final Verification
 
-## Workflow Architecture
+**Output:** "Plan complete: X FRs, Y NFRs (Z cross-cutting), W subsystems, B batches, I interface contracts"
 
-Uses **step-file architecture** for disciplined execution:
-
-### Core Principles
-
-- **Micro-file Design:** Each step is a self-contained instruction file
-- **Just-In-Time Loading:** Only current step file in memory
-- **Sequential Steps:** Steps 1-4 executed in order
-- **State Tracking:** Progress tracked in build-state.json
-- **Auto-Proceed:** Steps automatically proceed to next without user input
-
-### Core Principles
-
-These principles ensure reliable autonomous execution:
-
-- Load one step file at a time (keeps context focused)
-- Read the entire step file before starting (ensures complete understanding)
-- Complete steps in order (dependencies build on each other)
-- Update build-state.json when completing a step (enables continuation)
-- Follow step file instructions (they encode best practices)
-- Execute autonomously without user prompts (except for blocking ambiguities)
-
-**Blocking Ambiguity Exception:** If subagents encounter truly blocking ambiguities (conflicting requirements, missing critical information), they collect these issues and the orchestrator surfaces them before validation. This prevents wasted effort on invalid implementations.
+**IMPORTANT:** The task list MUST include "Real Data Validation" as an explicit task. This ensures it is not skipped.
 
 ---
 
-## State Management
+### 2. Scaffold (if needed)
 
-Build state tracked in `{project_root}/build-state.json`:
+Skip if structure exists. Otherwise create: dirs, project manifest, module init files, run dependency install.
 
-```json
-{
-  "status": "pending | in-progress | complete | failed",
-  "current_step": 1,
-  "mode": "greenfield | brownfield",
-  "prd_path": "docs/prd.md",
-  "prd_checksum": "abc12345",
-  "architecture_path": "docs/architecture.md",
-  "architecture_checksum": "def67890",
-  "layers": [],
-  "completed_modules": [],
-  "failed_modules": [],
-  "retry_counts": {},
-  "ambiguities": [],
-  "scaffold_complete": false,
-  "started_at": "",
-  "completed_at": ""
-}
+**Cross-cutting NFR infrastructure (create if identified in Step 1):**
+- Logging config module (standard format, levels)
+- Custom exception types / error handling base classes
+- Common validation utilities
+- Shared constants (timeouts, limits from NFRs)
+
+**Output:** "Scaffold complete (cross-cutting: logging, errors, ...)" or "Scaffold skipped"
+
+---
+
+### 3. Implement & Test (delegate by batch)
+
+Process batches in order. Within each batch, launch independent subsystems in parallel.
+
+#### Delegation Template
+
+```
+Implement & test: <subsystem_name>
+Module: <path> | Tests: <test_path>
+
+PRD Reference: Read docs/PRD.md for FR-XXX, FR-YYY and NFR-XXX (authoritative source)
+
+Dependencies (import ONLY from these):
+- <module>: <exports>
+
+Stack: <language | test framework | linter>
+
+## INTERFACE CONTRACTS (CRITICAL - must match exactly)
+
+### Functions this module EXPORTS (will be called by other modules):
+```
+function_name(param1: Type1, param2: Type2) -> ReturnType
+  Called by: module_x, module_y
+  Description: one-line purpose
 ```
 
-The `prd_checksum` and `architecture_checksum` enable detection if source documents change during build. The `ambiguities` array collects blocking issues encountered by subagents for review before validation.
+### Functions this module IMPORTS (signatures to expect):
+```
+dependency.function(param: Type) -> ReturnType
+```
+
+**WARNING:** Return types matter. If contract says `-> Workbook`, do NOT return `tuple[Workbook, list]`.
+Mock these EXACT signatures in tests.
+
+## NFR Constraints (MUST implement):
+- Error handling: <strategy — e.g., raise typed exceptions, use shared error types>
+- Logging: <what to log — e.g., INFO for entry/exit, ERROR for failures>
+  - **Single-point logging:** Log at detection point only. Do NOT re-log in callers.
+- Input validation: <where — e.g., validate all public function params>
+- Performance: <if applicable — e.g., must complete in <Xms for typical input>
+- Security: <if applicable — e.g., sanitize external input, no secrets in code>
+
+## Known Library Gotchas (if applicable):
+- <library>: <issue and workaround>
+  Example: "openpyxl: Do not deepcopy Workbook (corrupts styles). Load fresh copy instead."
+
+Tasks:
+1. Read PRD.md sections for assigned FRs and relevant NFRs
+2. If unclear: return {questions: [...]} and STOP
+3. Write tests covering FRs, NFR constraints, edge cases
+   - **Mock imported functions with EXACT signatures from Interface Contracts**
+4. Implement to pass tests (TDD)
+5. Type check -> lint -> fix all issues
+
+Gates: tests pass, lint clean, **interfaces match contracts exactly**, NFR constraints met
+
+Return: {tests: N passing, exports: [{func, signature, fr}], nfr_compliance: [items checked], blockers: [...]}
+```
+
+#### Post-Batch Verification (NEW - run after EACH batch)
+
+After each batch completes, Tech Lead runs:
+```bash
+# 1. Full test suite (catch regressions)
+<test_command>
+
+# 2. Type check (catch interface mismatches early)
+<typecheck_command>
+
+# 3. Lint
+<lint_command>
+```
+*(Commands depend on project stack — see architecture docs)*
+
+**GATE:** All three must pass before starting next batch. Type errors in cross-module calls indicate interface contract violations — fix immediately.
+
+#### Rules
+
+- **Tests required:** Every subsystem MUST have tests (N > 0). Reject `tests: 0`.
+- **Interface contracts:** Subagent return MUST include exact function signatures. Verify against contract registry.
+- **Post-batch:** Run full test suite + typecheck + lint. Fix regressions before next batch.
+- **Failures:** 1 fail = retry next round. 2+ fails = ask user.
+
+**Output per batch:** "Batch N: <sub1> (X tests), <sub2> (Y tests) | Post-batch: tests pass, types pass, lint pass"
 
 ---
 
-## Subagent Delegation
+### 4. Integration
 
-Module implementation uses Claude Code's `Task` tool:
+1. **Write entry point** — import and wire all subsystems
+2. **Verify interface contracts:** Ensure all cross-module calls match the contract registry
+3. **Verify:** tests pass, typecheck pass, lint clean, all FRs covered
 
-- **Layer-by-Layer:** Process modules by dependency level (L0 = no deps first)
-- **Parallel Execution:** Up to 3 concurrent tasks per layer
-- **Lean Prompts:** Each task receives only its FRs + relevant patterns
-- **Autonomous Tasks:** Subagents implement without user interaction
-- **Result Handling:** Success adds to completed, failure triggers retry
+**Output:** "Integration: N tests, all checks pass"
 
 ---
 
-## Paths
+### 5. Real Data Validation
 
-- `stateFile` = `{project_root}/build-state.json`
-- `stateTemplate` = `{skill_base}/build-state-template.json`
-- `reportFile` = `{project_root}/docs/build-report.md`
+**MANDATORY** — Execute immediately after Integration. Do NOT wait for user to request this.
+
+Skip ONLY if: (a) pure library with no runtime, OR (b) no test data exists in project.
+
+**Pre-check:** `ls data/` or equivalent to find test inputs. If data folder exists with files, validation is REQUIRED.
+
+**Execute directly (not delegated):**
+Run the application's main entry point against real data in the project's data folder.
+
+**Classification of failures (with examples):**
+
+| Type | Definition | Example | Action |
+|------|------------|---------|--------|
+| `code_bug` | PRD specifies behavior, code doesn't implement it | PRD says "handle merged cells", code crashes on merged cells | FIX IMMEDIATELY |
+| `code_bug` | Interface mismatch between modules | Function returns tuple, caller expects single value | FIX IMMEDIATELY |
+| `code_bug` | Precision/comparison errors | `0.4110 != 0.41` due to float comparison | FIX IMMEDIATELY |
+| `input_issue` | Data violates PRD assumptions AND PRD is silent on handling | Different parts share merged weight cell (vendor error) | Document, don't fix |
+| `input_issue` | Missing required data in vendor file | Empty COO field in source file | Document, don't fix |
+
+**Iteration loop (CRITICAL):**
+1. Run against ALL test inputs
+2. For each failure, check PRD to classify as code_bug or input_issue
+3. Fix ALL code_bugs found (may require editing src/ files directly for quick fixes)
+4. Re-run full test suite after each fix
+5. Re-run validation until no new code_bugs found
+6. Only then proceed to Final Verification
+
+**Common code_bugs to check:**
+- Hardcoded limits that don't match PRD requirements
+- Off-by-one errors or boundary condition bugs
+- Edge cases mentioned in PRD but not handled in code
+- Type coercion or falsy value bugs
+- **Interface mismatches** (function signature differs from caller's expectation)
+- **Precision issues** (float comparison instead of Decimal, wrong rounding)
+
+**Output:** "Validation: N/M passed (X code_bugs fixed, Y input_issues documented)"
+
+**GATE:** Do NOT proceed to Final Verification until validation loop completes with 0 new code_bugs.
 
 ---
 
-## Execution
+### 6. Final Verification
 
-Load and execute `steps/step-01-analyze.md` to begin.
+1. Run full test suite
+2. Run typecheck
+3. Run lint
+4. Run security linter if available
+5. Spot-check 2-3 high-risk FRs
+6. **NFR compliance check:**
+   - Cross-cutting: consistent error handling pattern across subsystems?
+   - Cross-cutting: logging present and consistent across subsystems?
+   - Cross-cutting: single-point logging (no duplicate log messages)?
+   - Subsystem-specific NFRs met per delegation returns?
+7. **Interface contract audit:** Verify all contracts from Step 1.7 are implemented correctly
+
+**Output:** "Verified: N FRs, M NFRs checked, I interface contracts validated"
+
+---
+
+### 7. Summary
+
+```
+## Complete
+Subsystems: N (in B batches) | FRs: X/X covered | NFRs: Y/Y covered
+Tests: N passing | Validation: N/M inputs (X code_bugs fixed, Y input_issues)
+Cross-cutting: <list applied — e.g., logging, error handling, validation>
+Interface contracts: I/I validated
+```
+
+---
+
+## Recovery Procedures
+
+| Problem | Action |
+|---------|--------|
+| Subagent returns questions | Answer from PRD, re-delegate |
+| Subagent blocked | Check deps/context, re-delegate |
+| Tests fail after integration | Fix integration or re-delegate subsystem |
+| **Type errors in cross-module calls** | **Interface contract violation — fix signature in implementing module** |
+| Validation finds bugs | Classify (code_bug vs input_issue), fix code_bugs |
+| NFR compliance missing | Re-delegate with explicit NFR constraints |
+| Cross-cutting inconsistent | Update shared infra, re-delegate affected subsystems |
+| **Duplicate log messages** | **Identify double-logging, enforce single-point logging** |
+
+---
+
+## Gates Summary
+
+| Gate | Location | Fail Action |
+|------|----------|-------------|
+| Docs exist | Step 1 | STOP |
+| All FRs mapped | Step 1 | STOP |
+| All NFRs classified | Step 1 | STOP |
+| **Interface contracts defined** | Step 1.7 | STOP |
+| Cross-cutting NFR infra scaffolded | Step 2 | STOP |
+| Tests > 0 per subsystem | Step 3 | Reject, re-delegate |
+| NFR constraints met per subsystem | Step 3 | Reject, re-delegate |
+| **Signatures match interface contracts** | Step 3 | Reject, re-delegate |
+| Post-batch tests pass | Step 3 | Fix before next batch |
+| **Post-batch typecheck pass** | Step 3 | **Fix interface mismatches before next batch** |
+| All checks pass | Step 4 | Fix or return to Step 3 |
+| **Real data validation run** | Step 5 | **MANDATORY** — run immediately, do not skip |
+| No code_bugs remaining | Step 5 | Fix and re-validate until 0 code_bugs |
+| Validation pass | Step 5 | Document input_issues, proceed |
+| NFR compliance verified | Step 6 | Fix or document exception |
+| **Interface contracts validated** | Step 6 | Fix any remaining mismatches |
+
+---
+
+## Appendix: Interface Contract Template
+
+Use this format in Step 1.7:
+
+```
+## Interface Contract Registry
+
+### <module>.<function_name>
+<function_signature>
+- Called by: <list of calling modules>
+- Returns: <description of return value>
+- Raises: <error conditions>
+```
+
+**Include the EXACT signatures in both:**
+1. The delegation prompt for the implementing module
+2. The delegation prompt for any module that calls it
