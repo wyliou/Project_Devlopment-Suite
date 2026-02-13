@@ -5,21 +5,21 @@ description: Create comprehensive PRDs optimized for AI-powered development
 
 # Create PRD Workflow
 
-**Goal:** Create PRDs optimized for AI agent consumption through a streamlined 4-step workflow.
+**Goal:** Create PRDs optimized for AI agent consumption through a streamlined 5-step workflow with dedicated FR generation and architecture-readiness validation.
 
 **Your Role:** PRD Creator - a product-focused facilitator collaborating with the user as domain expert.
 
 ---
 
-## WORKFLOW OVERVIEW (4 Steps)
+## WORKFLOW OVERVIEW (5 Steps)
 
 | Step | Name | Purpose | Mode |
 |------|------|---------|------|
-| 1 | **Init** | Setup, discover docs, detect continuation | Interactive |
-| 1b | **Continue** | Resume interrupted workflow (auto-triggered) | Interactive |
-| 2 | **Discovery** | Vision, users, success criteria, scope, journeys | Interactive |
-| 3 | **Requirements** | FRs, NFRs, data entities, tech constraints, quick reference | Interactive |
-| 4 | **Complete** | Validation summary and handoff | Interactive |
+| 1 | **Init** | Setup, discover docs, detect continuation (inline) | Interactive |
+| 2 | **Discovery** | Vision, users, scope, journeys, capability-area preview | Interactive |
+| 3 | **Requirements** | Functional Requirements with systematic capability mapping | Interactive |
+| 4 | **Specifications** | NFRs, Data Entities, Tech Constraints, Section 8 | Interactive |
+| 5 | **Complete** | Quick Reference, architecture-readiness check, validation, handoff | Interactive |
 
 ---
 
@@ -27,7 +27,7 @@ description: Create comprehensive PRDs optimized for AI-powered development
 
 1. **Overview** - Vision, classification, users, success metric, scope
 2. **User Journeys** - Brief 3-5 step journeys per user type
-3. **Functional Requirements** - Input/Rules/Output/Error/Log format
+3. **Functional Requirements** - Input/Rules/Output/Error format
 4. **Non-Functional Requirements** - Single-line format
 5. **Data Entities** - Table with key attributes and FR mapping
 6. **Technology Constraints** - Decided vs. Open decisions
@@ -38,12 +38,12 @@ description: Create comprehensive PRDs optimized for AI-powered development
 
 ## KEY FEATURES
 
-- **Consolidated Discovery:** Vision, users, scope, and journeys in one conversation
-- **AI-Optimized FR Format:** Input/Rules/Output/Error/Log structure for clear implementation
-- **Single-Line NFRs:** Measurable metrics with target and condition
-- **Integrated Validation:** Quality checks throughout, no separate optimization step
-- **Quick Reference:** Summary table with dependencies
-- **Implementation Reference:** Optional Section 8 for config schemas, output formats, error catalogs, and algorithms
+- **Dedicated FR Step:** Step 3 focuses exclusively on Functional Requirements with systematic capability mapping
+- **Capability Mapping:** Coverage matrix ensures every scope item and journey maps to FRs before generation
+- **Architecture-Readiness Checkpoint:** Step 5 validates PRD has everything create-architecture and build-from-prd need
+- **Separated Concerns:** FRs (step 3) isolated from derived specifications (step 4)
+- **Structured FR Output:** Input/Rules/Output/Error format optimized for downstream architecture and build pipeline extraction
+- **Inline Continuation:** Resume interrupted workflows without separate continuation file
 
 ---
 
@@ -57,9 +57,9 @@ This uses **step-file architecture** for disciplined execution:
 - **Just-In-Time Loading**: Only current step file in memory
 - **Sequential Enforcement**: Steps completed in order, no skipping
 - **State Tracking**: Progress tracked in PRD frontmatter
-- **Continuation Support**: Resume interrupted workflows via step-01b
+- **Inline Continuation**: Resume interrupted workflows detected in step-01
 
-### Core Principles
+### Execution Rules
 
 These principles ensure reliable execution. Deviate only with explicit reasoning documented in conversation:
 

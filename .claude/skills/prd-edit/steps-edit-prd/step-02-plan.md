@@ -86,9 +86,9 @@ Reference `{validationChecks}` and analyze based on project type:
 - NFRs to convert: {count}
 - Priority: High
 
-**ID Format Updates**
-- FR IDs to update: {count} (FR-### → FR-[AREA]-###)
-- NFR IDs to update: {count} (NFR-### → NFR-[CAT]-###)
+**ID Consistency Fix** (only if IDs are inconsistent)
+- FR IDs: {count} to standardize (pick dominant format)
+- NFR IDs: {count} to standardize
 ```
 
 ### 5. Summarize Change Plan
@@ -121,8 +121,7 @@ Reference `{validationChecks}` and analyze based on project type:
 **Format Conversions:**
 - FR format: {count} to convert to Input/Rules/Output/Error
 - NFR format: {count} to convert to single-line
-- FR IDs: {count} to update to FR-[AREA]-###
-- NFR IDs: {count} to update to NFR-[CAT]-###
+- ID fixes: {count} to standardize (if inconsistent)
 
 **Summary:**
 - Total changes: {count} across {section count} sections
@@ -136,6 +135,7 @@ Reference `{validationChecks}` and analyze based on project type:
 **[R] Revise** - Modify the plan
 **[D] Deep Dive** - Apply advanced elicitation on complex issues
 **[P] Party Mode** - Multi-agent discussion of change plan
+**[X] Exit** - Save progress and stop
 
 #### Menu Logic:
 

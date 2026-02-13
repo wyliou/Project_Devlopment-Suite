@@ -37,8 +37,7 @@ From step 3, gather:
 **Format Conversions:**
 - FRs converted to Input/Rules/Output/Error: {count}
 - NFRs converted to single-line: {count}
-- FR IDs updated to FR-[AREA]-###: {count}
-- NFR IDs updated to NFR-[CAT]-###: {count}
+- IDs standardized: {count}
 
 **PRD Status:**
 - Format: {Structured / Partial}
@@ -81,9 +80,9 @@ From step 3, gather:
 
 **A (Architecture):**
 "**Architecture Readiness Check:**"
-- 7-section structure: {Yes/No}
+- Required sections for project type: {Yes/No}
 - FR Input/Rules/Output/Error: {Yes/No}
-- Data Entities: {Yes/No}
+- Data Entities (if applicable): {Yes/No}
 - Technology Constraints: {Yes/No}
 - Quick Reference: {Yes/No}
 
@@ -103,21 +102,22 @@ Display detailed report:
 **PRD:** {path}
 **Date:** {date}
 
-**Structure (7 Sections):**
+**Structure:**
 | Section | Status |
 |---------|--------|
 | 1. Overview | {Present/Updated/Added} |
-| 2. User Journeys | {Present/Updated/Added} |
+| 2. User Journeys | {Present/Updated/Added/N/A} |
 | 3. Functional Requirements | {Present/Updated/Added} |
-| 4. Non-Functional Requirements | {Present/Updated/Added} |
-| 5. Data Entities | {Present/Updated/Added} |
-| 6. Technology Constraints | {Present/Updated/Added} |
-| 7. Quick Reference | {Present/Updated/Added} |
+| 4. Non-Functional Requirements | {Present/Updated/Added/N/A} |
+| 5. Data Entities | {Present/Updated/Added/N/A} |
+| 6. Technology Constraints | {Present/Updated/Added/N/A} |
+| 7. Quick Reference | {Present/Updated/Added/N/A} |
+| 8. Implementation Reference | {Present/Updated/Added/N/A} |
 
 **Format Conversions:**
 - FRs: {count} converted to Input/Rules/Output/Error
 - NFRs: {count} converted to single-line
-- IDs: {count} updated
+- IDs: {count} standardized
 
 **Key Improvements:**
 {List major improvements}

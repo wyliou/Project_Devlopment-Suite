@@ -3,6 +3,7 @@ status: in-progress
 current_step: 1
 prd_source:
 prd_checksum:
+product_category:
 completed_at:
 ---
 
@@ -20,18 +21,19 @@ This document + PRD = complete implementation context.
 - Architecture defines HOW (stack, structure, patterns, specifications)
 
 IMPLEMENTATION ORDER:
-1. Install tech stack dependencies
-2. Create directory structure
+1. Install tech stack dependencies (use Build Commands)
+2. Create directory structure (use src_dir/test_dir markers)
 3. Set up database with schema
-4. Implement modules following boundaries
-5. Build API endpoints matching contracts
+4. Implement modules following boundaries (use Path, Exports, Depends On)
+5. Build contracts matching module assignments
 6. Apply coding patterns consistently
 
 RULES:
 - Follow naming conventions exactly
 - Use error codes from taxonomy
 - Keep modules isolated per boundaries
-- Match API responses to contract format
+- Follow logging pattern for all log output
+- Respect side-effect ownership
 =============================================================================
 -->
 
@@ -48,9 +50,23 @@ RULES:
 | Styling | | | |
 | Testing | | | |
 
+### Build Commands
+
+| Command | Value |
+|---------|-------|
+| Install | |
+| Test | |
+| Lint | |
+| Type Check | |
+| Format | |
+| Build | |
+
 ---
 
 ## 2. Project Structure
+
+<!-- src_dir: src/ -->
+<!-- test_dir: tests/ -->
 
 ```
 project/
@@ -76,6 +92,8 @@ project/
 | Types/Interfaces | | |
 
 ### API Response Format
+
+<!-- For web/API: HTTP JSON responses. For CLI: exit codes + stdout format. For libraries: return types + exceptions. -->
 
 ```typescript
 // Success response
@@ -103,35 +121,84 @@ project/
 | RES_ | Resource | 404/409 | RES_NOT_FOUND |
 | SYS_ | System | 500 | SYS_DATABASE_ERROR |
 
-<!-- Add domain-specific prefixes derived from PRD FR areas -->
+<!-- Add domain-specific prefixes derived from PRD Section 3 capability area headers -->
+
+### Logging Pattern
+
+<!-- Define log format, levels, and what gets logged.
+Example:
+- Format: `[{timestamp}] {level} [{module}] {message}`
+- Levels: ERROR (failures), WARN (degraded), INFO (state changes), DEBUG (dev only)
+- What: State transitions, external calls, errors. NOT: routine reads, internal calculations.
+-->
+
+### Side-Effect Ownership
+
+<!-- Define which modules own which side effects.
+Each side effect (file I/O, network calls, logging, database writes) should have exactly one owner.
+Non-owners must delegate to the owning module.
+
+Example:
+| Side Effect | Owner Module | Non-owners Must |
+|-------------|-------------|-----------------|
+| File writes | file-manager | Call file-manager.write() |
+| HTTP calls | api-client | Call api-client.request() |
+| Logging | Each module owns its own logging | Use shared logger config |
+-->
 
 ---
 
 ## 4. Module Boundaries
 
-| Module | Location | Responsibility | Implements |
-|--------|----------|----------------|------------|
-| | | | FR-* |
+| Module | Path | Test Path | Responsibility | Implements | Exports | Depends On |
+|--------|------|-----------|----------------|------------|---------|------------|
+| | | | | FR-* | | |
+
+### Import Graph
+
+<!-- Directed dependency graph between modules.
+Format: module-a → module-b (what it uses)
+Verify: graph must be acyclic.
+-->
 
 **Module Rules:**
 - Each module owns its FRs completely
-- Cross-module calls go through service interfaces
+- Cross-module calls go through exported interfaces
 - Database access encapsulated within modules
+- Side effects respect ownership table
 
 ---
 
-## 5. API Contracts
+## 5. Contracts
+
+<!-- For web/API: REST endpoints. For CLI: command specs. For libraries: public API surface. -->
+<!-- Each contract entry includes Module: field mapping it to Section 4 -->
 
 <!--
-Generated from PRD Functional Requirements.
-Organized by module from Section 4.
-
-Format:
+=== WEB/API CONTRACT FORMAT ===
 ### METHOD /api/route
-- **FR:** FR-AREA-###
+- **FR:** FR-###
+- **Module:** {owning module from Section 4}
 - **Request:** `{ field: type }`
 - **Response 200:** `{ data: {...} }`
 - **Response 4xx:** `{ error: { code: "...", message: "..." } }`
+
+=== CLI CONTRACT FORMAT ===
+### command-name
+- **FR:** FR-###
+- **Module:** {owning module from Section 4}
+- **Args:** `<required> [optional]`
+- **Flags:** `--flag description (default)`
+- **Stdout:** `format description`
+- **Exit Codes:** `0: success, 1: error, 2: usage`
+
+=== LIBRARY CONTRACT FORMAT ===
+### functionName(params): ReturnType
+- **FR:** FR-###
+- **Module:** {owning module from Section 4}
+- **Parameters:** `param1: Type - description`
+- **Returns:** `Type - description`
+- **Throws:** `ErrorType - when condition`
 -->
 
 ---
@@ -141,6 +208,7 @@ Format:
 <!--
 Generated from PRD Data Entities.
 Includes: tables, constraints, indexes, relationships.
+Skip this section for libraries/CLI tools without storage.
 
 Format:
 ```sql

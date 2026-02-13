@@ -75,11 +75,16 @@ Extract all `##` headers and analyze:
 | 5. Data Entities | {Yes/No/Partial} | Persistent storage |
 | 6. Technology Constraints | {Yes/No/Partial} | When constraints exist |
 | 7. Quick Reference | {Yes/No/Partial} | 5+ FRs |
+| 8. Implementation Reference | {Yes/No/Partial} | Complex systems with defined specs |
 
 **FR Format Check:**
 - Structured: Has Input/Rules/Output/Error fields
 - Basic: Has Given/When/Then or simple descriptions
 - Unstructured: Plain text descriptions
+
+**FR ID Check:**
+- Accept any consistent format (FR-001, FR-AUTH-001, descriptive)
+- Flag only if inconsistent or missing
 
 **Classify:**
 | Classification | Criteria |

@@ -10,11 +10,11 @@
 
 | Project Type | Required | Recommended | Optional |
 |--------------|----------|-------------|----------|
-| **Web App / Mobile** | 1, 3 | 2, 4, 5, 7 | 6 |
-| **API Service** | 1, 3 | 4, 5, 6, 7 | 2 |
-| **CLI Tool** | 1, 3 | 4, 6 | 5, 7 |
-| **Library/SDK** | 1, 3 | 4, 6 | 5, 7 |
-| **Prototype/MVP** | 1, 3 | 2 | 4, 5, 6, 7 |
+| **Web App / Mobile** | 1, 3 | 2, 4, 5, 7 | 6, 8 |
+| **API Service** | 1, 3 | 4, 5, 6, 7 | 2, 8 |
+| **CLI Tool** | 1, 3 | 4, 6 | 2, 5, 7, 8 |
+| **Library/SDK** | 1, 3 | 4, 6 | 2, 5, 7, 8 |
+| **Prototype/MVP** | 1, 3 | 2 | 4, 5, 6, 7, 8 |
 
 ### Section Reference
 
@@ -27,6 +27,7 @@
 | 5 | Data Entities | Persistent data structures |
 | 6 | Technology Constraints | Tech decisions/restrictions |
 | 7 | Quick Reference | FR summary table |
+| 8 | Implementation Reference | Config schemas, output formats, error catalogs, algorithms |
 
 ### Classification Criteria
 

@@ -4,7 +4,6 @@ description: 'Apply approved changes to PRD'
 
 # File references
 nextStepFile: '{skill_base}/steps-edit-prd/step-04-complete.md'
-prdPurpose: '{skills_root}/_prd-data/prd-purpose.md'
 ---
 
 # Step 3: Edit
@@ -70,7 +69,7 @@ Convert each FR to Input/Rules/Output/Error format:
 
 **After:**
 ```
-**FR-AUTH-001**: User registers with email and password
+**FR-001**: User registers with email and password
 - **Input:** email (valid format), password (8+ chars, 1 uppercase, 1 number)
 - **Rules:** Email must be unique; hash password before storage
 - **Output:** Account created, confirmation email sent within 30 seconds
@@ -78,7 +77,7 @@ Convert each FR to Input/Rules/Output/Error format:
 ```
 
 **Conversion steps:**
-1. Update ID from FR-### to FR-[AREA]-### (assign appropriate area code)
+1. Keep existing ID format (do not change IDs during format conversion)
 2. Extract inputs from Given/When → Input field with constraints
 3. Extract business logic → Rules field
 4. Extract success case from Then → Output field
@@ -104,7 +103,7 @@ Convert each NFR to single-line format:
 ```
 
 **Conversion steps:**
-1. Update ID from NFR-### to NFR-[CAT]-### (PERF, SEC, SCALE, REL)
+1. Use NFR-[CAT]-### format (PERF, SEC, SCALE, REL, ACC, USE, MAINT, COMPAT)
 2. Identify metric (response time, uptime, etc.)
 3. Extract or add specific target
 4. Add condition (under normal load, during peak, etc.)
@@ -139,6 +138,8 @@ Reorganize PRD to structured format (sections based on project type):
 ### Open (agent can decide)
 
 ## 7. Quick Reference
+
+## 8. Implementation Reference (if applicable)
 ```
 
 **Migration:**
@@ -209,9 +210,9 @@ Finalizing..."
 
 - All approved changes from step 2 applied
 - Changes executed in priority order
-- FR format converted to Input/Rules/Output/Error
-- NFR format converted to single-line
-- ID formats updated to FR-[AREA]-### and NFR-[CAT]-###
+- FR format converted to Input/Rules/Output/Error (if in plan)
+- NFR format converted to single-line (if in plan)
+- IDs standardized if inconsistent (if in plan)
 - Restructuring completed (if conversion mode)
 - Missing sections generated
 - Frontmatter updated with edit history

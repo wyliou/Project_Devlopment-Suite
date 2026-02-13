@@ -64,7 +64,7 @@ Append to report:
 ### Quick Results
 | Check | Result |
 |-------|--------|
-| 7-Section Structure | {count}/7 sections |
+| Section Structure | {count} sections (project-type-appropriate) |
 | FR Format | {Pass/Warning/Critical} |
 | NFR Format | {Pass/Warning/Critical} |
 | Information Density | {Pass/Warning/Critical} |
@@ -98,7 +98,7 @@ Append to report:
 **Results:**
 | Check | Status |
 |-------|--------|
-| Structure | {count}/7 |
+| Structure | {count} sections |
 | FR Format | {status} |
 | NFR Format | {status} |
 | Quality | {status} |

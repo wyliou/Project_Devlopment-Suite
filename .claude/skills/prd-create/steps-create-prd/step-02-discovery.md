@@ -1,6 +1,6 @@
 ---
 name: 'step-02-discovery'
-description: 'Gather vision, users, success criteria, scope, and user journeys'
+description: 'Gather vision, users, success criteria, scope, user journeys, and capability-area preview'
 
 # File references
 nextStepFile: '{skill_base}/steps-create-prd/step-03-requirements.md'
@@ -10,11 +10,11 @@ prdPurpose: '{skills_root}/_prd-data/prd-purpose.md'
 
 # Step 2: Discovery
 
-**Progress: Step 2 of 4** - Next: Requirements
+**Progress: Step 2 of 5** - Next: Requirements
 
 ## STEP GOAL
 
-Extract essential context for AI implementation - vision, users, success metric, scope, and user journeys.
+Extract essential context for AI implementation - vision, users, success metric, scope, user journeys, and preview capability areas for FR generation.
 
 ## EXECUTION RULES
 
@@ -26,7 +26,7 @@ Extract essential context for AI implementation - vision, users, success metric,
 
 ### 1. Load Context
 
-Read `{prdPurpose}` to understand PRD quality standards.
+Read `{prdPurpose}` to understand PRD quality standards. This is the single load point for prd-purpose across the entire workflow.
 
 ### 2. Discovery Conversation
 
@@ -108,7 +108,18 @@ After gathering information, update `{outputFile}` Section 1 (Overview) and Sect
 - {deferred 2}
 ```
 
-**Section 2: User Journeys**
+**Section 2: User Journeys (Adapted by Product Category)**
+
+Adapt Section 2 format to product category:
+
+| Product Category | Section 2 Format |
+|-----------------|------------------|
+| Web App / Mobile / Desktop | **User Journeys** — 3-5 step flows per user type |
+| API Service | **API Consumer Journeys** — request/response flows, briefer |
+| CLI Tool | **Command Workflows** — command sequences with expected outputs |
+| Library/SDK | **Integration Scenarios** — code usage patterns showing typical integration |
+| Prototype/MVP | **User Journeys** — simplified, 2-3 steps |
+
 ```markdown
 ## 2. User Journeys
 
@@ -130,23 +141,52 @@ Before proceeding, verify:
 
 **If validation fails:** Ask targeted questions to fill gaps.
 
-### 5. Report & Menu
+### 5. Capability Area Preview
+
+Before presenting the menu, build a preview of capability areas that will drive FR generation in step 3:
+
+**Map scope items + journey steps to capability areas:**
+
+| Capability Area | Source (Scope Items / Journey Steps) |
+|----------------|--------------------------------------|
+| {descriptive area name} | {matching scope items and journey steps} |
+| {descriptive area name} | {matching scope items and journey steps} |
+
+Use natural, descriptive names for areas (e.g., "Authentication", "User Management", "Data Processing") — these become the `### Section Headers` in step 3.
+
+**Present to user:**
+"These are the capability areas I'll generate Functional Requirements for in the next step. Missing any areas?"
+
+**After user confirms**, persist the areas as an HTML comment in `{outputFile}` after Section 2:
+```markdown
+<!-- CAPABILITY_AREAS: {comma-separated list of confirmed capability area names} -->
+```
+This enables step-03 to reference the approved list even across sessions, and avoids rebuilding the mapping from scratch.
+
+### 6. Report & Menu
 
 **Report:**
 - Summary of what was captured
+- Capability areas identified
 - Any gaps or areas needing clarification
 
 **Menu:**
 
 **[C] Continue** - Proceed to Requirements (Step 3)
-**[R] Revise** - Discuss changes to Overview or Journeys
+**[R] Revise** - Discuss changes to Overview, Journeys, or capability areas
+**[P] Party Mode** - Multi-agent review of scope, journeys, and capability areas
 **[D] Deep Dive** - Apply advanced elicitation on vision, users, or scope
+**[X] Exit** - Save progress and stop
 
 **On [C]:** Update frontmatter (`stepsCompleted` add `'step-02-discovery'`), then load and execute `{nextStepFile}`.
 
 **On [R]:** Discuss specific changes, update document, return to menu.
 
+**On [P]:** Invoke `/_party-mode` skill with topic "Scope and journey review for [project name]", content = Sections 1-2 + capability areas, focus_agents = `pm`, `architect`, `qa`. After discussion, apply insights and return to menu.
+
 **On [D]:** Invoke `/_deep-dive` skill to explore a specific area more thoroughly (vision, users, success metric, scope, or journeys). After deep dive, update document with insights and return to menu.
+
+**On [X]:** Update frontmatter (`stepsCompleted` add `'step-02-discovery'`), exit workflow.
 
 ---
 
@@ -157,4 +197,5 @@ Before proceeding, verify:
 - Success metric defined (single, measurable)
 - MVP scope defined (in/out)
 - User journeys documented (3-5 steps each)
+- Capability areas previewed and confirmed by user
 - User confirmed discovery before proceeding

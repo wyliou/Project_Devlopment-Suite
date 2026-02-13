@@ -74,8 +74,7 @@ For each FR, verify:
 - [ ] Has Rules with business logic
 - [ ] Has Output with testable behavior
 - [ ] Has Error with handling
-- [ ] Has Log if FR describes logging behavior (optional)
-- [ ] Has Depends if references other FRs
+- [ ] Has Depends if references other FRs (optional)
 
 Calculate FR format compliance: (complete FRs / total FRs) * 100
 
@@ -217,7 +216,7 @@ Based on Product Category, check required elements:
 ```markdown
 ## Structure & Format
 
-**Sections:** {count}/8 - {classification}
+**Sections:** {count} present - {classification}
 **FR Format:** {compliance}% ({count}/{total} with Input/Rules/Output/Error)
 **NFR Format:** {compliance}% ({count}/{total} single-line)
 **Dependencies:** {valid}/{total} valid
@@ -229,7 +228,6 @@ Based on Product Category, check required elements:
 | Has Rules | {n} | {n} |
 | Has Output | {n} | {n} |
 | Has Error | {n} | {n} |
-| Has Log (if applicable) | {n} | {n} |
 
 ## Content Quality
 
@@ -262,7 +260,7 @@ Update frontmatter: add `'step-02-validate'` to `stepsCompleted`
 ### PART E: DISPLAY PROGRESS AND PROCEED
 
 **Validation Complete**
-- Structure: {classification} ({count}/8 sections)
+- Structure: {classification} ({count} sections)
 - FR Format: {severity} ({percentage}%)
 - NFR Format: {severity} ({percentage}%)
 - Quality: {severity}

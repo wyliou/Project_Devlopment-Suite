@@ -45,7 +45,7 @@ Sections included based on project type. See `_prd-data/prd-purpose.md` for guid
 |---------|---------|-----------------|
 | 1. Overview | Vision, Users, Success Metric, Scope | Always |
 | 2. User Journeys | Step-by-step user flows | UI-based products |
-| 3. Functional Requirements | Input/Rules/Output/Error/Log format | Always |
+| 3. Functional Requirements | Input/Rules/Output/Error format | Always |
 | 4. Non-Functional Requirements | Single-line with metric/target | Production systems |
 | 5. Data Entities | Entity, Attributes, Related FRs | Persistent storage |
 | 6. Technology Constraints | Decided vs Open | When constraints exist |
@@ -56,7 +56,7 @@ Sections included based on project type. See `_prd-data/prd-purpose.md` for guid
 
 ## FR FORMAT CONVERSION
 
-**Old Format (Given/When/Then):**
+**Old Format (Given/When/Then or unstructured):**
 ```
 **FR-001**: User can register
 - Given: visitor on registration page
@@ -64,15 +64,17 @@ Sections included based on project type. See `_prd-data/prd-purpose.md` for guid
 - Then: account created
 ```
 
-**New Format (Input/Rules/Output/Error/Log):**
+**Target Format (Input/Rules/Output/Error):**
 ```
-**FR-AUTH-001**: User registers with email and password
+**FR-001**: User registers with email and password
 - **Input:** email (valid format), password (8+ chars, 1 uppercase, 1 number)
 - **Rules:** Email must be unique; hash password before storage
 - **Output:** Account created, confirmation email sent within 30 seconds
 - **Error:** Duplicate email → "Email already registered"
-- **Log:** `[INFO] User registered: {email}` (optional - include when defined logging needed)
+- **Depends:** (if any)
 ```
+
+**ID Convention:** Accept any consistent format (FR-001, FR-AUTH-001, descriptive). Do not force format changes unless IDs are inconsistent.
 
 ---
 
@@ -99,7 +101,7 @@ This uses **step-file architecture** for disciplined execution:
 - **State Tracking**: Progress tracked in PRD frontmatter
 - **Plan-Before-Edit**: Changes approved before execution
 
-### Core Principles
+### Execution Rules
 
 These principles ensure reliable execution. Deviate only with explicit reasoning documented in conversation:
 
@@ -137,3 +139,5 @@ If user prefers structured navigation:
 **Prompt for PRD path:** "Which PRD would you like to edit? Please provide the path."
 
 Then load and execute `./steps-edit-prd/step-01-init.md` to begin.
+
+**Note:** Section 2 format varies by product category (User Journeys for web/mobile, Command Workflows for CLI, Integration Scenarios for libraries). See `_prd-data/prd-purpose.md` for guidance.

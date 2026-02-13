@@ -15,11 +15,11 @@ description: Collaborative architectural decision facilitation for AI-agent cons
 
 | Output | Purpose |
 |--------|---------|
-| Technology Stack | Specific choices with versions |
-| Project Structure | Exact directory layout |
-| Coding Patterns | Naming, error format, conventions |
-| Module Boundaries | What code goes where |
-| API Contracts | Concrete specs from FRs |
+| Technology Stack + Build Commands | Specific choices with versions and exact build/test/lint commands |
+| Project Structure | Exact directory layout with src/test markers |
+| Coding Patterns | Naming, error format, logging pattern, side-effect ownership |
+| Module Boundaries | What code goes where, with paths, exports, and dependencies |
+| Contracts | Project-type-adaptive: REST endpoints, CLI commands, or library API surface |
 | Database Schema | Actual definitions from Data Entities |
 | Legacy Integration | (Brownfield) Integration points, adapters, constraints |
 
@@ -29,26 +29,41 @@ description: Collaborative architectural decision facilitation for AI-agent cons
 
 | Step | Name | Purpose | Mode |
 |------|------|---------|------|
-| 1 | **Discovery** | Find PRD, extract constraints, select tech stack | Derive + Confirm |
-| 1b | **Continue** | Resume interrupted workflow (auto-triggered) | Continuation |
-| 2 | **Structure** | Directory tree, coding patterns, module boundaries | Derive + Confirm |
-| 3 | **Specifications** | API contracts, database schema, validate, finalize | Generate |
+| 1 | **Init & Discovery** | Find PRD, detect state/continuation, extract constraints, detect brownfield | Derive + Confirm |
+| 2 | **Technology & Foundation** | Stack selection, build commands, project structure, coding patterns | Derive + Confirm |
+| 3 | **Modules & Contracts** | Module boundaries, inter-module interfaces, project-type-adaptive contracts | Generate |
+| 4 | **Schema & Finalize** | DB schema, env vars, brownfield section, build-from-prd readiness validation | Generate |
+
+---
+
+## Project Type Adaptation
+
+| Project Type | Has API Contracts | Has DB Schema | Has CLI Commands | Has Library API |
+|--------------|-------------------|---------------|------------------|-----------------|
+| Web App | Yes | Yes | No | No |
+| API Service | Yes | Yes | No | No |
+| CLI Tool | No | Maybe | Yes | No |
+| Library/SDK | No | No | No | Yes |
+| Desktop App | Maybe | Maybe | No | No |
+| Mobile App | Maybe | Maybe | No | No |
+| Full Stack | Yes | Yes | No | No |
 
 ---
 
 ## PRD Integration
 
-**Required Input:** PRD document (7 sections)
+**Required Input:** PRD document (8 sections)
 
 | PRD Section | Architecture Uses For |
 |-------------|----------------------|
-| 1. Overview | Project context, type detection (Greenfield/Brownfield) |
+| 1. Overview | Project context, type detection (Greenfield/Brownfield), product category |
 | 2. User Journeys | Flow understanding (read-only) |
-| 3. Functional Requirements | API Contracts (Input→Request, Output→Response, Error→Handling) |
+| 3. Functional Requirements | Contracts (Input→Request, Output→Response, Error→Handling) |
 | 4. Non-Functional Requirements | Architecture decisions (scale, security, performance) |
 | 5. Data Entities | Database Schema generation |
 | 6. Technology Constraints | Stack selection (Decided = locked, Open = select) |
 | 7. Quick Reference | Priorities and dependencies |
+| 8. Implementation Reference | Config schemas, output formats, error catalogs, algorithms |
 
 **Optional Input:** Project Charter with Brownfield Context (Section 7)
 
@@ -62,12 +77,13 @@ description: Collaborative architectural decision facilitation for AI-agent cons
 
 ## Design Principles
 
+- **Build-from-prd compatible** - Output contains every field build-from-prd needs to plan batches
+- **Project-type adaptive** - Contracts adapt to project type (REST, CLI, Library)
 - **Greenfield and Brownfield** - supports both new builds and legacy integration
 - **Derive, don't ask** - PRD provides context, only ask if truly ambiguous
 - **No menus during generation** - flow through naturally, confirm at checkpoints
 - **Lean output** - only what AI needs to build
 - **PRD as source of truth** - reference FRs, don't duplicate content
-- **Brownfield-aware** - when integrating with legacy, document constraints and integration points
 
 ---
 
@@ -85,11 +101,11 @@ Checkpoints use consistent menu patterns:
 
 - **[C] Continue** - Proceed to next step
 - **[R] Revise** - Make changes before proceeding
-- **[P] Party Mode** - Multi-agent discussion (Step 1 only)
-- **[D] Deep Dive** - Advanced elicitation methods (Step 1 only)
+- **[P] Party Mode** - Multi-agent discussion (Step 2 only)
+- **[D] Deep Dive** - Advanced elicitation methods (Step 2 only)
 - **[X] Exit** - Stop workflow (state saved in frontmatter)
 
-**Step 1 Enhancement Options:**
+**Step 2 Enhancement Options:**
 - **Party Mode:** Get perspectives from architect and dev agents on tech stack decisions
 - **Deep Dive:** Apply technical, risk, and competitive analysis methods to validate choices
 
@@ -105,9 +121,9 @@ Uses **step-file architecture** for disciplined execution:
 - **Just-In-Time Loading**: Only current step file in memory
 - **Sequential Enforcement**: Steps completed in order, no skipping
 - **State Tracking**: Progress tracked in architecture document frontmatter
-- **Continuation Support**: Resume interrupted workflows via step-01b
+- **Inline Continuation**: Resume interrupted workflows detected in step-01
 
-### Core Principles
+### Execution Rules
 
 These principles ensure reliable execution. Deviate only with explicit reasoning documented in conversation:
 
@@ -123,11 +139,11 @@ These principles ensure reliable execution. Deviate only with explicit reasoning
 
 ## Paths
 
-- `template_path` = `{skill_base}/architecture-decision-template.md`
+- `template_path` = `{skill_base}/architecture-template.md`
 - `data_files_path` = `{skill_base}/data/`
 
 ---
 
 ## Execution
 
-Load and execute `steps/step-01-discovery.md` to begin.
+Load and execute `steps/step-01-init.md` to begin.

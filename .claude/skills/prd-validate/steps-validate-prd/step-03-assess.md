@@ -26,10 +26,10 @@ Assess the PRD holistically: document flow, dual-audience effectiveness, archite
 
 Read entire PRD and evaluate:
 
-**7-Section Flow:**
+**Section Flow (adapted to project type):**
 - Does Overview set up clear context?
-- Do User Journeys lead naturally to FRs?
-- Do FRs map to Data Entities?
+- Does Section 2 (Journeys/Commands/Scenarios) lead naturally to FRs?
+- Do FRs map to Data Entities (if applicable)?
 - Does Quick Reference summarize FRs accurately?
 
 **Narrative Coherence:**
@@ -63,16 +63,16 @@ Rate: Strong / Adequate / Weak
 
 | PRD Element | Architecture Use | Status |
 |-------------|------------------|--------|
-| FR Input | → API Request specs | {Yes/Partial/No} |
+| FR Input | → Contract request/parameter specs | {Yes/Partial/No} |
 | FR Rules | → Implementation logic | {Yes/Partial/No} |
-| FR Output | → API Response specs | {Yes/Partial/No} |
+| FR Output | → Contract response/return specs | {Yes/Partial/No} |
 | FR Error | → Error taxonomy | {Yes/Partial/No} |
-| Data Entities | → Database schema | {Yes/Partial/No} |
+| Data Entities | → Database schema (if applicable) | {Yes/Partial/No/N/A} |
 | Technology Constraints | → Stack selection | {Yes/Partial/No} |
 | Quick Reference | → Implementation order | {Yes/Partial/No} |
 | FR Dependencies | → Build sequence | {Yes/Partial/No} |
 
-Calculate readiness: (Yes=1, Partial=0.5, No=0) / 8 * 100
+Calculate readiness: (Yes=1, Partial=0.5, No=0, N/A=excluded) / applicable count * 100
 
 ### 4. Overall Quality Rating
 
@@ -112,11 +112,11 @@ Identify the 3 most impactful improvements:
 
 | Element | Status |
 |---------|--------|
-| FR Input → API Request | {status} |
+| FR Input → Contract specs | {status} |
 | FR Rules → Implementation | {status} |
-| FR Output → API Response | {status} |
+| FR Output → Contract response | {status} |
 | FR Error → Error taxonomy | {status} |
-| Data Entities → Schema | {status} |
+| Data Entities → Schema | {status or N/A} |
 | Tech Constraints → Stack | {status} |
 | Quick Reference → FR Summary | {status} |
 | Dependencies → Sequence | {status} |

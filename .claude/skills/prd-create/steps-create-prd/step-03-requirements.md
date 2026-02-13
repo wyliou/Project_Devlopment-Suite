@@ -1,26 +1,26 @@
 ---
 name: 'step-03-requirements'
-description: 'Generate FRs, NFRs, Data Entities, Tech Constraints, and Quick Reference'
+description: 'Generate Functional Requirements with systematic capability mapping'
 
 # File references
-nextStepFile: '{skill_base}/steps-create-prd/step-04-complete.md'
+nextStepFile: '{skill_base}/steps-create-prd/step-04-specifications.md'
 outputFile: '{project_root}/docs/prd.md'
-prdPurpose: '{skills_root}/_prd-data/prd-purpose.md'
 ---
 
 # Step 3: Requirements
 
-**Progress: Step 3 of 4** - Next: Complete
+**Progress: Step 3 of 5** - Next: Specifications
 
 ## STEP GOAL
 
-Generate comprehensive, AI-implementation-ready requirements with integrated validation.
+Generate comprehensive, AI-implementation-ready Functional Requirements through systematic capability mapping. This step handles FRs ONLY — NFRs, Data Entities, and Tech Constraints are handled in step 4.
 
 ## EXECUTION RULES
 
 - **Interactive step** - requires user feedback on requirements
 - You are a PRD Creator - generating AI-optimized requirements
 - Apply quality checks during generation, not as separate step
+- This step is FR-only — do NOT generate NFRs, Data Entities, or Tech Constraints here
 
 ## SEQUENCE (Follow Exactly)
 
@@ -30,204 +30,136 @@ Review the PRD document sections 1-2 (Overview, User Journeys) to understand:
 - User types and their goals
 - MVP scope items
 - User journey steps → these imply capabilities
+- Capability areas confirmed in step-02 preview
 
-### 2. Generate Functional Requirements
+### 2. Systematic Capability Mapping
 
-For each capability area identified from scope and journeys:
+Before writing any FRs, check for the persisted capability areas from step-02:
+
+1. **Look for `<!-- CAPABILITY_AREAS: ... -->` comment** in `{outputFile}` after Section 2
+   - If found: use as starting point (already user-approved)
+   - If not found: derive from scope items + journey steps (same as step-02 preview)
+
+2. **Build coverage map** to verify completeness:
+
+```markdown
+| Scope Item | Capability Area | Capabilities | Journey References |
+|------------|----------------|--------------|-------------------|
+| {scope item 1} | {area name} | {what the system must do} | {journey step refs} |
+| {scope item 2} | {area name} | {what the system must do} | {journey step refs} |
+```
+
+3. **Cross-reference:** Flag scope items without a capability area, and capability areas with no scope items.
+
+4. **Present to user for confirmation** — only if changes were made or areas were derived fresh. If using the persisted list unchanged, briefly confirm and proceed.
+
+### 3. Generate Functional Requirements
+
+For each capability area identified in the mapping:
 
 #### FR Format
 ```markdown
-**FR-[AREA]-###**: [Actor] [capability]
-- **Input:** field1 (constraints), field2 (constraints)
-- **Rules:** IF condition THEN action; business logic
-- **Output:** success behavior
-- **Error:** error case → handling
-- **Log:** expected log message format (optional - include when output needs specific logging)
+### {Capability Area Name}
+
+**FR-001**: [Actor] [capability]
+- **Input:** field1 (type, format constraint, validation rule), field2 (type, constraints)
+- **Rules:** IF condition THEN action; ELSE alternative. Express as business logic, not implementation.
+- **Output:** Observable result. What changes in system state? What does the user see?
+- **Error:** trigger condition → handling; second condition → handling. Be exhaustive.
 - **Depends:** FR-xxx (if any)
 ```
 
-#### Area Codes
-| Code | Domain |
-|------|--------|
-| AUTH | Authentication, authorization |
-| USER | User management, profiles |
-| DATA | Data storage, retrieval |
-| PROC | Processing, transformation |
-| FILE | File operations |
-| API | External integrations |
-| ADMIN | Administration, configuration |
-| NOTIF | Notifications, messaging |
+FRs are grouped under `### Capability Area Name` section headers. The header carries the domain context — IDs are sequential (`FR-001`, `FR-002`, ...).
+
+**For large projects (15+ FRs):** Area-based IDs (`FR-AUTH-001`) are acceptable if the user prefers them. The capability area is still in the section header regardless of ID format.
+
+#### Expanded Field-Level Guidance
+
+| Field | Guidance |
+|-------|----------|
+| **Input** | List every field with type, format constraint, and validation rule. E.g., `email (string, RFC 5322, required, unique)` |
+| **Rules** | Express as IF/THEN/ELSE business logic. Avoid implementation language (no "database", "API call"). Focus on what, not how. |
+| **Output** | Describe observable result. What changes in system state? What does the user see/receive? Must be testable. |
+| **Error** | List each error case with `trigger condition → handling`. Be exhaustive — cover validation errors, authorization failures, state conflicts, resource limits. |
+| **Depends** | Reference other FRs this requires. Only include if there's a true dependency. |
+
+#### FR Depth Adaptation
+
+Adapt detail level to project scale while keeping the same format:
+
+| Project Scale | Depth Guidance |
+|--------------|----------------|
+| Production (5+ FRs) | Full detail — exhaustive input constraints, comprehensive error cases, precise validation rules |
+| Small / Prototype (< 5 FRs) | Essential detail — key constraints and primary error cases. Skip edge-case errors and granular validation rules. |
+
+The Input/Rules/Output/Error **format** is always used (downstream tools depend on it). What changes is the **depth** within each field.
 
 #### Quality Checks (Apply During Generation)
 - Actor is explicit (User, System, Admin)
 - Input has constraints (types, formats, limits)
 - Rules capture business logic, not implementation
 - Output is specific and testable
-- Error handling is explicit
+- Error handling is explicit (exhaustive for production; primary cases for prototypes)
 - Dependencies are noted
 
-### 3. Generate Non-Functional Requirements
+### 4. FR Completeness Verification
 
-#### NFR Format (Single Line)
-```markdown
-**NFR-[CAT]-###**: [metric] [target] under [condition]
-```
-
-#### Categories
-| Category | Examples |
-|----------|----------|
-| PERF | Response time, throughput, batch processing time |
-| SEC | Encryption, authentication expiry, data protection |
-| SCALE | Concurrent users, data volume, horizontal scaling |
-| REL | Uptime, recovery time, data durability |
-
-**Derive NFRs from:**
-- Success metric (implies performance target)
-- User type expectations (enterprise = stricter security)
-- Product category (CLI = fast startup, API = low latency)
-
-### 4. Generate Data Entities
-
-Analyze FRs to identify implied data entities:
+After generating all FRs, build a coverage matrix:
 
 ```markdown
-## 5. Data Entities
+| Scope Item | FRs | Coverage |
+|------------|-----|----------|
+| {scope item 1} | FR-xxx, FR-xxx | Complete / Partial / Missing |
 
-| Entity | Key Attributes | Related FRs |
-|--------|---------------|-------------|
-| {Entity} | id, {attr1}, {attr2}, created_at | FR-xxx, FR-xxx |
+| Journey Step | FRs | Coverage |
+|--------------|-----|----------|
+| {user type}: {step} | FR-xxx | Complete / Partial / Missing |
 ```
 
-**Derive from:**
-- FR inputs (what data is needed)
-- FR outputs (what data is created/modified)
-- State changes mentioned in rules
+**Every scope item must map to at least 1 FR.** Every journey step must map to at least 1 FR.
 
-### 5. Technology Constraints
+**If gaps found:** Generate additional FRs to fill coverage gaps before proceeding.
 
-Discuss with user:
-- What technology decisions are already made? (non-negotiable)
-- What can the implementing agent decide?
-
-```markdown
-## 6. Technology Constraints
-
-**Decided (non-negotiable):**
-- {language/framework if specified}
-- {database if specified}
-- {deployment target if specified}
-
-**Open (agent can decide):**
-- {implementation details}
-```
-
-If no constraints mentioned, note "No technology constraints specified."
-
-### 6. Identify Implementation Reference Needs
-
-Assess whether the project needs detailed implementation specifications in Section 8.
-
-**Ask user about these indicators:**
-
-| Indicator | Section Needed | Question |
-|-----------|----------------|----------|
-| User-editable config files | 8.1 Configuration Schema | "Will users configure the system via files (YAML, JSON, etc.)?" |
-| Defined output formats | 8.2 Output Formats | "Does the system have specific console output, file formats, or API responses that must follow exact patterns?" |
-| Error/status codes | 8.3 Error Code Catalog | "Will the system use coded errors (ERR_001) or status classifications (SUCCESS/FAILED)?" |
-| Multi-step algorithms | 8.4 Algorithm Details | "Are there calculations, processing pipelines, or multi-step logic that need precise specification?" |
-| Complex edge cases | 8.5 Examples & Edge Cases | "Are there tricky scenarios where examples would clarify expected behavior?" |
-
-**For each "yes" answer:**
-- Note which Section 8 sub-sections are needed
-- Gather enough detail to populate those sections
-- These become reference material for implementing agents
-
-**If no implementation details needed:**
-- Skip Section 8 entirely
-- Note in PRD: "Section 8 not applicable - no complex implementation specs required"
-
-### 7. Generate Quick Reference Table
-
-Create summary table with all FRs:
-
-```markdown
-## 7. Quick Reference
-
-| FR ID | Summary | Depends |
-|-------|---------|---------|
-| FR-xxx | {brief summary} | {FR-xxx or -} |
-```
-
-### 8. Generate Implementation Reference (If Needed)
-
-Based on Step 6 assessment, populate applicable Section 8 sub-sections:
-
-**8.1 Configuration Schema** - Document structure, field types, validation rules
-**8.2 Output Formats** - Exact console output, file formats, API response examples
-**8.3 Error Code Catalog** - All error/warning codes with descriptions, causes, resolutions
-**8.4 Algorithm Details** - Step-by-step logic for complex processing
-**8.5 Examples & Edge Cases** - Concrete scenarios showing expected behavior
-
-**Quality checks for Section 8:**
-- Each sub-section has enough detail for implementation without guesswork
-- Error codes cover all error cases mentioned in FRs
-- Output formats match what FRs describe as output
-- Algorithm steps align with FR rules
-
-### 9. Integrated Validation
-
-Validate before completion:
-
-| Check | Requirement |
-|-------|-------------|
-| FR Count | At least 3 FRs for MVP scope items |
-| FR Format | All FRs have Input, Rules, Output, Error |
-| FR Coverage | Each MVP scope item has at least 1 FR |
-| Journey Coverage | Each journey step maps to at least 1 FR |
-| NFR Count | At least 2 NFRs (PERF + one other) |
-| NFR Format | All NFRs are single-line with metric/target/condition |
-| Entities | At least 1 entity per major FR area |
-| Dependencies | All `Depends:` references exist |
-| Quick Reference | All FRs in table with dependencies |
-| Section 8 | If applicable, all identified sub-sections populated with sufficient detail |
-
-**If validation fails:** Fix issues before proceeding.
-
-### 10. Present to User
+### 5. Present to User
 
 Show the user:
-1. Summary: "Generated X FRs across Y areas, Z NFRs, W entities"
-2. Key dependencies identified
-3. Any assumptions made
+1. Summary: "Generated X FRs across Y capability areas"
+2. Coverage matrix summary
+3. Key dependencies identified
+4. Any assumptions made
 
 Ask for feedback on:
 - Missing capabilities?
-- Constraint clarifications?
-- Implementation details need more depth?
+- FR precision (are inputs/rules/outputs clear enough?)
+- Additional error cases?
 
-### 11. Report & Menu
+### 6. Report & Menu
 
 **Menu:**
 
-**[C] Continue** - Proceed to Complete (Step 4)
+**[C] Continue** - Proceed to Specifications (Step 4)
 **[R] Revise** - Modify requirements, add missing capabilities
+**[P] Party Mode** - Multi-agent review of requirements completeness and quality
 **[D] Deep Dive** - Apply advanced elicitation on complex requirements
+**[X] Exit** - Save progress and stop
 
 **On [C]:** Update frontmatter (`stepsCompleted` add `'step-03-requirements'`), then load and execute `{nextStepFile}`.
 
-**On [R]:** Make specific changes, re-validate, return to menu.
+**On [R]:** Make specific changes, re-verify coverage, return to menu.
+
+**On [P]:** Invoke `/_party-mode` skill with topic "Requirements review for [project name]", content = Section 3 FRs + coverage matrix, focus_agents = `pm`, `architect`, `dev`, `qa`. After discussion, apply insights and return to menu.
 
 **On [D]:** Invoke `/_deep-dive` skill to explore complex requirements, edge cases, or business rules more thoroughly. After deep dive, update requirements with insights and return to menu.
+
+**On [X]:** Update frontmatter (`stepsCompleted` add `'step-03-requirements'`), exit workflow.
 
 ---
 
 ## SUCCESS CRITERIA
 
-- FRs generated with Input/Rules/Output/Error format (+ optional Log field)
-- NFRs generated in single-line format
-- Data Entities table created
-- Technology Constraints documented
-- Quick Reference table complete
-- Implementation Reference (Section 8) assessed and populated if needed
-- All validations pass
+- Capability mapping built and confirmed by user before FR generation
+- FRs generated with Input/Rules/Output/Error format
+- Every scope item maps to at least 1 FR
+- Every journey step maps to at least 1 FR
+- FR quality checks pass (explicit actors, constrained inputs, testable outputs, exhaustive errors)
 - User confirmed requirements before proceeding

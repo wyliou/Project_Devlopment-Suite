@@ -1,8 +1,8 @@
-wt---
+---
 stepsCompleted: []
 inputDocuments: []
 workflowType: 'prd'
-sourceVersion: ''
+completedAt: ''
 documentChecksum: ''
 ---
 
@@ -61,24 +61,22 @@ documentChecksum: ''
 
 ### {{Capability Area 1}}
 
-**FR-AREA-001**: [Actor] [capability]
+**FR-001**: [Actor] [capability]
 - **Input:** field1 (constraints), field2 (constraints)
 - **Rules:** IF condition THEN action; business logic
 - **Output:** success behavior
 - **Error:** error case → handling
-- **Log:** {{expected log message format, if applicable}}
 - **Depends:** FR-xxx (if any)
 
-**FR-AREA-002**: [Actor] [capability]
+**FR-002**: [Actor] [capability]
 - **Input:** field1 (constraints), field2 (constraints)
 - **Rules:** IF condition THEN action
 - **Output:** success behavior
 - **Error:** error case → handling
-- **Log:** {{if applicable}}
 
 ### {{Capability Area 2}}
 
-**FR-AREA-003**: [Actor] [capability]
+**FR-003**: [Actor] [capability]
 - **Input:** field1 (constraints)
 - **Rules:** business logic
 - **Output:** success behavior
@@ -142,9 +140,9 @@ documentChecksum: ''
 
 | FR ID | Summary | Depends |
 |-------|---------|---------|
-| FR-AREA-001 | {{brief summary}} | - |
-| FR-AREA-002 | {{brief summary}} | FR-AREA-001 |
-| FR-AREA-003 | {{brief summary}} | - |
+| FR-001 | {{brief summary}} | - |
+| FR-002 | {{brief summary}} | FR-001 |
+| FR-003 | {{brief summary}} | - |
 
 ---
 

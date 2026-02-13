@@ -74,7 +74,7 @@ This uses **step-file architecture** for disciplined execution:
 - **State Tracking**: Progress tracked in validation report frontmatter
 - **Append-Only Building**: Report built by appending findings
 
-### Step Processing Rules
+### Execution Rules
 
 1. **READ COMPLETELY**: Always read entire step file before action
 2. **FOLLOW SEQUENCE**: Execute all sections in order
@@ -82,8 +82,6 @@ This uses **step-file architecture** for disciplined execution:
 4. **WAIT AT BOUNDARIES**: Steps 1 and 4 require user interaction
 5. **SAVE STATE**: Update report frontmatter after each step
 6. **LOAD NEXT**: Load, read entire file, then execute next step
-
-### Core Principles
 
 These principles ensure reliable execution. Deviate only with explicit reasoning documented in conversation:
 
