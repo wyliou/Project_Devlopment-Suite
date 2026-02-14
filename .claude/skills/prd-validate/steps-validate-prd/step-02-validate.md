@@ -41,7 +41,7 @@ First, identify project type from Overview/Classification. Then check sections b
 | Section | Variations | Required For |
 |---------|------------|--------------|
 | 1. Overview | Executive Summary, Introduction | All |
-| 2. User Journeys | User Stories, User Flows | Web/Mobile/Desktop |
+| 2. Journeys/Workflows | User Journeys, Actor Journeys, Data Workflows, Command Workflows, Operational Workflows, Integration Scenarios | Web/Mobile/Desktop/Pipeline/Infrastructure |
 | 3. Functional Requirements | Features, Capabilities | All |
 | 4. Non-Functional Requirements | NFRs, Quality Attributes | Production systems |
 | 5. Data Entities | Data Model, Entities | Persistent storage |
@@ -111,8 +111,8 @@ Count violations. Severity: Critical (>10) / Warning (5-10) / Pass (<5)
 
 #### B2. Measurability Check
 
-**Success Metric (Section 1):**
-- Is Key Success Metric quantifiable with target?
+**Success Metrics (Section 1):**
+- Are Success Metrics present with quantifiable targets? Is one designated primary?
 
 **NFRs:**
 - Count NFRs with metric + target + condition
@@ -149,6 +149,7 @@ Severity: Critical (>5) / Warning (2-5) / Pass (<2)
 
 - All FRs in table?
 - Dependencies valid?
+- Priority column present and matches capability area headers?
 
 #### B7. Implementation Reference Quality (If Section 8 Present)
 

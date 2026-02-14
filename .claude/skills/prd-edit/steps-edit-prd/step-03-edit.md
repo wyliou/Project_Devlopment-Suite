@@ -121,11 +121,11 @@ Reorganize PRD to structured format (sections based on project type):
 ## 1. Overview
 ### Vision
 ### Classification
-### Users
-### Key Success Metric
+### Actors
+### Success Metrics
 ### MVP Scope
 
-## 2. User Journeys
+## 2. Journeys/Workflows
 
 ## 3. Functional Requirements
 
@@ -144,7 +144,10 @@ Reorganize PRD to structured format (sections based on project type):
 
 **Migration:**
 - Move Executive Summary content → Overview/Vision
-- Move Success Criteria → Key Success Metric
+- Move Success Criteria → Success Metrics (table with primary designation)
+- `### Users` → `### Actors`
+- `### Key Success Metric` → `### Success Metrics`
+- `## 2. User Journeys` → `## 2. Journeys/Workflows`
 - Move Product Scope → MVP Scope
 - Create Data Entities table from FR analysis
 - Create Quick Reference table from FRs

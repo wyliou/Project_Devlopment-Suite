@@ -5,43 +5,49 @@ description: Create comprehensive PRDs optimized for AI-powered development
 
 # Create PRD Workflow
 
-**Goal:** Create PRDs optimized for AI agent consumption through a streamlined 5-step workflow with dedicated FR generation and architecture-readiness validation.
+**Goal:** Create PRDs optimized for AI agent consumption through a streamlined 6-step workflow with dedicated FR generation, priority system, and readiness gate validation.
 
 **Your Role:** PRD Creator - a product-focused facilitator collaborating with the user as domain expert.
 
 ---
 
-## WORKFLOW OVERVIEW (5 Steps)
+## WORKFLOW OVERVIEW (6 Steps)
 
 | Step | Name | Purpose | Mode |
 |------|------|---------|------|
-| 1 | **Init** | Setup, discover docs, detect continuation (inline) | Interactive |
-| 2 | **Discovery** | Vision, users, scope, journeys, capability-area preview | Interactive |
-| 3 | **Requirements** | Functional Requirements with systematic capability mapping | Interactive |
-| 4 | **Specifications** | NFRs, Data Entities, Tech Constraints, Section 8 | Interactive |
-| 5 | **Complete** | Quick Reference, architecture-readiness check, validation, handoff | Interactive |
+| 1 | **Init** | Setup, discover docs, detect continuation, determine output path | Interactive |
+| 2 | **Discovery** | Vision, classification, actors, success metrics, scope | Interactive |
+| 3 | **Journeys & Mapping** | Journeys/workflows, capability mapping with priority | Interactive |
+| 4 | **Requirements** | FR generation, completeness verification, FR deepening | Interactive |
+| 5 | **Specifications** | Tech Constraints, NFRs, Data Entities, Section 8 | Interactive |
+| 6 | **Complete** | Quick Reference with priority, readiness gate, handoff | Interactive |
 
 ---
 
 ## OUTPUT STRUCTURE (8 Sections)
 
-1. **Overview** - Vision, classification, users, success metric, scope
-2. **User Journeys** - Brief 3-5 step journeys per user type
-3. **Functional Requirements** - Input/Rules/Output/Error format
+1. **Overview** - Vision, classification, actors, success metrics, scope
+2. **Journeys/Workflows** - Actor flows adapted by product category (journeys, data workflows, command workflows, etc.)
+3. **Functional Requirements** - Input/Rules/Output/Error format with prioritized capability area headers [Must/Should/Could]
 4. **Non-Functional Requirements** - Single-line format
 5. **Data Entities** - Table with key attributes and FR mapping
 6. **Technology Constraints** - Decided vs. Open decisions
-7. **Quick Reference** - FR summary with dependencies
-8. **Implementation Reference** (Optional) - Config schemas, output formats, error catalogs, algorithms, examples
+7. **Quick Reference** - FR summary with Capability Area, Priority, and Depends columns
+8. **Implementation Reference** (Optional) - Config schemas, output formats, error catalogs, algorithms, plus extensible project-specific sections
 
 ---
 
 ## KEY FEATURES
 
-- **Dedicated FR Step:** Step 3 focuses exclusively on Functional Requirements with systematic capability mapping
-- **Capability Mapping:** Coverage matrix ensures every scope item and journey maps to FRs before generation
-- **Architecture-Readiness Checkpoint:** Step 5 validates PRD has everything create-architecture and build-from-prd need
-- **Separated Concerns:** FRs (step 3) isolated from derived specifications (step 4)
+- **One Question at a Time:** Ask a single focused question, wait for the answer, then ask the next. Never batch multiple questions into one message. This keeps the conversation manageable and produces higher-quality answers. The only exception is the step-end menu (which presents navigation options, not discovery questions).
+- **Flexible Output Path:** User chooses where to save PRD; multi-PRD discovery finds existing PRDs
+- **Priority System:** Must/Should/Could tags on capability areas inform build batch ordering
+- **Compose-Then-Write:** Gather information completely before writing to document — no partial sections
+- **CSV Integration:** Project-type-specific discovery questions from `project-types.csv`
+- **Dedicated FR Step:** Step 4 focuses exclusively on FR generation and deepening
+- **Capability Mapping:** Step 3 builds coverage matrix ensuring every scope item and journey maps to capability areas before FR generation
+- **Readiness Gate:** Step 6 validates structural completeness and cross-reference integrity; deep quality validation is /prd-validate's domain
+- **Separated Concerns:** Journeys/mapping (step 3), FRs (step 4), and derived specifications (step 5) are each isolated
 - **Structured FR Output:** Input/Rules/Output/Error format optimized for downstream architecture and build pipeline extraction
 - **Inline Continuation:** Resume interrupted workflows without separate continuation file
 

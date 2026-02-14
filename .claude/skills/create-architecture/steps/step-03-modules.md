@@ -21,7 +21,8 @@ From PRD Section 3:
 - `### Capability Area` section headers → each becomes a potential module
 - FRs grouped under each header → define module responsibilities
 - Quick Reference dependencies → inform module dependency graph
-- User Journeys → inform flow between modules
+- Quick Reference priorities → inform build batch ordering
+- Journeys/Workflows → inform flow between modules
 
 ### 2. Define Module Boundaries
 

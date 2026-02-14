@@ -14,19 +14,25 @@
 | **API Service** | 1, 3 | 4, 5, 6, 7 | 2, 8 |
 | **CLI Tool** | 1, 3 | 4, 6 | 2, 5, 7, 8 |
 | **Library/SDK** | 1, 3 | 4, 6 | 2, 5, 7, 8 |
+| **Data Pipeline** | 1, 3 | 2, 4, 5, 7 | 6, 8 |
+| **ML Model/Service** | 1, 3 | 2, 4, 5, 7 | 6, 8 |
+| **Infrastructure/IaC** | 1, 3 | 2, 4, 6 | 5, 7, 8 |
+| **Microservices System** | 1, 3 | 2, 4, 5, 7 | 6, 8 |
+| **Plugin/Extension** | 1, 3 | 2, 4, 6 | 5, 7, 8 |
+| **Full Stack App** | 1, 3 | 2, 4, 5, 7 | 6, 8 |
 | **Prototype/MVP** | 1, 3 | 2 | 4, 5, 6, 7, 8 |
 
 ### Section Reference
 
 | # | Section | Purpose |
 |---|---------|---------|
-| 1 | Overview | Vision, classification, users, success metric, scope |
-| 2 | User Journeys | Step-by-step user flows |
+| 1 | Overview | Vision, classification, actors, success metrics, scope |
+| 2 | Journeys/Workflows | Step-by-step actor flows |
 | 3 | Functional Requirements | What the system does |
 | 4 | Non-Functional Requirements | Quality constraints |
 | 5 | Data Entities | Persistent data structures |
 | 6 | Technology Constraints | Tech decisions/restrictions |
-| 7 | Quick Reference | FR summary table |
+| 7 | Quick Reference | FR summary table with priority |
 | 8 | Implementation Reference | Config schemas, output formats, error catalogs, algorithms |
 
 ### Classification Criteria
@@ -55,7 +61,7 @@ Optional:
 
 ### FR Quality Criteria
 
-- Actor is explicit (User, System, Admin)
+- Actor is explicit (User, System, Admin, Operator)
 - No vague descriptors ("various", "multiple", "some")
 - No subjective terms ("easy", "intuitive", "fast") without metrics
 - No technology names in Input/Rules/Output/Error
@@ -105,8 +111,9 @@ Severity: Warning (5-10 violations) / Info (<5)
 
 ### Measurability
 
-**Success Metric:**
-- Should be quantifiable with specific target
+**Success Metrics:**
+- Should be quantifiable with specific targets
+- At least one designated as primary
 
 **NFRs:**
 - Each should have metric + target + condition
@@ -135,6 +142,14 @@ Flag as info/warning (not error) - sometimes intentional:
 
 - Each entity should have Related FRs
 - Related FRs should exist
+
+### Capability Area Validation (If Section 3 Present)
+
+- FRs are grouped under `### Capability Area [Priority]` headers
+- Every FR belongs to exactly one capability area
+- Priority tags (Must/Should/Could) are consistent within each area
+- At least one area is tagged Must (for MVP scope)
+- FR count >= capability area count (at least 1 FR per area)
 
 ### Quick Reference Validation (If Section 7 Present)
 
@@ -193,9 +208,12 @@ Apply based on project context:
 | Data Entities | Database schema |
 | Technology Constraints | Stack selection |
 | FR Dependencies | Implementation order |
+| FR Priority tags | Build batch ordering |
 
 **Ready:** Core checks pass (FR structure, Data Entities if needed)
 **Needs Work:** Missing FR structure or required sections
+
+> **Note:** The step 6 readiness gate in prd-create checks structural completeness and cross-reference integrity. The prd-validate workflow performs deep quality validation (density, measurability, leakage analysis). These are complementary, not duplicative.
 
 ---
 

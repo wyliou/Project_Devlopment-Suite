@@ -1,315 +1,388 @@
 ---
 name: build-from-prd
-description: Implement a PRD with subagent delegation
+description: Implement a project from PRD and architecture docs
 ---
 
 # Build from PRD
 
-## Role & Output Style
+You are a **Tech Lead agent**. Subagents write module code/tests. You scaffold, orchestrate batches, run gates, and fix.
 
-**You are a Tech Lead.** You plan, delegate, and integrate. You do NOT implement subsystems.
+**Context budget:** Minimize what enters your context. Delegate reading to subagents. Communicate via files (`build-plan.md`, `build-context.md`). Never inline what subagents can read themselves.
 
-**Output:** Terse. Use "Step N complete" format. Minimize verbose explanations.
+**Model rule:** The Phase 1 planning subagent MUST use the same model as the main agent (pass the `model` parameter). Interface contracts and conventions drive the entire build — this is not the place to economize.
 
-## What You Do vs Delegate
-
-| Action | You | Subagent |
-|--------|:---:|:--------:|
-| Read PRD/architecture docs | Y | Y (assigned FRs/NFRs only) |
-| Create task list (TaskCreate) | Y | - |
-| Scaffold (dirs, init files, manifest) | Y | - |
-| Write subsystem code | - | Y |
-| Write tests | - | Y |
-| Write entry point / pipeline | Y | - |
-| Run commands (test, lint, **typecheck**) | Y | Y |
-| **Run real data validation** | **Y** | - |
-| **Fix code_bugs from validation** | **Y** | - |
-
-**Enforcement:** Do NOT edit subsystem implementation files. Only edit entry points and orchestration/pipeline files. All other source files must be delegated via Task tool.
-
-**Exception:** During Step 5 (Real Data Validation), Tech Lead MAY directly fix code_bugs in any file to maintain iteration speed. These should be small, localized fixes that don't warrant full subagent delegation.
-
-**Module Exports Ownership:** Subagents update their own module's export declarations. Tech Lead creates initial module scaffolding.
-
-**Source of Truth:** Subagents must read docs/PRD.md directly for their assigned FRs and NFRs.
+**Resumption rule:** If context was compacted or session resumed (including across sessions), read `build-log.md` + task list to reconstruct current phase/batch state before continuing. The build-log tracks per-module status, so partially-completed batches can resume without re-delegating passing modules.
 
 ---
 
-## Workflow
+## Phase 1: Discover + Plan + Generate Module Specs
 
-### 1. Pre-flight & Plan
+Delegate to a **single general-purpose subagent** (NOT Plan — Plan can't write files). It reads PRD + architecture and writes `build-plan.md`, `build-context.md`, and **per-module spec files** directly. Do NOT read PRD/architecture yourself.
 
-1. **Verify docs exist:** `ls docs/PRD.md docs/architecture.md` — STOP if missing
-2. **Extract from PRD:**
-   - FR numbers with one-line summaries
-   - NFRs categorized by type (performance, security, reliability, observability, maintainability)
-3. **Extract from architecture:** Tech stack, data models, interfaces, dependency graph
-4. **Classify NFRs:**
-   - **Cross-cutting** (apply to all subsystems): logging, error handling, input validation
-   - **Subsystem-specific**: e.g., caching in parser, auth in API layer
-5. **Map FRs + NFRs to subsystems** with acceptance criteria — GATE: every FR and subsystem-specific NFR must be mapped
-6. **Build dependency table:**
+Subagent prompt — adapt paths per project:
+```
+You are a software architect. Discover the project, read PRD + architecture, and produce planning files.
 
-| Subsystem | Dependencies | Batch |
-|-----------|--------------|-------|
-| config | (none) | 1 |
-| parser | config | 2 |
+Find and read: PRD (docs/PRD.md), Architecture (docs/architecture.md), manifest, source dir, test data dir, config files. If PRD or architecture is MISSING, stop and report immediately.
 
-Rules: Batch 1 = no deps. Batch N = all deps in batches < N. Max 3 per batch.
+## Greenfield vs Existing Codebase
 
-7. **Build Interface Contract Registry** (NEW — critical for cross-module consistency):
-   - For each public function that will be called by OTHER modules, document:
-     ```
-     module.function(param: type, ...) -> return_type
-     Called by: [list of calling modules]
-     ```
-   - Include in delegation prompts for BOTH the implementing module AND calling modules
-   - This prevents signature mismatches discovered only at integration
+If source code already exists:
+1. Map existing modules and their public interfaces
+2. Identify which modules need modification vs creation
+3. For modified modules: spec file includes an **Existing API** section listing signatures that MUST NOT change (unless PRD explicitly requires it)
+4. Batch plan only includes new/modified modules — leave unchanged modules alone
+5. Note existing conventions in build-context.md and follow them
+6. Detect existing test framework, fixtures, and patterns — new tests must follow them
+7. Check for existing CI/CD, linting config, type-checking config — reuse rather than replace
 
-8. **Create task list** via TaskCreate: Scaffold → Batches → Integration → **Real Data Validation** → Final Verification
+If no source code exists (greenfield): proceed normally.
 
-**Output:** "Plan complete: X FRs, Y NFRs (Z cross-cutting), W subsystems, B batches, I interface contracts"
+## Write {project_root}/build-plan.md with these sections:
 
-**IMPORTANT:** The task list MUST include "Real Data Validation" as an explicit task. This ensures it is not skipped.
+1. **Build Config** — language-agnostic command table:
+
+| Key | Value |
+|-----|-------|
+| language | (e.g., python, typescript, go) |
+| package_manager | (e.g., uv, npm, go) |
+| test_command | (e.g., uv run pytest tests/ --tb=short) |
+| lint_command | (e.g., uv run ruff check src/ --fix) |
+| lint_tool | (e.g., ruff, eslint, golangci-lint) — the package name to install as dev dep |
+| type_check_command | (e.g., uv run pyright src/) |
+| type_check_tool | (e.g., pyright, tsc) — the package name to install as dev dep |
+| run_command | (e.g., uv run python -m myapp, node dist/index.js, go run ./cmd/app) |
+| stub_detection_pattern | (e.g., raise NotImplementedError, TODO:IMPLEMENT, panic("not implemented")) |
+| src_dir | (e.g., src/) |
+| test_dir | (e.g., tests/) |
+| format_command | (e.g., uv run ruff format src/, npx prettier --write src/) — leave empty if lint tool handles formatting |
+| format_tool | (e.g., ruff, prettier, gofmt) — omit if same as lint_tool |
+
+2. **Gate Configuration** — auto-disable when Build Config command is empty:
+
+| Gate | Active | Reason if disabled |
+|------|--------|--------------------|
+| stub_detection | yes/no | |
+| lint | yes/no | |
+| type_check | yes/no | (disable for dynamically typed languages without type checker) |
+| format | yes/no | (disable if no formatter or lint_tool handles formatting) |
+| integration_tests | yes/no | |
+| simplification | yes/no | (disable for single-batch builds) |
+| validation | yes/no | (disable if no test data) |
+
+3. **Project Summary** — file paths, stack, existing code assessment
+4. **FR to Subsystem Map** — `FR_xx: subsystem — acceptance criterion`
+5. **Side-Effect Ownership** — who logs what, non-owners must NOT
+6. **Shared Utilities** — functions/constants needed by 2+ modules. For each: signature, placement (module path), consumers, and brief implementation note (<10 lines each)
+7. **Batch Plan** — modules grouped by dependency order; each with: path, test_path, FRs, exports, imports, **complexity** (simple/moderate/complex)
+8. **Ambiguities** — unclear/contradictory requirements
+
+**IMPORTANT — Batch Plan Rules:**
+- Minimize batch count by merging modules whose dependencies are ALL in strictly earlier batches. Two modules can share a batch if neither depends on the other.
+- Optimize for minimum number of sequential gates, not minimum batch "width."
+- Use capability area priority tags [Must/Should/Could] from PRD Section 3 headers to inform batch ordering — Must areas in earlier batches.
+- For each module, assign complexity: **simple** (pure functions, no I/O, <5 functions), **moderate** (some I/O or state, 5-10 functions), **complex** (orchestration, many edge cases, >10 functions).
+
+**IMPORTANT — No Interface Contracts in build-plan.md:**
+Do NOT include a full Interface Contracts section. All function signatures belong in per-module spec files only.
+
+**IMPORTANT — No Conventions in build-plan.md:**
+Conventions belong ONLY in build-context.md. build-plan.md must NOT duplicate them — reference build-context.md instead.
+
+## Write {project_root}/build-context.md with:
+Stack, error handling strategy, logging pattern, all conventions, all side-effect rules, test requirements (3-5 per function: happy/edge/error), known gotchas, platform-specific considerations.
+
+## Write per-module spec files to {project_root}/specs/
+For EVERY module in the Batch Plan, create a file `specs/{module_name}.md` (e.g., `specs/extraction_invoice.md`) containing ONLY:
+1. **Module path** and **test path**
+2. **FRs** this module implements — distill prose but preserve ALL concrete parameters verbatim (thresholds, search ranges, patterns, priority orders, format examples)
+3. **Exports** — exact function/class signatures with param types, return types, and docstring summaries
+4. **Imports** — what this module imports (module path + symbol names + **which functions/methods it will call** from each import)
+5. **Side-effect rules** — what this module owns (logging, file I/O) and what it must NOT do
+6. **Test requirements** — 3-5 test cases per function (happy/edge/error) with one-line descriptions
+7. **Gotchas** — any known pitfalls specific to this module
+8. **Verbatim outputs** — every user-visible string this module produces: exact log messages (with log level), print formats, error message templates, status strings. Copy these **character-for-character** from the PRD. If the PRD specifies emoji, log level, field layout, or conditional formatting, include it exactly. This section prevents distillation loss of output format requirements.
+
+Each spec file should be **under 200 lines**.
+
+**Before finishing:** cross-validate all specs bidirectionally — every Import must resolve to a source Export, AND every exported function/method must appear as a used Import in ≥1 consumer spec (orphans = missing wiring). Fix all issues before completing.
+
+Rules: PRD is source of truth. Distill prose, never parameters. Be exhaustive on signatures. WRITE ALL FILES and verify they exist.
+```
+
+### After subagent completes
+
+1. **Verify files exist** — resume subagent if any are missing.
+2. **Read `build-plan.md`**. **Spot-check** FRs section of 2-3 complex specs — verify concrete PRD parameters (ranges, thresholds, patterns) weren't lost in distillation.
+3. **Verify verbatim outputs** — grep the PRD for quoted strings, format examples, and message templates (e.g., `"SUCCESS"`, `"FAILED"`, log format patterns). For each, verify it appears in at least one spec file's **Verbatim Outputs** section. If any user-visible format string from the PRD is missing from all specs, resume the subagent to add it.
+4. **FR coverage check** — verify every FR in `build-plan.md`'s FR-to-Subsystem Map appears in at least one spec file's FRs section. If any FR is unassigned, resume the subagent to assign it to the appropriate module.
+5. **Resolve ambiguities** — ask user if needed.
+6. **Validate dependency graph:**
+   - For each module in the Batch Plan, check that every module listed in its `imports` is in a strictly earlier batch.
+   - If any violation found, re-order batches. Log to `build-log.md`.
+7. **Create task list:** Scaffold → Batch 0..N → Integration Tests + Simplify → Validate → Commit, with `addBlockedBy` ordering.
+8. **Initialize build log:** Write `{project_root}/build-log.md` with a header and Phase 1 completion entry.
+
+**Gate:** If PRD or architecture MISSING, stop and ask user.
 
 ---
 
-### 2. Scaffold (if needed)
+## Phase 2: Scaffold
 
-Skip if structure exists. Otherwise create: dirs, project manifest, module init files, run dependency install.
+**For greenfield projects:** Create directories + init files, manifest with deps, install/sync, cross-cutting infrastructure (error types, constants, models, logging config), test config + fixtures.
 
-**Cross-cutting NFR infrastructure (create if identified in Step 1):**
-- Logging config module (standard format, levels)
-- Custom exception types / error handling base classes
-- Common validation utilities
-- Shared constants (timeouts, limits from NFRs)
+**For existing codebases:** Skip or minimally extend — only create new directories/files needed for new modules. Do NOT restructure existing code. Reuse existing test framework, fixtures, and configuration. If the project already has linting/type-checking config, use it.
 
-**Output:** "Scaffold complete (cross-cutting: logging, errors, ...)" or "Scaffold skipped"
+**Dev tooling:** Install lint, type-check, and format tools listed in Build Config (`lint_tool`, `type_check_tool`, `format_tool`) as dev dependencies during scaffold. Do NOT defer this to batch gates — missing tools cause every batch to fail on the same issue.
+
+**Shared utilities:** Implement all functions listed in the **Shared Utilities** section of `build-plan.md`. These are typically small (< 10 lines each) pure functions needed by multiple modules. Implementing them now prevents subagents from independently reimplementing them.
+
+**Platform considerations:**
+- Detect the OS from the runtime environment.
+- **Windows:** Ensure UTF-8 encoding for all file I/O (stdout/stderr reconfiguration if needed). Use `pathlib` for all path handling. Add BOM markers to output files if the PRD requires Windows console compatibility.
+- **All platforms:** Use `pathlib` for file paths (not `os.path` string manipulation). Avoid shell-specific syntax in scripts. Test commands should work cross-platform.
+
+**Delegation:** For large projects (>15 modules), delegate scaffold to a subagent to save main context. Provide the Shared Utilities signatures from `build-plan.md` and the directory structure in the prompt.
+
+**Gate:** Test collection dry-run (e.g., `pytest --collect-only`) must succeed with zero errors.
+
+Log scaffold completion to `build-log.md`.
 
 ---
 
-### 3. Implement & Test (delegate by batch)
+## Phase 3: Delegate by Batch
 
-Process batches in order. Within each batch, launch independent subsystems in parallel.
+Process batches in dependency order. Launch all modules within a batch **as parallel synchronous Task calls in a single message**. Do NOT use `run_in_background` — the batch gate needs all results, so blocking is correct. Then run the post-batch gate.
 
-#### Delegation Template
+### Model selection
 
+Use the **complexity** field from the Batch Plan to select the subagent model:
+- **simple** → `haiku` (pure functions, minimal logic)
+- **moderate** → `sonnet` (some I/O, moderate logic)
+- **complex** → `opus` (orchestration, many edge cases)
+
+Pass the `model` parameter when launching the subagent.
+
+### Delegation prompt template
+
+Subagents read their **spec file** instead of the full PRD/plan:
 ```
-Implement & test: <subsystem_name>
-Module: <path> | Tests: <test_path>
+Implement and test: {subsystem_name}
+Module: {module_path} | Tests: {test_path}
 
-PRD Reference: Read docs/PRD.md for FR-XXX, FR-YYY and NFR-XXX (authoritative source)
+Read {project_root}/specs/{module_spec}.md for your complete module specification (requirements, exports, imports, side-effects, test cases, gotchas, verbatim outputs). This is your primary reference.
+Also read {project_root}/build-context.md for project conventions if needed.
+EXPORTS must match the spec exactly. IMPORTS from lower batches are implemented — import and CALL every listed function/method, do NOT mock.
 
-Dependencies (import ONLY from these):
-- <module>: <exports>
-
-Stack: <language | test framework | linter>
-
-## INTERFACE CONTRACTS (CRITICAL - must match exactly)
-
-### Functions this module EXPORTS (will be called by other modules):
-```
-function_name(param1: Type1, param2: Type2) -> ReturnType
-  Called by: module_x, module_y
-  Description: one-line purpose
-```
-
-### Functions this module IMPORTS (signatures to expect):
-```
-dependency.function(param: Type) -> ReturnType
-```
-
-**WARNING:** Return types matter. If contract says `-> Workbook`, do NOT return `tuple[Workbook, list]`.
-Mock these EXACT signatures in tests.
-
-## NFR Constraints (MUST implement):
-- Error handling: <strategy — e.g., raise typed exceptions, use shared error types>
-- Logging: <what to log — e.g., INFO for entry/exit, ERROR for failures>
-  - **Single-point logging:** Log at detection point only. Do NOT re-log in callers.
-- Input validation: <where — e.g., validate all public function params>
-- Performance: <if applicable — e.g., must complete in <Xms for typical input>
-- Security: <if applicable — e.g., sanitize external input, no secrets in code>
-
-## Known Library Gotchas (if applicable):
-- <library>: <issue and workaround>
-  Example: "openpyxl: Do not deepcopy Workbook (corrupts styles). Load fresh copy instead."
-
-Tasks:
-1. Read PRD.md sections for assigned FRs and relevant NFRs
-2. If unclear: return {questions: [...]} and STOP
-3. Write tests covering FRs, NFR constraints, edge cases
-   - **Mock imported functions with EXACT signatures from Interface Contracts**
-4. Implement to pass tests (TDD)
-5. Type check -> lint -> fix all issues
-
-Gates: tests pass, lint clean, **interfaces match contracts exactly**, NFR constraints met
-
-Return: {tests: N passing, exports: [{func, signature, fr}], nfr_compliance: [items checked], blockers: [...]}
+Constraints:
+- Only modify {module_path} and {test_path}. Do NOT create stub files for other modules.
+- No new dependencies. Do NOT duplicate utility functions that exist in shared modules (check imports in your spec).
+- Do NOT redefine types, classes, or dataclasses that exist in your imports — import them from the owning module.
+- Run {test_command} {test_path} before finishing.
+- Your implementation must NOT contain stubs — fully implement all functions.
+- Do NOT manipulate the module/import system globally or rely on test execution order.
+- All test fixtures must be scoped per-test unless explicitly configured otherwise.
+- Tests must pass both in isolation AND when run with the full suite.
+- Tests must verify FR acceptance criteria from your spec (including concrete parameters: ranges, thresholds, patterns), not just exercise implementation logic.
+- If your spec has a Verbatim Outputs section, verify your code produces those exact strings (log messages, formats, status text). Write tests for each verbatim output.
+- For complex modules: also skim the PRD sections referenced in your spec's FRs to catch parameters the spec may have summarized.
+- Before finishing: re-read your spec's FRs and Verbatim Outputs sections. Verify every acceptance criterion has a corresponding test, and every verbatim output is produced by your code.
 ```
 
-#### Post-Batch Verification (NEW - run after EACH batch)
+### Post-batch gate
 
-After each batch completes, Tech Lead runs:
+After ALL subagents in a batch complete:
+
+**Step 1 — Stub detection:** (skip if gate disabled)
+Search source files for `{stub_detection_pattern}`. If any found, re-delegate that module with stricter prompt. Counts as retry attempt 1.
+
+**Step 1.5 — Scope check:**
+Run `git diff --name-only` to list all files modified by this batch's subagents. Any file NOT in the batch's expected `{module_path}` or `{test_path}` list is out-of-scope. Review: additions to shared/core modules (new types, constants) are often correct — accept and note in build-log. Modifications to other modules' existing logic must be reverted and the subagent re-delegated with stricter scope.
+
+**Step 2 — Format + lint + type check:** (skip disabled gates; run in parallel — they're independent)
 ```bash
-# 1. Full test suite (catch regressions)
-<test_command>
-
-# 2. Type check (catch interface mismatches early)
-<typecheck_command>
-
-# 3. Lint
-<lint_command>
+{format_command}
+{lint_command}
+{type_check_command}
 ```
-*(Commands depend on project stack — see architecture docs)*
+Fix errors before proceeding. If a fix pattern appears in ≥2 modules, IMMEDIATELY append it (with code example) to `build-context.md` so future batches avoid it.
 
-**GATE:** All three must pass before starting next batch. Type errors in cross-module calls indicate interface contract violations — fix immediately.
+**Step 3 — Test gate:**
+- Run tests for **this batch only**: `{test_command} {batch_test_paths}`
+- Then run a quick **smoke test** in first-failure-exit mode (`-x`, `--bail`, `--failfast` per language)
+- Run the **full test suite** only at milestone gates: after the midpoint batch and after the final batch.
 
-#### Rules
+Do NOT read subagent results on success — test results are your signal.
 
-- **Tests required:** Every subsystem MUST have tests (N > 0). Reject `tests: 0`.
-- **Interface contracts:** Subagent return MUST include exact function signatures. Verify against contract registry.
-- **Post-batch:** Run full test suite + typecheck + lint. Fix regressions before next batch.
-- **Failures:** 1 fail = retry next round. 2+ fails = ask user.
+**Step 4 — On failure:** Read only failing output. Apply the retry budget (see Recovery).
 
-**Output per batch:** "Batch N: <sub1> (X tests), <sub2> (Y tests) | Post-batch: tests pass, types pass, lint pass"
+**Step 5 — Partial advancement:** If most modules pass but some fail:
+1. Mark passing modules as complete.
+2. Fix or re-delegate failing module(s).
+3. Re-run only failing tests + smoke test.
+4. Advance to next batch once all modules pass.
 
----
+**Step 6 — Log:** Append batch results to `build-log.md` (pass/fail, test count, any re-delegations).
 
-### 4. Integration
+### Final-batch convention compliance gate
 
-1. **Write entry point** — import and wire all subsystems
-2. **Verify interface contracts:** Ensure all cross-module calls match the contract registry
-3. **Verify:** tests pass, typecheck pass, lint clean, all FRs covered
+After the **last batch** passes all tests, run a convention compliance check before proceeding to Phase 4:
 
-**Output:** "Integration: N tests, all checks pass"
+1. **Grep source files** for all log/print statements that produce user-visible output.
+2. **Cross-reference against PRD** format specifications — verify log levels, message formats, emoji usage, and field layouts match.
+3. **Check for duplicate messages** — same semantic message logged from 2+ locations (violates single-point logging).
+4. **Check for convention divergence** — inconsistent formatting, capitalization, or structure across modules.
+5. Fix any divergences found. Log results to `build-log.md`.
 
----
+This gate catches the most common class of Phase 5 bugs (formatting/convention divergences) before they require real-data validation to surface.
 
-### 5. Real Data Validation
-
-**MANDATORY** — Execute immediately after Integration. Do NOT wait for user to request this.
-
-Skip ONLY if: (a) pure library with no runtime, OR (b) no test data exists in project.
-
-**Pre-check:** `ls data/` or equivalent to find test inputs. If data folder exists with files, validation is REQUIRED.
-
-**Execute directly (not delegated):**
-Run the application's main entry point against real data in the project's data folder.
-
-**Classification of failures (with examples):**
-
-| Type | Definition | Example | Action |
-|------|------------|---------|--------|
-| `code_bug` | PRD specifies behavior, code doesn't implement it | PRD says "handle merged cells", code crashes on merged cells | FIX IMMEDIATELY |
-| `code_bug` | Interface mismatch between modules | Function returns tuple, caller expects single value | FIX IMMEDIATELY |
-| `code_bug` | Precision/comparison errors | `0.4110 != 0.41` due to float comparison | FIX IMMEDIATELY |
-| `input_issue` | Data violates PRD assumptions AND PRD is silent on handling | Different parts share merged weight cell (vendor error) | Document, don't fix |
-| `input_issue` | Missing required data in vendor file | Empty COO field in source file | Document, don't fix |
-
-**Iteration loop (CRITICAL):**
-1. Run against ALL test inputs
-2. For each failure, check PRD to classify as code_bug or input_issue
-3. Fix ALL code_bugs found (may require editing src/ files directly for quick fixes)
-4. Re-run full test suite after each fix
-5. Re-run validation until no new code_bugs found
-6. Only then proceed to Final Verification
-
-**Common code_bugs to check:**
-- Hardcoded limits that don't match PRD requirements
-- Off-by-one errors or boundary condition bugs
-- Edge cases mentioned in PRD but not handled in code
-- Type coercion or falsy value bugs
-- **Interface mismatches** (function signature differs from caller's expectation)
-- **Precision issues** (float comparison instead of Decimal, wrong rounding)
-
-**Output:** "Validation: N/M passed (X code_bugs fixed, Y input_issues documented)"
-
-**GATE:** Do NOT proceed to Final Verification until validation loop completes with 0 new code_bugs.
+**Context rule:** Never write >30 lines of module code in main context — delegate instead.
 
 ---
 
-### 6. Final Verification
+## Phase 4: Integration Tests + Simplify
 
-1. Run full test suite
-2. Run typecheck
-3. Run lint
-4. Run security linter if available
-5. Spot-check 2-3 high-risk FRs
-6. **NFR compliance check:**
-   - Cross-cutting: consistent error handling pattern across subsystems?
-   - Cross-cutting: logging present and consistent across subsystems?
-   - Cross-cutting: single-point logging (no duplicate log messages)?
-   - Subsystem-specific NFRs met per delegation returns?
-7. **Interface contract audit:** Verify all contracts from Step 1.7 are implemented correctly
+Run integration tests and cross-module simplification **in parallel** — they are independent. Launch both as parallel Task calls in a single message, then run the full test suite once after both complete.
 
-**Output:** "Verified: N FRs, M NFRs checked, I interface contracts validated"
+### Integration Tests (subagent)
 
----
-
-### 7. Summary
-
+Subagent prompt:
 ```
-## Complete
-Subsystems: N (in B batches) | FRs: X/X covered | NFRs: Y/Y covered
-Tests: N passing | Validation: N/M inputs (X code_bugs fixed, Y input_issues)
-Cross-cutting: <list applied — e.g., logging, error handling, validation>
-Interface contracts: I/I validated
+Write integration tests in {test_dir}/test_integration.py (or equivalent).
+Read {prd_path} for expected end-to-end behavior and output formats.
+Read {project_root}/build-plan.md for module boundaries and the pipeline flow.
+Read {project_root}/build-context.md for conventions.
+Use real modules — no mocking of internal components.
+
+Write tests in these categories:
+1. **Boundary tests** (3-5) — wire 2-3 adjacent modules, pass realistic data, verify output. Focus on data handoff points between subsystems.
+2. **Full pipeline tests** (2-3) — synthetic input end-to-end, verify final output structure and content. Verify every pipeline stage executes (not just the final output).
+3. **Error propagation** (3-5) — trigger errors at different pipeline stages, verify they surface correctly to the caller with proper error codes/messages.
+4. **Edge cases** (3-5) — empty input, minimal valid input, maximal input, duplicate entries, missing optional fields.
+5. **Output format** (2-3) — verify end-to-end output matches PRD-specified formats. Check field order, delimiters, headers, encoding.
+
+Run {test_command} {test_dir}/test_integration.py before finishing.
 ```
 
+### Simplify (subagent)
+
+Delegate cross-module deduplication to a subagent (or run `/code-simplifier` if available). Target: duplicate helpers, constants, validation logic across independently-built modules.
+
+Subagent prompt (if not using `/code-simplifier`):
+```
+Simplify and deduplicate across the codebase at {src_dir}.
+Read {project_root}/build-plan.md for module boundaries.
+
+Look for:
+1. **Duplicate constants** — same magic numbers, keyword lists, or threshold values in 2+ modules. Extract to a shared constants module.
+2. **Duplicate helper functions** — similar utility functions across modules. Extract to a shared utils module.
+3. **Copy-pasted logic** — same algorithm implemented slightly differently in 2+ places. Consolidate into one.
+
+Constraints:
+- Do NOT change any public API signatures (function names, parameters, return types).
+- Do NOT change behavior — only restructure. All existing tests must still pass.
+- Prefer extracting to existing shared/core modules over creating new files.
+- Run {test_command} after changes to verify nothing breaks.
+```
+
+**Skip condition:** Only skip if gate disabled in Build Config, OR the batch plan had a single batch. Passing tests do NOT indicate absence of duplication.
+
+### After both complete
+
+Run the **full test suite**. Fix any failures before proceeding. Log both results to `build-log.md`.
+
 ---
 
-## Recovery Procedures
+## Phase 5: Validate
+
+**If test data exists** (and gate is enabled), delegate to a **general-purpose subagent** that invokes the `/real-data-validation` skill. The subagent MUST use the same model as the main agent (pass the `model` parameter) — validation requires deep PRD cross-referencing and code fixes, which need full capability.
+
+Subagent prompt:
+```
+Invoke the /real-data-validation skill using the Skill tool, then follow its instructions to completion.
+
+Project root: {root}
+
+Build artifacts available (the skill knows how to use these):
+- {root}/build-plan.md — Build Config with test_command, language, package_manager
+- {root}/build-context.md — conventions, side-effect ownership, known gotchas
+- {root}/specs/ — per-module spec files with FR mappings and verbatim outputs
+```
+
+After: read `validation-report.md`. If code changes were made, re-run full test suite. Relay report to user.
+
+**If no test data** (or gate disabled), run full test suite one final time and report results.
+
+Log validation results to `build-log.md`.
+
+### Completion
+
+After validation (or final test suite if no test data):
+
+1. **Summary to user** — report final test count, validation results (if applicable), and any remaining issues or recommendations.
+2. **Build artifact cleanup** — inform the user that `build-plan.md`, `build-context.md`, `specs/`, and `validation-round-*.log` are build artifacts. Ask whether to keep them (useful for future reference and resumption) or clean up.
+3. **Mark all tasks complete** in the task list.
+
+---
+
+## Build Log
+
+Maintain `{project_root}/build-log.md` throughout all phases. Append entries for:
+- Phase transitions (with phase name)
+- Batch gate results (pass/fail, test count, type errors found, **per-module pass/fail**)
+- Convention compliance gate results
+- Failures and how they were resolved (fix directly vs re-delegate)
+- Subagent re-delegations with reasons and attempt number
+- Dependency graph re-orderings
+
+This log survives context compaction and is the primary recovery artifact for both mid-session and cross-session resumption. Keep entries concise — one line per event, details only for failures. Include per-module status in batch entries so partially-completed batches can resume without re-delegating passing modules.
+
+---
+
+## Context Budget Rules
+
+1. Avoid reading PRD/architecture in main context — subagents read them. Exception: targeted sections during Phase 5 debugging.
+2. Never inline interface signatures in delegation prompts — they're in spec files.
+3. Never copy subagent output into file writes — use subagents that write files directly.
+4. Never read subagent results on success — run tests instead.
+5. Never write >30 lines of module code in main context — delegate.
+6. Minimize reading specs in main context — only spot-check FRs and Verbatim Outputs during Phase 1 verification.
+7. On context compaction: read `build-log.md` + task list to reconstruct state before continuing.
+
+---
+
+## Recovery
+
+### Retry Budget
+
+Each module gets a maximum of **2 re-delegation attempts** (3 total including original).
+
+- **Attempt 1** (original): Standard delegation prompt.
+- **Attempt 2** (first retry): Add explicit failure context. Emphasize the specific issue.
+- **Attempt 3** (final retry): Include failing test output in prompt. Use `opus` regardless of complexity.
+- **After 3 failures**: Escalate to user with diagnostic info (module name, all 3 failure reasons, spec file path).
+
+### Recovery Table
 
 | Problem | Action |
 |---------|--------|
-| Subagent returns questions | Answer from PRD, re-delegate |
-| Subagent blocked | Check deps/context, re-delegate |
-| Tests fail after integration | Fix integration or re-delegate subsystem |
-| **Type errors in cross-module calls** | **Interface contract violation — fix signature in implementing module** |
-| Validation finds bugs | Classify (code_bug vs input_issue), fix code_bugs |
-| NFR compliance missing | Re-delegate with explicit NFR constraints |
-| Cross-cutting inconsistent | Update shared infra, re-delegate affected subsystems |
-| **Duplicate log messages** | **Identify double-logging, enforce single-point logging** |
-
----
-
-## Gates Summary
-
-| Gate | Location | Fail Action |
-|------|----------|-------------|
-| Docs exist | Step 1 | STOP |
-| All FRs mapped | Step 1 | STOP |
-| All NFRs classified | Step 1 | STOP |
-| **Interface contracts defined** | Step 1.7 | STOP |
-| Cross-cutting NFR infra scaffolded | Step 2 | STOP |
-| Tests > 0 per subsystem | Step 3 | Reject, re-delegate |
-| NFR constraints met per subsystem | Step 3 | Reject, re-delegate |
-| **Signatures match interface contracts** | Step 3 | Reject, re-delegate |
-| Post-batch tests pass | Step 3 | Fix before next batch |
-| **Post-batch typecheck pass** | Step 3 | **Fix interface mismatches before next batch** |
-| All checks pass | Step 4 | Fix or return to Step 3 |
-| **Real data validation run** | Step 5 | **MANDATORY** — run immediately, do not skip |
-| No code_bugs remaining | Step 5 | Fix and re-validate until 0 code_bugs |
-| Validation pass | Step 5 | Document input_issues, proceed |
-| NFR compliance verified | Step 6 | Fix or document exception |
-| **Interface contracts validated** | Step 6 | Fix any remaining mismatches |
-
----
-
-## Appendix: Interface Contract Template
-
-Use this format in Step 1.7:
-
-```
-## Interface Contract Registry
-
-### <module>.<function_name>
-<function_signature>
-- Called by: <list of calling modules>
-- Returns: <description of return value>
-- Raises: <error conditions>
-```
-
-**Include the EXACT signatures in both:**
-1. The delegation prompt for the implementing module
-2. The delegation prompt for any module that calls it
+| Subagent returns with failing tests | Read failing output only, apply retry budget |
+| Subagent left stubs | Re-delegate with explicit "fully implement" constraint (counts as retry) |
+| Out-of-scope changes (other module logic) | Revert changes to other modules, re-delegate with stricter scope |
+| Out-of-scope additions (shared types/constants) | Review — if type belongs in core/shared, accept and note in build-log; otherwise revert |
+| Subagent redefined types from imports | Delete duplicates, add imports, fix tests — append "no type redefinition" reminder to build-context.md |
+| Cross-module signature mismatch | Fix implementing module to match spec file |
+| Missing dependency module | Scaffold incomplete — create init/export, re-delegate |
+| Implementation diverges from PRD | Spec lossy — verify spec FRs against PRD, fix spec, re-delegate |
+| Phase 5 finds formatting/output bugs | Spec distillation lost verbatim strings — cross-ref PRD directly, fix code, append missing format strings to build-context.md so future batches avoid same issue |
+| Tests pass individually, fail together | Shared mutable state — check for global state, module system hacks, test ordering deps |
+| Lint / type errors after batch | Fix directly; for signature mismatches, match spec files |
+| Dev tools missing at batch gate | Install immediately, append to build-context.md gotchas so it doesn't recur |
+| Unit tests pass but real data fails | Subagent tested implementation, not spec — fix code in Phase 5 |
+| Validation finds code bugs | Fix directly, re-run validation |
+| Circular dependency | Move shared types to core module |
+| Ambiguous requirement | Ask user — do not guess |
+| Duplicate code across subagents | Phase 4 deduplication |
+| Context getting large | Delegate remaining work to fewer, larger subagents |
+| Spec file missing for a module | Resume Phase 1 subagent to generate it |
+| Dependency graph violation | Re-order batches per Phase 1 step 5, log to build-log.md |

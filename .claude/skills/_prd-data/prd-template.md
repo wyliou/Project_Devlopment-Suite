@@ -4,6 +4,8 @@ inputDocuments: []
 workflowType: 'prd'
 completedAt: ''
 documentChecksum: ''
+capabilityAreas: []
+outputPath: ''
 ---
 
 # Product Requirements Document - {{project_name}}
@@ -22,17 +24,31 @@ documentChecksum: ''
 | Attribute | Value |
 |-----------|-------|
 | Project Type | {{Greenfield / Brownfield}} |
-| Product Category | {{CLI Tool / Web App / API Service / Desktop App / Mobile App / Library}} |
+| Product Category | {{CLI Tool / Web App / API Service / Desktop App / Mobile App / Library / Data Pipeline / ML Model/Service / Infrastructure/IaC / Microservices System / Plugin/Extension / Full Stack App / Custom: describe}} |
 | Primary Context | {{Enterprise / Consumer / Internal / B2B}} |
 
-### Users
-| User Type | Primary Goal |
-|-----------|--------------|
-| {{user_type_1}} | {{what they want to accomplish}} |
-| {{user_type_2}} | {{what they want to accomplish}} |
+### Brownfield Context (If Applicable)
 
-### Key Success Metric
-{{The single most important metric that defines success for this product}}
+> *Complete for Brownfield projects. Remove this section if Greenfield with no legacy systems.*
+
+| Existing System | Disposition | Integration Type |
+|-----------------|-------------|------------------|
+| {{system_name}} | Replace / Integrate / Migrate From | API / DB / File |
+
+**Legacy Data:** {{description of data to migrate, or "N/A"}}
+**Coexistence Strategy:** {{Parallel Run / Phased Cutover / Big Bang / N/A}}
+
+### Actors
+| Actor Type | Primary Goal |
+|------------|--------------|
+| {{actor_type_1}} | {{what they want to accomplish}} |
+| {{actor_type_2}} | {{what they want to accomplish}} |
+
+### Success Metrics
+| Metric | Target | Primary |
+|--------|--------|---------|
+| {{metric_1}} | {{quantifiable target}} | Yes |
+| {{metric_2}} | {{quantifiable target}} | No |
 
 ### MVP Scope
 
@@ -47,19 +63,19 @@ documentChecksum: ''
 
 ---
 
-## 2. User Journeys
+## 2. Journeys/Workflows
 
-### {{User Type 1}}: {{Journey Name}}
+### {{Actor Type 1}}: {{Journey Name}}
 1. {{Step 1}} → {{Step 2}} → {{Step 3}} → {{Step 4}} → {{Outcome}}
 
-### {{User Type 2}}: {{Journey Name}}
+### {{Actor Type 2}}: {{Journey Name}}
 1. {{Step 1}} → {{Step 2}} → {{Step 3}} → {{Outcome}}
 
 ---
 
 ## 3. Functional Requirements
 
-### {{Capability Area 1}}
+### {{Capability Area 1}} [Must]
 
 **FR-001**: [Actor] [capability]
 - **Input:** field1 (constraints), field2 (constraints)
@@ -74,7 +90,7 @@ documentChecksum: ''
 - **Output:** success behavior
 - **Error:** error case → handling
 
-### {{Capability Area 2}}
+### {{Capability Area 2}} [Should]
 
 **FR-003**: [Actor] [capability]
 - **Input:** field1 (constraints)
@@ -98,6 +114,18 @@ documentChecksum: ''
 
 ### Reliability
 - **NFR-REL-001**: {{metric}} {{target}} under {{condition}}
+
+### Accessibility (If Applicable)
+- **NFR-ACC-001**: {{metric}} {{target}} under {{condition}}
+
+### Usability (If Applicable)
+- **NFR-USE-001**: {{metric}} {{target}} under {{condition}}
+
+### Maintainability (If Applicable)
+- **NFR-MAINT-001**: {{metric}} {{target}} under {{condition}}
+
+### Compatibility (If Applicable)
+- **NFR-COMPAT-001**: {{metric}} {{target}} under {{condition}}
 
 ---
 
@@ -138,11 +166,11 @@ documentChecksum: ''
 
 ## 7. Quick Reference
 
-| FR ID | Summary | Depends |
-|-------|---------|---------|
-| FR-001 | {{brief summary}} | - |
-| FR-002 | {{brief summary}} | FR-001 |
-| FR-003 | {{brief summary}} | - |
+| FR ID | Summary | Capability Area | Priority | Depends |
+|-------|---------|----------------|----------|---------|
+| FR-001 | {{brief summary}} | {{area}} | Must | - |
+| FR-002 | {{brief summary}} | {{area}} | Must | FR-001 |
+| FR-003 | {{brief summary}} | {{area}} | Should | - |
 
 ---
 
@@ -208,3 +236,12 @@ Reason: {{why this is correct}}
 Situation: {{description}}
 Handling: {{how system should respond}}
 ```
+
+### 8.x Project-Specific Sections (Optional)
+
+> *Add sub-sections as needed for your project. Common examples:*
+
+- **Deployment Procedures** — environment setup, deployment steps, rollback procedures
+- **Monitoring Requirements** — metrics to track, alerting thresholds, dashboard specifications
+- **Data Retention Policies** — retention periods, archival rules, purge schedules
+- **Migration Procedures** — data migration steps, validation criteria, rollback plans

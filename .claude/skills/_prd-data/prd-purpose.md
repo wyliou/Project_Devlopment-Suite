@@ -32,14 +32,14 @@ Every sentence should carry information weight. AI agents consume precise, dense
 
 | Section | Purpose |
 |---------|---------|
-| **1. Overview** | Vision, classification, users, success metric, scope |
+| **1. Overview** | Vision, classification, actors, success metrics, scope |
 | **3. Functional Requirements** | What the system does |
 
 ### Conditional Sections (By Project Type)
 
 | Section | Include When |
 |---------|--------------|
-| **2. User Journeys** | UI-based products (Web App, Mobile, Desktop) |
+| **2. Journeys/Workflows** | UI-based products (Web App, Mobile, Desktop), data pipelines, infrastructure |
 | **4. Non-Functional Requirements** | Production systems with quality constraints |
 | **5. Data Entities** | Systems with persistent storage |
 | **6. Technology Constraints** | Existing tech decisions or restrictions |
@@ -51,9 +51,15 @@ Every sentence should carry information weight. AI agents consume precise, dense
 |--------------|---------------------|
 | **Web App** | All 7 sections |
 | **Mobile App** | All 7 sections |
-| **API Service** | 1, 3, 4, 5, 6, 7 (skip User Journeys - use API contracts) |
-| **CLI Tool** | 1, 3, 4, 6 (add Command Reference instead of User Journeys) |
-| **Library/SDK** | 1, 3, 4, 6 (add API Surface instead of User Journeys) |
+| **API Service** | 1, 3, 4, 5, 6, 7 (skip Journeys - use API contracts) |
+| **CLI Tool** | 1, 3, 4, 6 (add Command Workflows instead of Journeys) |
+| **Library/SDK** | 1, 3, 4, 6 (add Integration Scenarios instead of Journeys) |
+| **Data Pipeline** | All 7 sections (Section 2 = Data Workflows) |
+| **ML Model/Service** | All 7 sections (Section 2 = Training/Inference Workflows) |
+| **Infrastructure/IaC** | 1, 2, 3, 4, 6 (Section 2 = Operational Workflows) |
+| **Microservices System** | All 7 sections (Section 2 = Service Interaction Flows) |
+| **Plugin/Extension** | 1, 2, 3, 4, 6 (Section 2 = Extension Scenarios) |
+| **Full Stack App** | All 7 sections |
 | **Prototype/MVP** | 1, 2, 3 (minimal viable documentation) |
 
 ---
@@ -83,7 +89,7 @@ Choose an approach that fits your project:
 
 ### FR Quality Criteria
 
-- **Actor** is explicit (User, System, Admin)
+- **Actor** is explicit (User, System, Admin, Operator)
 - **Input** has constraints (types, formats, limits)
 - **Rules** capture business logic, not implementation details
 - **Output** is specific and testable
@@ -115,6 +121,12 @@ Choose an approach that fits your project:
 | Security | SEC | Encryption, auth expiry, data protection |
 | Scalability | SCALE | Concurrent users, data volume |
 | Reliability | REL | Uptime, recovery time, durability |
+| Accessibility | ACC | WCAG compliance level, screen reader support, keyboard navigation |
+| Usability | USE | Task completion rate, learning curve, error recovery |
+| Maintainability | MAINT | Code coverage, dependency freshness, deployment frequency |
+| Compatibility | COMPAT | Browser support, OS support, API version compatibility |
+
+Select categories relevant to the project — not all apply to every project type. PERF and at least one other are typically required for production systems.
 
 ---
 
@@ -160,11 +172,23 @@ For projects with 5+ FRs, add a summary table:
 ```markdown
 ## Quick Reference
 
-| FR ID | Summary | Depends |
-|-------|---------|---------|
-| FR-AUTH-001 | User registration | - |
-| FR-AUTH-002 | Password reset | FR-AUTH-001 |
+| FR ID | Summary | Capability Area | Priority | Depends |
+|-------|---------|----------------|----------|---------|
+| FR-AUTH-001 | User registration | Authentication | Must | - |
+| FR-AUTH-002 | Password reset | Authentication | Must | FR-AUTH-001 |
 ```
+
+---
+
+## Capability Areas and Prioritization
+
+Capability areas are logical groupings of related functional requirements. Each area is assigned a priority tag that informs implementation sequencing:
+
+- **Must:** Core functionality required for MVP. Build batch 1.
+- **Should:** Important functionality expected in production. Build batch 2 (defer if necessary).
+- **Could:** Nice-to-have. Build batch 3 (implement if time/budget allows).
+
+FRs are grouped under `### Capability Area Name [Priority]` headers in Section 3. Capability areas are persisted in the PRD frontmatter `capabilityAreas` array for downstream tools (architecture generation, build planning).
 
 ---
 
@@ -173,12 +197,13 @@ For projects with 5+ FRs, add a summary table:
 Good PRDs maintain traceability:
 
 ```
-Vision → Success Metric → User Journeys → Functional Requirements → Data Entities
+Vision → Success Metrics → Journeys/Workflows → Functional Requirements → Data Entities
 ```
 
-- Success metric should be measurable
-- User journeys imply required capabilities
-- FRs should trace back to user needs
+- Success metrics should be measurable with quantifiable targets
+- Journeys/Workflows imply required capabilities
+- FRs should trace back to actor needs
+- Capability area priorities inform build batch ordering
 - Data entities should link to FRs that use them
 
 ---
@@ -188,8 +213,8 @@ Vision → Success Metric → User Journeys → Functional Requirements → Data
 | Principle | Description |
 |-----------|-------------|
 | **Dense** | Every sentence carries weight |
-| **Measurable** | Success metric and NFRs are testable |
-| **Traceable** | Requirements link to user needs |
+| **Measurable** | Success metrics and NFRs are testable |
+| **Traceable** | Requirements link to actor needs |
 | **Flexible** | Structure fits the project |
 | **Actionable** | AI agents can implement from FRs |
 
