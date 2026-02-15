@@ -24,6 +24,10 @@ Every sentence should carry information weight. AI agents consume precise, dense
 
 **Goal:** Maximum information per word. Zero fluff.
 
+### Consistent Terminology
+
+Use one term per concept throughout the PRD. If the domain calls it an "order," never switch to "transaction" or "purchase" mid-document. Define domain-specific terms on first use when their meaning isn't obvious.
+
 ---
 
 ## Document Structure
@@ -42,25 +46,30 @@ Every sentence should carry information weight. AI agents consume precise, dense
 | **2. Journeys/Workflows** | UI-based products (Web App, Mobile, Desktop), data pipelines, infrastructure |
 | **4. Non-Functional Requirements** | Production systems with quality constraints |
 | **5. Data Entities** | Systems with persistent storage |
-| **6. Technology Constraints** | Existing tech decisions or restrictions |
+| **6. Technology Constraints** | Existing tech decisions, restrictions, or integration points |
 | **7. Quick Reference** | 5+ functional requirements |
+| **8. Implementation Reference** | Project has defined formats, codes, algorithms, or config schemas |
 
-### Project Type Guide
+### Section Applicability
 
-| Project Type | Recommended Sections |
-|--------------|---------------------|
-| **Web App** | All 7 sections |
-| **Mobile App** | All 7 sections |
-| **API Service** | 1, 3, 4, 5, 6, 7 (skip Journeys - use API contracts) |
-| **CLI Tool** | 1, 3, 4, 6 (add Command Workflows instead of Journeys) |
-| **Library/SDK** | 1, 3, 4, 6 (add Integration Scenarios instead of Journeys) |
-| **Data Pipeline** | All 7 sections (Section 2 = Data Workflows) |
-| **ML Model/Service** | All 7 sections (Section 2 = Training/Inference Workflows) |
-| **Infrastructure/IaC** | 1, 2, 3, 4, 6 (Section 2 = Operational Workflows) |
-| **Microservices System** | All 7 sections (Section 2 = Service Interaction Flows) |
-| **Plugin/Extension** | 1, 2, 3, 4, 6 (Section 2 = Extension Scenarios) |
-| **Full Stack App** | All 7 sections |
-| **Prototype/MVP** | 1, 2, 3 (minimal viable documentation) |
+Sections 1 (Overview) and 3 (Functional Requirements) are required for all projects. For conditional sections, assess based on actual project needs:
+
+| Section | Include When |
+|---------|-------------|
+| **2. Journeys/Workflows** | Product has user-facing flows or multi-step processes. Format adapts by category (User Journeys, Command Workflows, Data Workflows, etc.) |
+| **4. Non-Functional Requirements** | Production system with quality constraints. Skip for prototypes. |
+| **5. Data Entities** | System has persistent storage |
+| **6. Technology Constraints** | Tech decisions are pre-made or integrations exist |
+| **7. Quick Reference** | 5+ functional requirements |
+| **8. Implementation Reference** | Defined formats, algorithms, or config schemas exist |
+
+### Brownfield Projects
+
+Brownfield PRDs must additionally address:
+- **Existing systems** — what is being replaced, integrated with, or migrated from
+- **Legacy data** — volume, complexity, migration strategy
+- **Coexistence** — how old and new systems run in parallel during transition
+- **Brownfield-specific capability areas** — Data Migration, Legacy Compatibility, Transition Management (include only those that apply)
 
 ---
 
@@ -89,11 +98,16 @@ Choose an approach that fits your project:
 
 ### FR Quality Criteria
 
-- **Actor** is explicit (User, System, Admin, Operator)
-- **Input** has constraints (types, formats, limits)
-- **Rules** capture business logic, not implementation details
-- **Output** is specific and testable
-- **Error** handling is explicit
+| Criterion | Requirement |
+|-----------|-------------|
+| **Actor** | Explicit (User, System, Admin, Operator) — never "the system" without context |
+| **Input** | Types, formats, limits, and validation rules specified |
+| **Rules** | Business logic only — no implementation details (no "use SQL query," "call API") |
+| **Output** | Observable result + state change — specific enough to write a test against |
+| **Error** | Every input validation failure and business rule violation has explicit handling |
+| **Boundary conditions** | Min/max values, empty states, and edge cases addressed in Rules or Error |
+| **State transitions** | If the FR changes entity state (e.g., order: pending → confirmed), state flow is explicit |
+| **Data flow direction** | Clear who provides input and who receives output |
 
 ---
 
@@ -105,6 +119,8 @@ Choose an approach that fits your project:
 **[ID]**: [metric] [target] under [condition]
 ```
 
+Every NFR **must** include a measurable target. Vague NFRs like "system should be fast" or "high availability" are not acceptable.
+
 ### Examples
 
 ```markdown
@@ -112,6 +128,8 @@ Choose an approach that fits your project:
 **NFR-SEC-001**: All data encrypted at rest using AES-256
 **NFR-REL-001**: 99.9% uptime during business hours
 ```
+
+**Anti-pattern:** `NFR-PERF-001: System should perform well` — no metric, no target, not testable.
 
 ### Categories
 
@@ -161,7 +179,11 @@ Document decisions that constrain implementation:
 - Caching strategy
 ```
 
-Skip this section if the implementer has full freedom.
+**Integration Points:** For projects connecting to external systems, document each integration with direction (In/Out/Both), data exchanged, and auth method.
+
+**Compliance Notes:** Single line summarizing regulatory or policy requirements when applicable.
+
+Skip this section if the implementer has full freedom and no integrations exist.
 
 ---
 
@@ -180,6 +202,29 @@ For projects with 5+ FRs, add a summary table:
 
 ---
 
+## Implementation Reference (Section 8)
+
+Include when the project has defined formats, codes, algorithms, or config schemas that implementing agents need as reference. This section bridges the gap between "what" (FRs) and "how" by providing reference material without dictating implementation.
+
+### Sub-sections (include only those that apply)
+
+| Sub-section | Include When |
+|-------------|-------------|
+| **Configuration Schema** | User-editable config files (YAML, JSON, env vars) |
+| **Output Formats** | Defined console output, file formats, or API response structures |
+| **Error/Status Code Catalog** | Coded errors (ERR_001) or status codes for consistent reporting |
+| **Algorithm Details** | Multi-step logic, calculations, or processing pipelines needing exact specification |
+| **Examples & Edge Cases** | Complex rules that benefit from concrete input/output examples |
+
+### Quality Criteria
+
+- Algorithm steps must be ordered and unambiguous — an AI agent should reproduce the same logic from the description alone
+- Error codes must map to specific FR error conditions
+- Config schemas must specify types, defaults, and valid ranges
+- Examples must show both typical cases and boundary/edge cases
+
+---
+
 ## Capability Areas and Prioritization
 
 Capability areas are logical groupings of related functional requirements. Each area is assigned a priority tag that informs implementation sequencing:
@@ -194,28 +239,56 @@ FRs are grouped under `### Capability Area Name [Priority]` headers in Section 3
 
 ## Traceability
 
-Good PRDs maintain traceability:
+Good PRDs maintain end-to-end traceability:
 
 ```
 Vision → Success Metrics → Journeys/Workflows → Functional Requirements → Data Entities
 ```
 
-- Success metrics should be measurable with quantifiable targets
-- Journeys/Workflows imply required capabilities
-- FRs should trace back to actor needs
-- Capability area priorities inform build batch ordering
-- Data entities should link to FRs that use them
+### Traceability Checks
+
+| Check | How to Verify | Gap Indicator |
+|-------|---------------|---------------|
+| Vision → Metrics | Each success metric ties to the stated vision | Metric measures something unrelated to the vision |
+| Metrics → Journeys | Each journey supports at least one success metric | Journey exists with no metric connection |
+| Journeys → FRs | Each journey step maps to at least one FR | Journey step has no implementing FR |
+| FRs → Entities | Each FR that reads/writes data references a data entity | FR mentions data not in Section 5 |
+| Scope → FRs | Every in-scope item has at least one FR | Scope item with zero FRs |
+| FRs → Capability Areas | Every FR belongs to a capability area | Orphan FR outside any capability area |
+
+### Common Traceability Gaps
+
+- **Orphan FR:** FR exists but traces to no journey step or scope item — question whether it's needed
+- **Empty scope item:** Scope item declared but no FRs implement it — missing requirements
+- **Phantom entity:** Data entity listed but no FR references it — remove or add FRs
+
+---
+
+## Anti-Patterns
+
+Patterns that weaken PRD quality and cause implementation errors:
+
+| Anti-Pattern | Example | Fix |
+|--------------|---------|-----|
+| **Implementation leak** | "Use PostgreSQL JOIN to fetch..." in FR Rules | Rewrite as business logic: "Retrieve user's orders sorted by date" |
+| **Vague success metric** | "Improve user satisfaction" | Add target: "Increase NPS from 30 to 50 within 6 months" |
+| **Missing error path** | FR specifies happy path only | Add Error field with every failure condition |
+| **Scope creep via Could** | 10 Could-priority areas, 2 Must | Re-evaluate — most Could items belong in a future phase, not the PRD |
+| **Copy-paste NFR** | "99.99% uptime" for an internal tool | Match NFR targets to actual project context |
+| **Ambiguous actor** | "The system processes..." | Specify: "System (triggered by cron schedule) processes..." |
+| **Untraceable requirement** | FR exists but connects to no journey or scope item | Either trace it or remove it |
 
 ---
 
 ## What Makes a Good PRD?
 
-| Principle | Description |
-|-----------|-------------|
-| **Dense** | Every sentence carries weight |
-| **Measurable** | Success metrics and NFRs are testable |
-| **Traceable** | Requirements link to actor needs |
-| **Flexible** | Structure fits the project |
-| **Actionable** | AI agents can implement from FRs |
+| Principle | Description | Test |
+|-----------|-------------|------|
+| **Dense** | Every sentence carries weight | No sentence can be removed without losing information |
+| **Measurable** | Success metrics and NFRs have quantifiable targets | Every metric has a number and timeframe |
+| **Traceable** | Requirements link to actor needs | Every FR traces back to a journey step or scope item |
+| **Consistent** | One term per concept, uniform formatting | No synonym drift, no format variations |
+| **Bounded** | Clear in-scope and out-of-scope | An AI agent can determine what NOT to build |
+| **Actionable** | AI agents can implement from FRs alone | Each FR has enough detail to write code and tests |
 
 The goal is **useful documentation**, not **comprehensive documentation**.

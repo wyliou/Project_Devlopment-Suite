@@ -4,7 +4,7 @@ description: 'Generate Tech Constraints, NFRs, Data Entities, and Implementation
 
 # File references
 nextStepFile: '{skill_base}/steps-create-prd/step-06-complete.md'
-projectTypesCSV: '{skills_root}/_prd-data/project-types.csv'
+validationChecks: '{skills_root}/_prd-data/validation-checks.md'
 ---
 
 # Step 5: Specifications
@@ -19,9 +19,7 @@ Generate all derived and complementary specifications: Technology Constraints, N
 
 - **Interactive step** — requires user feedback
 - You are a PRD Creator — deriving specifications from established FRs
-- **One question at a time:** Ask a single focused question, wait for the answer, then ask the next. Never batch multiple questions into one message.
 - Each sub-section builds on FR analysis from step 4
-- **Compose-then-write principle:** Gather all information for a section before writing it to the document.
 
 ## SEQUENCE (Follow Exactly)
 
@@ -68,9 +66,9 @@ Update the PRD Section 6 with technology constraints.
 
 ### 2. Generate Non-Functional Requirements
 
-Derive NFRs from the combination of success metrics, actor types, product category, FR analysis, and **the tech constraints just captured** (which inform realistic NFR targets).
+Derive NFRs from the combination of success metrics, actor types, FR analysis, and **the tech constraints just captured** (which inform realistic NFR targets). Select NFR categories relevant to the project context — e.g., API services typically need PERF and SEC; web apps need PERF, ACC, and COMPAT.
 
-Load `{projectTypesCSV}` and use the matching product category row to recommend relevant NFR categories. For example, API services typically need PERF and SEC; web apps need PERF, ACC, and COMPAT.
+**Every NFR must include a measurable metric, specific target, and condition.** Vague NFRs like "system should be fast" are not acceptable — rewrite until measurable.
 
 #### NFR Format (Categorized with Single-Line Entries)
 ```markdown
@@ -97,20 +95,15 @@ Load `{projectTypesCSV}` and use the matching product category row to recommend 
 
 Select categories relevant to the project — not all apply to every project type. PERF and at least one other are typically required.
 
-**Derive NFRs from:**
-- Success metrics (implies performance target)
-- Actor type expectations (enterprise = stricter security)
-- Product category (CLI = fast startup, API = low latency)
-- FR analysis (data volume from entities, processing from rules)
-- Tech constraints captured above (infrastructure limits, compliance requirements)
-
-**Present draft NFRs to user and ask for feedback.** Adjust based on response.
+**Present draft NFRs to user and ask for feedback.**
 
 Update the PRD Section 4 with generated NFRs.
 
 ### 3. Generate Data Entities
 
-Analyze FRs to identify implied data entities:
+Check if Section 5 is applicable: refer to `{validationChecks}` Section Requirements table. If the project type lists Section 5 as Optional and the FRs imply no persistent storage, ask the user: "Section 5 (Data Entities) appears optional for this project. Include it? [Y/N]"
+
+If applicable, analyze FRs to identify implied data entities:
 
 ```markdown
 ## 5. Data Entities
@@ -132,83 +125,37 @@ Update the PRD Section 5 with generated entities.
 
 ### 4. Assess Implementation Reference (Section 8)
 
-Now that FRs are complete, assess whether the project needs detailed implementation specifications.
+Assess which sub-sections add value based on FR analysis **and any Section 8 material noted during step 4 deepening** (algorithms, error codes, format specifications discovered in user answers).
 
-**Agent-assessed recommendation:** Analyze the FRs and product category to determine which sub-sections add value. Present your assessment to the user in one exchange:
+Available sub-sections: Configuration Schema, Output Formats, Error Code Catalog, Algorithm Details, Examples & Edge Cases. Project-specific sub-sections can be added too.
 
-```
-Based on the requirements, I recommend including:
-- 8.1 Configuration Schema — [reason from FR analysis]
-- 8.3 Error Code Catalog — [reason from FR analysis]
+**Quality criteria** (from prd-purpose.md):
+- Algorithm steps must be ordered and unambiguous — an AI agent should reproduce the same logic from the description alone
+- Error codes must map to specific FR error conditions
+- Config schemas must specify types, defaults, and valid ranges
+- Examples must show both typical cases and boundary/edge cases
 
-Not needed:
-- 8.2 Output Formats — [reason]
-- 8.4 Algorithm Details — [reason]
-- 8.5 Examples & Edge Cases — [reason]
-
-Agree? Any adjustments?
-```
-
-**Assessment signals by project type:**
-
-| Sub-section | Signal |
-|-------------|--------|
-| 8.1 Configuration Schema | FRs reference configurable settings, environment setup, or user preferences |
-| 8.2 Output Formats | FRs describe specific report formats, file exports, structured console output, or API response schemas |
-| 8.3 Error Code Catalog | FRs have many error cases, or product needs consistent error reporting (APIs, CLI tools) |
-| 8.4 Algorithm Details | FRs contain multi-step processing, calculations, scoring, or ranking logic |
-| 8.5 Examples & Edge Cases | FRs have complex conditional rules where examples clarify intent |
-
-**Extensibility note:** Sub-sections 8.1-8.5 are the common set. Project-specific sub-sections can be added as needed (e.g., Deployment Procedures, Monitoring Requirements, Data Retention Policies, Migration Procedures). Ask the user if any project-specific sections would be valuable.
-
-**For each recommended sub-section:** Gather detail from user to populate it.
-
-**If no sub-sections needed:** Skip Section 8 entirely. Note in PRD: "Section 8 not applicable."
-
-Update the PRD Section 8 with implementation reference (if applicable).
+Present your recommendation to the user. For each approved sub-section, gather detail to populate it. If none needed, note "Section 8 not applicable" in the PRD.
 
 ### 5. Present & Menu
 
 **Before presenting**, verify inline (fix issues during generation, not as a separate pass):
-- At least 2 NFRs (PERF + one other), single-line format
+- At least 2 NFRs (PERF + one other), each with metric + target + condition
 - Entity Related FRs exist in Section 3
 - Decided and Open sections present in Tech Constraints
-- Section 8 sub-sections populated if applicable
-
-Verification order matches the new sequence: Tech Constraints → NFRs → Data Entities → Section 8.
+- Section 8 sub-sections meet quality criteria if applicable
 
 Show the user:
 1. Technology Constraints summary
 2. NFR summary (count by category)
-3. Data Entities summary
+3. Data Entities summary (or "not applicable")
 4. Section 8 status (applicable sections or "not needed")
 
 **Menu:**
 
 **[C] Continue** - Proceed to Complete (Step 6)
 **[R] Revise** - Modify specifications
-**[P] Party Mode** - Multi-agent review of NFRs, tech constraints, and entities
-**[D] Deep Dive** - Apply advanced elicitation on NFRs, entities, or implementation details
 **[X] Exit** - Save progress and stop
+*Always available: **[P] Party Mode** | **[D] Deep Dive***
 
 **On [C]:** Update frontmatter (`stepsCompleted` add `'step-05-specifications'`), then load and execute `{nextStepFile}`.
-
-**On [R]:** Make specific changes, return to menu.
-
-**On [P]:** Invoke `/_party-mode` skill with topic "Specifications review for [project name]", content = Sections 4, 5, 6, 8, focus_agents = `architect`, `qa`, `devops`. After discussion, apply insights and return to menu.
-
-**On [D]:** Invoke `/_deep-dive` skill to explore complex specifications more thoroughly. After deep dive, update with insights and return to menu.
-
-**On [X]:** Exit workflow. Do NOT mark this step as complete — document changes are preserved but the step must be re-run on resume to verify completeness.
-
----
-
-## SUCCESS CRITERIA
-
-- Technology Constraints documented first (Decided + Open, brownfield integration if applicable)
-- NFRs generated in single-line format with measurable targets, informed by tech constraints
-- CSV-driven NFR category recommendations applied
-- Data Entities table created with FR mappings
-- Section 8 assessed with extensibility consideration and populated if needed
-- Step-scoped validation passes
-- User confirmed specifications before proceeding

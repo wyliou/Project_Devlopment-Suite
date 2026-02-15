@@ -1,9 +1,5 @@
 ---
 stepsCompleted: []
-inputDocuments: []
-workflowType: 'prd'
-completedAt: ''
-documentChecksum: ''
 capabilityAreas: []
 outputPath: ''
 ---
@@ -24,7 +20,7 @@ outputPath: ''
 | Attribute | Value |
 |-----------|-------|
 | Project Type | {{Greenfield / Brownfield}} |
-| Product Category | {{CLI Tool / Web App / API Service / Desktop App / Mobile App / Library / Data Pipeline / ML Model/Service / Infrastructure/IaC / Microservices System / Plugin/Extension / Full Stack App / Custom: describe}} |
+| Product Category | {{Web App / Mobile App / Desktop App / API Service / CLI Tool / Library/SDK / Data Pipeline / ML Model/Service / Infrastructure/IaC / Microservices System / Plugin/Extension / Full Stack App / Prototype/MVP / Custom: describe}} |
 | Primary Context | {{Enterprise / Consumer / Internal / B2B}} |
 
 ### Brownfield Context (If Applicable)
@@ -65,11 +61,10 @@ outputPath: ''
 
 ## 2. Journeys/Workflows
 
-### {{Actor Type 1}}: {{Journey Name}}
-1. {{Step 1}} → {{Step 2}} → {{Step 3}} → {{Step 4}} → {{Outcome}}
+> *Format adapts by product category: User Journeys, Command Workflows, Data Workflows, Integration Scenarios, etc.*
 
-### {{Actor Type 2}}: {{Journey Name}}
-1. {{Step 1}} → {{Step 2}} → {{Step 3}} → {{Outcome}}
+### {{Actor Type}}: {{Journey/Workflow Name}}
+{{3-5 steps describing the actor's flow through the system}}
 
 ---
 
@@ -102,30 +97,10 @@ outputPath: ''
 
 ## 4. Non-Functional Requirements
 
-### Performance
-- **NFR-PERF-001**: {{metric}} {{target}} under {{condition}}
-- **NFR-PERF-002**: {{metric}} {{target}} under {{condition}}
+> *Include only categories relevant to the project. See prd-purpose.md for the full category list (PERF, SEC, SCALE, REL, ACC, USE, MAINT, COMPAT).*
 
-### Security
-- **NFR-SEC-001**: {{metric}} {{target}} under {{condition}}
-
-### Scalability
-- **NFR-SCALE-001**: {{metric}} {{target}} under {{condition}}
-
-### Reliability
-- **NFR-REL-001**: {{metric}} {{target}} under {{condition}}
-
-### Accessibility (If Applicable)
-- **NFR-ACC-001**: {{metric}} {{target}} under {{condition}}
-
-### Usability (If Applicable)
-- **NFR-USE-001**: {{metric}} {{target}} under {{condition}}
-
-### Maintainability (If Applicable)
-- **NFR-MAINT-001**: {{metric}} {{target}} under {{condition}}
-
-### Compatibility (If Applicable)
-- **NFR-COMPAT-001**: {{metric}} {{target}} under {{condition}}
+### {{Category}}
+- **NFR-{{CODE}}-001**: {{metric}} {{target}} under {{condition}}
 
 ---
 
@@ -176,72 +151,4 @@ outputPath: ''
 
 ## 8. Implementation Reference (Optional)
 
-> *Include sections below when your project has defined formats, codes, or algorithms that implementing agents need as reference. Skip sections that don't apply.*
-
-### 8.1 Configuration Schema
-
-> *Include when: Project has user-editable configuration files (YAML, JSON, env vars)*
-
-```yaml
-# Example structure - replace with actual schema
-{{config_section}}:
-  {{field}}: {{type}}  # {{description}}
-```
-
-### 8.2 Output Formats
-
-> *Include when: Project has defined console output, file formats, or API response structures*
-
-**{{Output Type}} Format:**
-```
-{{exact format specification with examples}}
-```
-
-### 8.3 Error/Status Code Catalog
-
-> *Include when: Project uses coded errors (ERR_001) or status codes for consistent reporting*
-
-| Code | Description | Cause | Resolution |
-|------|-------------|-------|------------|
-| {{ERR_001}} | {{description}} | {{what triggers it}} | {{how to fix}} |
-| {{ATT_001}} | {{description}} | {{what triggers it}} | {{action needed}} |
-
-### 8.4 Algorithm Details
-
-> *Include when: Project has multi-step logic, calculations, or processing pipelines that need exact specification*
-
-**{{Algorithm Name}}:**
-
-1. **Step 1:** {{description}}
-   - Input: {{what it receives}}
-   - Process: {{what it does}}
-   - Output: {{what it produces}}
-
-2. **Step 2:** {{description}}
-   - ...
-
-### 8.5 Examples & Edge Cases
-
-> *Include when: Complex rules benefit from concrete examples showing expected behavior*
-
-**Example: {{Scenario Name}}**
-```
-Input: {{example input}}
-Expected: {{expected behavior/output}}
-Reason: {{why this is correct}}
-```
-
-**Edge Case: {{Edge Case Name}}**
-```
-Situation: {{description}}
-Handling: {{how system should respond}}
-```
-
-### 8.x Project-Specific Sections (Optional)
-
-> *Add sub-sections as needed for your project. Common examples:*
-
-- **Deployment Procedures** — environment setup, deployment steps, rollback procedures
-- **Monitoring Requirements** — metrics to track, alerting thresholds, dashboard specifications
-- **Data Retention Policies** — retention periods, archival rules, purge schedules
-- **Migration Procedures** — data migration steps, validation criteria, rollback plans
+> *Include sub-sections as needed: Configuration Schema, Output Formats, Error/Status Code Catalog, Algorithm Details, Examples & Edge Cases. See prd-purpose.md for quality criteria.*

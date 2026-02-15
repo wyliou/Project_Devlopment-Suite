@@ -4,10 +4,9 @@ description: 'Initialize PRD workflow - detect state, discover inputs, determine
 
 # File references
 nextStepFile: '{skill_base}/steps-create-prd/step-02-discovery.md'
-defaultOutputFile: '{project_root}/docs/prd.md'
+defaultOutputFile: '{project_root}/docs/PRD.md'
 prdTemplate: '{skills_root}/_prd-data/prd-template.md'
 prdPurpose: '{skills_root}/_prd-data/prd-purpose.md'
-projectTypesCSV: '{skills_root}/_prd-data/project-types.csv'
 
 # Resume step mapping
 step02File: '{skill_base}/steps-create-prd/step-02-discovery.md'
@@ -34,19 +33,13 @@ Detect workflow state, determine output path, discover input documents, setup PR
 
 ## SEQUENCE (Follow Exactly)
 
-### 1A. Determine Output Path
+### 1. Determine Output Path
 
-Ask the user where to save the PRD:
-
-"Where should the PRD be saved? Default: `{defaultOutputFile}`"
-
-If user provides a path, use it. Otherwise use `{defaultOutputFile}`. Store this as `outputPath` for all subsequent steps.
-
-### 1B. Multi-PRD Discovery
+#### A. Search for Existing PRDs
 
 Search for existing PRD files: `docs/*prd*.md`, `docs/*PRD*.md`
 
-**If multiple PRD files found:**
+**If existing PRDs found:**
 
 "Found existing PRDs:
 1. `{path_1}` — {first line or title}
@@ -55,11 +48,19 @@ Search for existing PRD files: `docs/*prd*.md`, `docs/*PRD*.md`
 
 Which would you like to work with?
 - [1-N] Select an existing PRD
-- [New] Create a new PRD at `{outputPath}`"
+- [New] Create a new PRD"
 
-Wait for user choice. If an existing PRD is selected, update `outputPath` to that file.
+Wait for user choice. If an existing PRD is selected, set `outputPath` to that file and proceed to step 2.
 
-### 1C. Check Workflow State
+#### B. Set Output Path (New PRD only)
+
+If user chose [New] or no existing PRDs were found:
+
+"Where should the PRD be saved? Default: `{defaultOutputFile}`"
+
+If user provides a path, use it. Otherwise use `{defaultOutputFile}`. Store as `outputPath`.
+
+### 2. Check Workflow State
 
 Check if the file at `outputPath` exists and read it completely if found.
 
@@ -67,11 +68,24 @@ Check if the file at `outputPath` exists and read it completely if found.
 
 | Condition | Action |
 |-----------|--------|
-| File exists + has `stepsCompleted` + missing `step-06-complete` | → Continuation Branch (Section 2 below) |
-| File exists + NO `stepsCompleted` (unmanaged) | → Safeguard Protocol (Section 3) |
-| File not exists | → Fresh Setup (Section 4) |
+| File exists + `stepsCompleted` includes `step-06-complete` | → Already Complete (Section 3) |
+| File exists + `stepsCompleted` present but missing `step-06-complete` | → Continuation Branch (Section 4) |
+| File exists + NO `stepsCompleted` (unmanaged) | → Safeguard Protocol (Section 5) |
+| File not exists | → Fresh Setup (Section 6) |
 
-### 2. Continuation Branch (Inline — replaces step-01b)
+### 3. Already Complete
+
+"This PRD's workflow is already complete.
+
+**[V] Validate** - Run /prd-validate
+**[A] Architecture** - Run /create-architecture
+**[E] Edit** - Run /prd-edit
+**[N] New** - Create a new PRD at a different path
+**[X] Exit**"
+
+Wait for user choice.
+
+### 4. Continuation Branch
 
 If existing file has `stepsCompleted` array but workflow is incomplete:
 
@@ -80,23 +94,13 @@ If existing file has `stepsCompleted` array but workflow is incomplete:
 | Field | Requirement |
 |-------|-------------|
 | `stepsCompleted` | Array, not empty (at least `step-01-init`) |
-| `inputDocuments` | Array (can be empty) |
-| `workflowType` | Should equal `'prd'` |
 | `capabilityAreas` | Array (can be empty) |
 
-**If validation fails:**
-"Frontmatter validation failed: {specific errors}
-
-Options:
-- [R] Reset - Backup current file and start fresh
-- [M] Manual fix - Show what needs correction
-- [A] Abort - Stop for manual investigation"
-
-Wait for user choice.
+**If validation fails:** Offer to backup the file and start fresh.
 
 #### B. Restore Context
 
-1. Reload all documents listed in `inputDocuments` array (no new discovery needed).
+1. Re-discover input documents using the same search patterns as Fresh Setup (section 6A). Skip the user confirmation — just load what's found.
 2. Load `{prdPurpose}` for quality standards context (normally loaded in step-02, but skipped on continuation).
 
 #### C. Determine Resume Point
@@ -111,67 +115,23 @@ Wait for user choice.
 | `step-04-requirements` | Step 5: Specifications | `{step05File}` |
 | `step-05-specifications` | Step 6: Complete | `{step06File}` |
 
-**Backward compatibility (PRDs created under old 4-step or 5-step workflows — these step names may exist in their frontmatter):**
+#### D. Report & Menu
 
-| Last Completed | Condition | Resume At | File |
-|----------------|-----------|-----------|------|
-| `step-04-complete` | — | Workflow already complete | → Already Complete options |
-| `step-05-complete` | — | Workflow already complete | → Already Complete options |
-| `step-03-requirements` | Contains `**NFR-` pattern AND >3 non-empty lines in Section 4 | Step 6: Complete | `{step06File}` |
-| `step-03-requirements` | Section 4 or Section 5 is empty/placeholder | Step 5: Specifications | `{step05File}` |
+Report progress (steps completed, next step, documents loaded) and present options:
 
-#### D. Check if Already Complete
-
-**If `step-06-complete` or `step-05-complete` or `step-04-complete` in `stepsCompleted`:**
-
-"Workflow already complete.
-
-Options:
-- [V] Validate - Run /prd-validate
-- [A] Architecture - Run /create-architecture
-- [E] Edit - Run /prd-edit
-- [X] Exit"
-
-#### E. Report & Menu
-
-"**Resuming PRD Workflow**
-
-**Document:** {outputPath}
-**Progress:** {count}/6 steps completed
-
-**Completed:**
-{list completed steps}
-
-**Next:** {next step name}
-
-**Context:** {count} input documents loaded
-
-Ready to continue?"
-
-**[C] Continue** - Resume from next step
-**[R] Restart** - Start over from step 2 (keeps document)
+**[C] Continue** - Load and execute the next step file based on resume point
+**[R] Restart** - Reset `stepsCompleted: ['step-01-init']`, load `{step02File}`
 **[X] Exit** - Stop workflow
 
-**C (Continue):** Load and execute the appropriate step file based on resume point.
-
-**R (Restart):** Reset frontmatter: `stepsCompleted: ['step-01-init']`, and begin Discovery again. Note: existing document content will be overwritten as each step is re-run. Load and execute `{step02File}`.
-
-**X (Exit):** Exit workflow
-
-### 3. Safeguard Protocol (Unmanaged File)
+### 5. Safeguard Protocol (Unmanaged File)
 
 If existing file has no `stepsCompleted` frontmatter:
 
-**Inform user:** "Found existing PRD at `{outputPath}` not created by this workflow."
-
-**Options:**
-- **[M] Migrate** - Add workflow metadata to existing file
-- **[B] Backup** - Rename to `prd_backup.md`, create fresh
-- **[A] Abort** - Stop and let user handle manually
+"Found existing file at `{outputPath}` not created by this workflow. Overwrite it, or choose a different path?"
 
 Wait for user choice before proceeding.
 
-### 4. Fresh Setup
+### 6. Fresh Setup
 
 #### A. Discover Input Documents
 
@@ -190,63 +150,32 @@ Search for product knowledge documents in common locations:
 
 **If no documents found or user confirms none are relevant:**
 "Proceeding without input documents. We'll gather all context through our conversation."
-Store `inputDocuments: []` in frontmatter and continue to Fresh Setup section 4C.
+Continue to section 6C.
 
-**Detect Project Type:**
-- Scan for source code (`src/**/*.py`, `**/*.js`, etc.)
-- Source found → **Brownfield**
-- No source → **Greenfield**
+**Project Type:** Ask the user: "Is this a Greenfield (new) or Brownfield (existing systems) project?"
+
+If the project repo contains source code, suggest Brownfield but let the user decide.
 
 **Report discoveries to user and ask for confirmation before loading.**
 
-#### B. Validate & Load Files
+#### B. Load Files
 
-Before loading:
-1. Verify each confirmed file exists
-2. If missing files, present options: [S]kip / [P]rovide path / [A]bort
-3. Verify `{prdTemplate}` exists
-4. Load all confirmed files completely (no offset/limit)
-
-#### B2. Template Fallback
-
-**If `{prdTemplate}` not found:** Display warning and generate minimal inline skeleton:
-
-"Warning: PRD template not found at `{prdTemplate}`. Using minimal inline skeleton."
-
-Generate a document with complete frontmatter and 8 section headers:
-
-```yaml
----
-stepsCompleted: []
-inputDocuments: []
-workflowType: 'prd'
-completedAt: ''
-documentChecksum: ''
-capabilityAreas: []
-outputPath: '{outputPath}'
----
-```
-
-Then add 8 section headers (`## 1. Overview` through `## 8. Implementation Reference`) with placeholder content.
+Load all confirmed input documents and `{prdTemplate}`. Skip any files that don't exist.
 
 #### C. Create Document
 
 - Copy `{prdTemplate}` to `{outputPath}`
 - Initialize frontmatter with:
   - `stepsCompleted: []`
-  - `inputDocuments: [...]` (list of loaded docs)
-  - `workflowType: 'prd'`
-  - `completedAt: ''`
-  - `documentChecksum: ''`
   - `capabilityAreas: []`
   - `outputPath: '{outputPath}'`
 
 Subsequent steps read `outputPath` from frontmatter rather than using a hardcoded value.
 
-### 5. Report & Menu
+#### D. Report & Menu
 
 **Report:**
-- Document created/migrated
+- Document created at `{outputPath}`
 - Input documents loaded (with counts by type)
 - Project type (Brownfield/Greenfield)
 
@@ -256,15 +185,3 @@ Subsequent steps read `outputPath` from frontmatter rather than using a hardcode
 **[X] Exit** - Stop workflow
 
 **On [C]:** Update frontmatter (`stepsCompleted: ['step-01-init']`), then load and execute `{nextStepFile}`.
-
----
-
-## SUCCESS CRITERIA
-
-- Workflow state detected correctly (fresh, continuation, or unmanaged)
-- Output path determined and stored in frontmatter
-- Multi-PRD discovery handled if multiple PRDs exist
-- Continuation handled inline with correct resume point mapping
-- Input documents discovered and loaded
-- PRD document created or migrated with `capabilityAreas` and `outputPath` in frontmatter
-- User confirmed setup before proceeding
