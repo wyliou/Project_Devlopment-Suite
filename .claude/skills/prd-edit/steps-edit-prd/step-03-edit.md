@@ -161,9 +161,9 @@ Analyze FRs to identify entities:
 - Extract nouns from FR Inputs and Outputs
 - Create table with Entity, Key Attributes, Related FRs
 
-**If Quick Reference missing:**
+**If Quick Reference missing (and 5+ FRs):**
 Create summary table from FRs:
-| FR ID | Summary | Depends |
+| FR ID | Summary | Capability Area | Priority | Depends |
 
 **If Technology Constraints missing:**
 Create section with:
@@ -174,7 +174,6 @@ Create section with:
 
 ```yaml
 ---
-workflowType: 'prd'
 lastEdited: '{current_date}'
 editHistory:
   - date: '{current_date}'

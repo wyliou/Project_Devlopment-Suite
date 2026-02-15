@@ -121,8 +121,8 @@ Append to report:
 **[R] Review** - Walk through findings section by section
 **[A] Architecture** - Proceed to /create-architecture (if ready)
 **[E] Edit** - Launch /prd-edit to fix issues
-**[P] Party Mode** - Multi-agent discussion of findings
 **[X] Exit** - Finish and review report manually
+*Always available: **[P] Party Mode** | **[D] Deep Dive***
 
 #### Menu Logic:
 
@@ -142,9 +142,6 @@ Append to report:
 - "Launch edit mode now?"
 - If yes: Suggest running `/prd-edit`
 - If no: Return to menu
-
-**P (Party Mode):**
-Invoke `/_party-mode` skill to discuss validation findings from multiple agent perspectives (PM, Architect, Developer, QA). Get diverse viewpoints on critical issues and recommended improvements. After discussion, return to menu.
 
 **X (Exit):**
 - "**Report Saved:** {report_path}"

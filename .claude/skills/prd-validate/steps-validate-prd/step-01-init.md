@@ -43,20 +43,21 @@ Load and read:
 ### 3. Load PRD and Extract Frontmatter
 
 - Load complete PRD file including frontmatter
-- Extract `inputDocuments: []` array if present
 - Extract classification info if present
 
-### 4. Load Input Documents
+### 4. Discover Input Documents
 
-For each document in `inputDocuments`:
-- Attempt to load
-- Track successfully loaded documents
-- Note any failures
+Search for reference documents in common locations:
+- `docs/` — product briefs, research docs, other `.md` files
+- `product_knowledge/` (if exists)
+- Project root `.md` files
+
+Track successfully loaded documents.
 
 ### 5. Prompt for Additional Documents
 
-"**Documents loaded from PRD frontmatter:**
-{list loaded documents}
+"**Documents discovered:**
+{list loaded documents, or 'None found'}
 
 **Are there additional reference documents to include?**
 Provide paths or 'none' to proceed."

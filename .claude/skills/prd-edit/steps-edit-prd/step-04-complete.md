@@ -71,6 +71,7 @@ From step 3, gather:
 **[E] Edit More** - Continue editing
 **[S] Summary** - Show detailed change report
 **[X] Exit** - Finish
+*Always available: **[P] Party Mode** | **[D] Deep Dive***
 
 #### Menu Logic:
 
@@ -106,7 +107,7 @@ Display detailed report:
 | Section | Status |
 |---------|--------|
 | 1. Overview | {Present/Updated/Added} |
-| 2. User Journeys | {Present/Updated/Added/N/A} |
+| 2. Journeys/Workflows | {Present/Updated/Added/N/A} |
 | 3. Functional Requirements | {Present/Updated/Added} |
 | 4. Non-Functional Requirements | {Present/Updated/Added/N/A} |
 | 5. Data Entities | {Present/Updated/Added/N/A} |

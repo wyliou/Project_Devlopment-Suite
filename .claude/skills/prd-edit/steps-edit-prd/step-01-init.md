@@ -69,7 +69,7 @@ Extract all `##` headers and analyze:
 | Section | Present? | Required For |
 |---------|----------|--------------|
 | 1. Overview | {Yes/No/Partial} | All projects |
-| 2. User Journeys | {Yes/No/Partial} | UI-based |
+| 2. Journeys/Workflows | {Yes/No/Partial} | UI-based, pipelines, infrastructure |
 | 3. Functional Requirements | {Yes/No/Partial} | All projects |
 | 4. Non-Functional Requirements | {Yes/No/Partial} | Production |
 | 5. Data Entities | {Yes/No/Partial} | Persistent storage |
@@ -125,6 +125,7 @@ Analyze section gaps based on project type:
 | 5. Data Entities | {Present/Missing/Partial} | {what's missing} | {Min/Mod/Sig} |
 | 6. Technology Constraints | {Present/Missing/Partial} | {what's missing} | {Min/Mod/Sig} |
 | 7. Quick Reference | {Present/Missing/Partial} | {what's missing} | {Min/Mod/Sig} |
+| 8. Implementation Reference | {Present/Missing/Partial} | {what's missing} | {Min/Mod/Sig} |
 
 Calculate: Sections present: {count}
 

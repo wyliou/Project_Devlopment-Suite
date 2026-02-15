@@ -38,16 +38,18 @@ Scan entire PRD and extract:
 
 First, identify project type from Overview/Classification. Then check sections based on type:
 
-| Section | Variations | Required For |
-|---------|------------|--------------|
-| 1. Overview | Executive Summary, Introduction | All |
-| 2. Journeys/Workflows | User Journeys, Actor Journeys, Data Workflows, Command Workflows, Operational Workflows, Integration Scenarios | Web/Mobile/Desktop/Pipeline/Infrastructure |
-| 3. Functional Requirements | Features, Capabilities | All |
-| 4. Non-Functional Requirements | NFRs, Quality Attributes | Production systems |
-| 5. Data Entities | Data Model, Entities | Persistent storage |
-| 6. Technology Constraints | Tech Stack, Constraints | When constraints exist |
-| 7. Quick Reference | Summary, Reference | 5+ FRs |
-| 8. Implementation Reference | Config Schema, Output Formats, Error Catalog, Algorithms | Complex systems with defined specs |
+Refer to `{validationChecks}` Section Requirements table to determine which sections are Required, Recommended, or Optional for this project type.
+
+| Section | Variations |
+|---------|------------|
+| 1. Overview | Executive Summary, Introduction |
+| 2. Journeys/Workflows | User Journeys, Command Workflows, Data Workflows, Integration Scenarios, Operational Workflows, etc. |
+| 3. Functional Requirements | Features, Capabilities |
+| 4. Non-Functional Requirements | NFRs, Quality Attributes |
+| 5. Data Entities | Data Model, Entities |
+| 6. Technology Constraints | Tech Stack, Constraints |
+| 7. Quick Reference | Summary, Reference |
+| 8. Implementation Reference | Config Schema, Output Formats, Error Catalog, Algorithms |
 
 **Classify:**
 - Complete: All recommended sections for project type
@@ -121,11 +123,15 @@ Severity: Critical (<50%) / Warning (50-80%) / Pass (>80%)
 
 #### B3. FR Quality Check
 
-For each FR:
-- Input has specific fields with constraints?
-- Rules capture business logic (not implementation)?
-- Output is observable and testable?
-- Error lists specific cases with handling?
+For each FR, check against FR Quality Criteria from prd-purpose.md:
+- Actor is explicit (not vague "the system")?
+- Input has types, formats, limits, and validation rules?
+- Rules capture business logic only (no implementation details)?
+- Output is observable with state change — specific enough to test?
+- Error covers every input validation failure and business rule violation?
+- Boundary conditions addressed (min/max, empty states, edge cases)?
+- State transitions explicit if entity state changes (e.g., pending → confirmed)?
+- Data flow direction clear (who provides input, who receives output)?
 
 #### B4. Implementation Leakage Check
 
@@ -197,13 +203,21 @@ Based on Primary Context, check required patterns:
 
 #### C3. Project-Type Compliance
 
-Based on Product Category, check required elements:
+Based on Product Category, check required elements. Refer to `{validationChecks}` Project-Type Compliance section for detailed checks. Common patterns:
 
 **CLI Tool:** Input/output formats, exit codes, config
 **Web App:** Responsive, session/auth, frontend NFRs
 **API Service:** API FRs, rate limiting, auth, error format
 **Desktop App:** Platform targets, installation, offline
 **Mobile App:** Platform targets, offline, push notifications
+**Data Pipeline:** Data sources, transforms, scheduling, error handling
+**ML Model/Service:** Training data, inference latency, model versioning
+**Infrastructure/IaC:** Cloud resources, networking, DR strategy
+**Microservices:** Service boundaries, communication contracts, data ownership
+**Library/SDK:** Language support, API surface, documentation
+**Plugin/Extension:** Host API, extension points, version compatibility
+**Full Stack App:** Frontend + backend + database coherence
+**Prototype/MVP:** Core hypothesis testable, minimal but complete
 
 #### C4. Technology Constraints Check
 
