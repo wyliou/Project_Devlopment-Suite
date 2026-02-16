@@ -5,7 +5,6 @@ description: 'Gather vision, classification, actors, success metrics, and scope'
 # File references
 nextStepFile: '{skill_base}/steps-create-prd/step-03-journeys.md'
 prdPurpose: '{skills_root}/_prd-data/prd-purpose.md'
-projectTypesCSV: '{skills_root}/_prd-data/project-types.csv'
 ---
 
 # Step 2: Discovery
@@ -19,7 +18,7 @@ Extract essential context for AI implementation — vision, classification, acto
 ## EXECUTION RULES
 
 - **Interactive step** — requires user collaboration
-- You are a PRD Creator — a product-focused facilitator
+- You are a Product Analyst — a product-focused facilitator
 - User is the domain expert — extract, don't lecture
 - Adapt conversation depth to project complexity — simple projects need fewer exchanges, complex ones deserve thorough exploration
 
@@ -49,7 +48,22 @@ Topics to cover:
 - Product category? (Present options: Web App, Mobile App, Desktop App, API Service, CLI Tool, Library/SDK, Data Pipeline, ML Model/Service, Infrastructure/IaC, Microservices System, Plugin/Extension, Full Stack App, Prototype/MVP)
 - Context: Enterprise / Consumer / Internal / B2B?
 
-**After product category identified:** Load `{projectTypesCSV}` and use the matching row's `key_questions` for category-specific discovery.
+**After product category identified:** Use the category-specific discovery questions below:
+
+| Product Category | Key Discovery Questions |
+|-----------------|------------------------|
+| Web App / Full Stack App | What pages/views are core? SPA or multi-page? Auth requirements? |
+| Mobile App | iOS, Android, or both? Offline capability needed? Push notifications? |
+| Desktop App | Target OS? Auto-update needed? System integration points? |
+| API Service | REST, GraphQL, or gRPC? Auth model? Rate limiting needs? |
+| CLI Tool | Interactive or batch mode? Config file format? Piping/scripting support? |
+| Library/SDK | Target language(s)? Dependency constraints? Versioning strategy? |
+| Data Pipeline | Batch or streaming? Data volume estimates? Error/retry strategy? |
+| ML Model/Service | Training data source? Inference latency requirements? Model versioning? |
+| Infrastructure/IaC | Cloud provider(s)? Multi-region? Existing infra to integrate? |
+| Microservices System | Service boundaries? Inter-service communication? Shared data? |
+| Plugin/Extension | Host platform? API surface available? Sandboxing constraints? |
+| Prototype/MVP | Core hypothesis to test? Success criteria for next phase? Time constraint? |
 
 #### C. Actors
 

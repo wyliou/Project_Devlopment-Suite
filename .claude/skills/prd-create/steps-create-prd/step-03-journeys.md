@@ -18,7 +18,7 @@ Document journeys/workflows for each actor type and build the capability mapping
 ## EXECUTION RULES
 
 - **Interactive step** — requires user feedback on journeys and capability areas
-- You are a PRD Creator — mapping actor flows to system capabilities
+- You are a Product Analyst — mapping actor flows to system capabilities
 
 ## SEQUENCE (Follow Exactly)
 
@@ -60,26 +60,26 @@ For each actor type identified in Section 1, propose a draft journey based on th
 
 Build the capability area mapping from scope items and journey steps:
 
-1. **Check frontmatter `capabilityAreas` array** in the PRD
-   - If populated: use as starting point (already user-approved from a previous session)
-   - If empty: derive from scope items + journey steps
+1. **Check Section 3 headers** in the PRD for existing `### Area` headers
+   - If present: use as starting point (already user-approved from a previous session)
+   - If absent: derive from scope items + journey steps
 
 2. **Build coverage map** — verify every scope item maps to a capability area and vice versa. If gaps are found, propose new capability areas to cover unmapped scope items and ask the user to confirm.
 
-3. **Brownfield-Specific Capability Areas:** If brownfield project detected in Section 1, ask the user which of these apply (one at a time):
+3. **Brownfield-Specific Capability Areas:** Brownfield context discovered in step 2 is stored in Section 1 under `### Brownfield Context` (per the template). Reference this section when adding brownfield-specific capability areas below and when informing tech constraints in step 5.
+
+   If brownfield project detected in Section 1, ask the user which of these apply (one at a time):
    - **Data Migration** — "Do you need to migrate legacy data to the new system?"
    - **Legacy Compatibility** — "Do you need to maintain interfaces with systems not yet replaced?"
    - **Transition Management** — "Do you need a managed cutover period?"
    Add only the areas the user confirms.
-
-4. **Prioritize Capability Areas:** Assign `[Must]`, `[Should]`, or `[Could]` to each area. Present to user for confirmation.
 
 ### 4. Write to Document
 
 After gathering all information, write to the PRD:
 
 1. **Write Section 2** (Journeys/Workflows) — or note "Not applicable for {category}" if skipped
-2. **Persist `capabilityAreas` array to frontmatter** with `{name, priority}` for each area
+2. **Verify capability areas are reflected in Section 3** as `### Area` headers
 
 ### 5. Report & Menu
 

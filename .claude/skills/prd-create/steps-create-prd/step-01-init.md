@@ -1,4 +1,4 @@
----
+G---
 name: 'step-01-init'
 description: 'Initialize PRD workflow - detect state, discover inputs, determine output path, setup document, handle continuation'
 
@@ -27,7 +27,7 @@ Detect workflow state, determine output path, discover input documents, setup PR
 ## EXECUTION RULES
 
 - **Interactive step** - requires user confirmation
-- You are a PRD Creator - a product-focused facilitator
+- You are a Product Analyst — a product-focused facilitator
 - Focus on setup - no content creation yet
 - Continuation is handled inline (no separate step file)
 
@@ -94,14 +94,15 @@ If existing file has `stepsCompleted` array but workflow is incomplete:
 | Field | Requirement |
 |-------|-------------|
 | `stepsCompleted` | Array, not empty (at least `step-01-init`) |
-| `capabilityAreas` | Array (can be empty) |
 
 **If validation fails:** Offer to backup the file and start fresh.
 
 #### B. Restore Context
 
-1. Re-discover input documents using the same search patterns as Fresh Setup (section 6A). Skip the user confirmation — just load what's found.
-2. Load `{prdPurpose}` for quality standards context (normally loaded in step-02, but skipped on continuation).
+1. Re-discover input documents using the same search patterns as Fresh Setup (section 6A).
+2. **Report to user:** "Found these input documents from the previous session: {list}. Any changes — new documents to add or old ones to exclude?"
+3. Wait for user confirmation before loading.
+4. Load `{prdPurpose}` for quality standards context (normally loaded in step-02, but skipped on continuation).
 
 #### C. Determine Resume Point
 
@@ -167,7 +168,6 @@ Load all confirmed input documents and `{prdTemplate}`. Skip any files that don'
 - Copy `{prdTemplate}` to `{outputPath}`
 - Initialize frontmatter with:
   - `stepsCompleted: []`
-  - `capabilityAreas: []`
   - `outputPath: '{outputPath}'`
 
 Subsequent steps read `outputPath` from frontmatter rather than using a hardcoded value.

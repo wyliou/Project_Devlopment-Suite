@@ -1,6 +1,6 @@
 ---
 name: 'step-06-complete'
-description: 'Generate Quick Reference with priority, readiness gate, and handoff'
+description: 'Priority validation, readiness gate, and handoff'
 
 # File references
 validationChecks: '{skills_root}/_prd-data/validation-checks.md'
@@ -12,11 +12,12 @@ validationChecks: '{skills_root}/_prd-data/validation-checks.md'
 
 ## STEP GOAL
 
-Generate Quick Reference table with priority columns, perform readiness gate (structural completeness + cross-reference integrity), and prepare for handoff.
+Validate FR Priority fields, perform readiness gate (structural completeness + cross-reference integrity), and prepare for handoff.
 
 ## EXECUTION RULES
 
 - **Interactive step** — presents completion options
+- You are a Product Analyst — finalizing the PRD for handoff
 - This is the final step
 - Readiness gate issues MUST be fixed before handoff
 - Deep quality validation (density, measurability, leakage) is /prd-validate's domain — do not duplicate here
@@ -24,23 +25,14 @@ Generate Quick Reference table with priority columns, perform readiness gate (st
 
 ## SEQUENCE (Follow Exactly)
 
-### 1. Generate Quick Reference Table
+### 1. Validate FR Priority Fields
 
-**Check FR count first.** If fewer than 5 FRs, skip Section 7 — it would just duplicate Section 3. Note "Section 7: Not applicable (fewer than 5 FRs)" in the PRD.
+Verify every FR in Section 3 has a `Priority:` field with a valid value (Must, Should, or Could).
 
-If 5+ FRs, create summary table from Section 3:
+- If any FR is missing a Priority field, assign it based on MVP Scope (Section 1) — in-scope items default to Must.
+- If any FR has an invalid Priority value, correct it.
 
-```markdown
-## 7. Quick Reference
-
-| FR ID | Summary | Capability Area | Priority | Depends |
-|-------|---------|----------------|----------|---------|
-| FR-xxx | {brief summary} | {area name} | {Must/Should/Could} | {FR-xxx or -} |
-```
-
-Mechanically generate from Section 3 — every FR gets a row. Derive Capability Area and Priority from the `### Area Name [Priority]` headers.
-
-Update the PRD Section 7.
+Report: "{count} FRs validated, all have Priority fields ({must} Must, {should} Should, {could} Could)"
 
 ### 2. Readiness Gate
 
@@ -52,7 +44,7 @@ Refer to `{validationChecks}` Section Requirements table to determine which sect
 
 #### B. Placeholder Cleanup
 
-Scan the entire document for template placeholder patterns (`{{...}}`). Remove or fill all occurrences. If a section is complete but still contains placeholders, remove the placeholder lines.
+Scan the entire document for `{{...}}` patterns. These are TEMPLATE placeholders from prd-template.md and must ALL be removed or filled by step 6. No `{{...}}` pattern is acceptable in the final document — if a section is optional and not populated, remove the entire section rather than leaving placeholders.
 
 #### C. Cross-Reference Integrity
 
@@ -60,8 +52,7 @@ Scan the entire document for template placeholder patterns (`{{...}}`). Remove o
 |-------|------------|
 | Dependency validity | All `Depends:` references exist, no circular deps |
 | Entity traceability | All entity Related FRs exist in Section 3 (skip if Section 5 not applicable) |
-| Quick Reference completeness | All FRs from Section 3 appear in Section 7 (skip if Section 7 not applicable) |
-| Priority consistency | Priority tags in Section 7 match Section 3 capability area headers (skip if Section 7 not applicable) |
+| Priority fields | Every FR has a valid Priority: Must/Should/Could |
 
 **Mandatory: Do not allow handoff with structural issues.**
 
@@ -89,7 +80,6 @@ Update the PRD frontmatter:
 ```yaml
 ---
 stepsCompleted: ['step-01-init', 'step-02-discovery', 'step-03-journeys', 'step-04-requirements', 'step-05-specifications', 'step-06-complete']
-capabilityAreas: [{name, priority} array from step 3]
 outputPath: '{outputPath}'
 ---
 ```

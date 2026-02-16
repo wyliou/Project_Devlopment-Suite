@@ -13,12 +13,12 @@ validationChecks: '{skills_root}/_prd-data/validation-checks.md'
 
 ## STEP GOAL
 
-Generate all derived and complementary specifications: Technology Constraints, Non-Functional Requirements, Data Entities, and Implementation Reference (Section 8). Tech constraints are gathered first because they inform NFR targets and data entity decisions.
+Generate all derived and complementary specifications: Technology Constraints, Non-Functional Requirements, Data Entities, and Implementation Reference (Section 7). Tech constraints are gathered first because they inform NFR targets and data entity decisions.
 
 ## EXECUTION RULES
 
 - **Interactive step** — requires user feedback
-- You are a PRD Creator — deriving specifications from established FRs
+- You are a Product Analyst — deriving specifications from established FRs
 - Each sub-section builds on FR analysis from step 4
 
 ## SEQUENCE (Follow Exactly)
@@ -123,9 +123,11 @@ If applicable, analyze FRs to identify implied data entities:
 
 Update the PRD Section 5 with generated entities.
 
-### 4. Assess Implementation Reference (Section 8)
+### 4. Assess Implementation Reference (Section 7)
 
-Assess which sub-sections add value based on FR analysis **and any Section 8 material noted during step 4 deepening** (algorithms, error codes, format specifications discovered in user answers).
+**First:** Check for `_Section 7 Notes (Temporary)` in the PRD. If present, use these notes as the starting material — they contain implementation details already confirmed with the user during deepening.
+
+Then assess which sub-sections add value based on FR analysis and these notes (algorithms, error codes, format specifications discovered in user answers).
 
 Available sub-sections: Configuration Schema, Output Formats, Error Code Catalog, Algorithm Details, Examples & Edge Cases. Project-specific sub-sections can be added too.
 
@@ -135,7 +137,9 @@ Available sub-sections: Configuration Schema, Output Formats, Error Code Catalog
 - Config schemas must specify types, defaults, and valid ranges
 - Examples must show both typical cases and boundary/edge cases
 
-Present your recommendation to the user. For each approved sub-section, gather detail to populate it. If none needed, note "Section 8 not applicable" in the PRD.
+Present your recommendation to the user. For each approved sub-section, gather detail to populate it. If none needed, note "Section 7 not applicable" in the PRD.
+
+**After writing Section 7:** Remove the `_Section 7 Notes (Temporary)` section from the PRD if it exists — its content has been incorporated into the final Section 7.
 
 ### 5. Present & Menu
 
@@ -143,13 +147,13 @@ Present your recommendation to the user. For each approved sub-section, gather d
 - At least 2 NFRs (PERF + one other), each with metric + target + condition
 - Entity Related FRs exist in Section 3
 - Decided and Open sections present in Tech Constraints
-- Section 8 sub-sections meet quality criteria if applicable
+- Section 7 sub-sections meet quality criteria if applicable
 
 Show the user:
 1. Technology Constraints summary
 2. NFR summary (count by category)
 3. Data Entities summary (or "not applicable")
-4. Section 8 status (applicable sections or "not needed")
+4. Section 7 status (applicable sections or "not needed")
 
 **Menu:**
 
@@ -157,5 +161,7 @@ Show the user:
 **[R] Revise** - Modify specifications
 **[X] Exit** - Save progress and stop
 *Always available: **[P] Party Mode** | **[D] Deep Dive***
+
+**On [P] Party Mode return:** Review the agents' recommendations. For each actionable item, ask the user: "The agents suggested {X}. Apply this change? [Y/N]" Apply approved changes, then return to this menu.
 
 **On [C]:** Update frontmatter (`stepsCompleted` add `'step-05-specifications'`), then load and execute `{nextStepFile}`.
