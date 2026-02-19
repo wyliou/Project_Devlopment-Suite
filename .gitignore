@@ -61,6 +61,8 @@ htmlcov/
 docs/_build/
 site/
 reference/
+config/
+data/
 
 # Temporary files
 tmp/

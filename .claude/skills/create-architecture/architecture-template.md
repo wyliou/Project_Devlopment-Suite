@@ -41,14 +41,11 @@ RULES:
 
 ## 1. Technology Stack
 
+<!-- Categories are project-type-adaptive. See step-02 for category sets by project type. -->
+
 | Category | Choice | Version | Rationale |
 |----------|--------|---------|-----------|
-| Framework | | | |
-| Database | | | |
-| ORM | | | |
-| Auth | | | |
-| Styling | | | |
-| Testing | | | |
+| | | | |
 
 ### Build Commands
 
@@ -171,35 +168,9 @@ Verify: graph must be acyclic.
 
 ## 5. Contracts
 
-<!-- For web/API: REST endpoints. For CLI: command specs. For libraries: public API surface. -->
+<!-- Contract format is project-type-adaptive. See step-03 for all formats. -->
 <!-- Each contract entry includes Module: field mapping it to Section 4 -->
-
-<!--
-=== WEB/API CONTRACT FORMAT ===
-### METHOD /api/route
-- **FR:** FR-###
-- **Module:** {owning module from Section 4}
-- **Request:** `{ field: type }`
-- **Response 200:** `{ data: {...} }`
-- **Response 4xx:** `{ error: { code: "...", message: "..." } }`
-
-=== CLI CONTRACT FORMAT ===
-### command-name
-- **FR:** FR-###
-- **Module:** {owning module from Section 4}
-- **Args:** `<required> [optional]`
-- **Flags:** `--flag description (default)`
-- **Stdout:** `format description`
-- **Exit Codes:** `0: success, 1: error, 2: usage`
-
-=== LIBRARY CONTRACT FORMAT ===
-### functionName(params): ReturnType
-- **FR:** FR-###
-- **Module:** {owning module from Section 4}
-- **Parameters:** `param1: Type - description`
-- **Returns:** `Type - description`
-- **Throws:** `ErrorType - when condition`
--->
+<!-- Common formats: REST endpoints (web/API), CLI commands, Library API, Data Flow, Resource Defs, Service Contracts, Screen Contracts -->
 
 ---
 

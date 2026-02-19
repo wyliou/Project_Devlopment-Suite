@@ -11,10 +11,12 @@ Can be invoked standalone or delegated to by another skill (e.g., `build-from-pr
 
 ## Inputs
 
-Locate and read:
+### Primary sources (required)
 
-- **PRD**: Search for `PRD.md`, `prd.md`, or files containing "requirements" / "product requirements" in `docs/`, project root, or any reasonable location.
-- **Architecture**: Search for `architecture.md`, `ARCHITECTURE.md`, `design.md`, or similar. Needed to understand module boundaries and data flow during investigation.
+These are the **only** sources of truth for understanding requirements and classifying bugs:
+
+- **PRD**: Search for `PRD.md`, `prd.md`, or files containing "requirements" / "product requirements" in `docs/`, project root, or any reasonable location. This is the authoritative reference for ALL investigation — what the code should do, what parameters to use, what edge cases to handle.
+- **Architecture**: Search for `architecture.md`, `ARCHITECTURE.md`, `design.md`, or similar. Use this to understand module boundaries, data flow, and side-effect ownership during investigation.
 - **Source code**: Check `src/`, `app/`, `lib/`, or the project's established source directory.
 - **Test suite**: Check `tests/` or the project's test directory.
 - **Test data**: Check `data/`, `samples/`, `fixtures/`, `tests/data/`, or similar.
@@ -22,19 +24,17 @@ Locate and read:
 
 STOP if PRD, source code, or test data is missing — report what's absent.
 
-### Build artifacts (when delegated from `build-from-prd` or `quick-build`)
+### Build artifacts (optional — stack detection only)
 
-Check the project root for these files — if they exist, use them instead of re-detecting:
+If `build-plan.md` exists, read its **Build Config** table for pre-computed commands (`test_command`, `run_command`, `src_dir`, `test_dir`, language, package manager). This saves re-detecting the stack in Step 1.
 
-- **`build-plan.md`**: Contains a **Build Config** table with pre-computed `test_command`, `run_command`, `src_dir`, `test_dir`, language, and package manager. Use these directly in Step 1 instead of re-detecting the stack.
-- **`build-context.md`**: Contains project conventions, side-effect rules, error handling patterns, and known gotchas. Read this for context during investigation — it explains which module owns which side-effect (logging, file I/O), which prevents misclassifying ownership bugs.
-- **`specs/`**: Per-module spec files with FR mappings, exports, and verbatim outputs. Useful for understanding module boundaries during investigation, but always cross-reference the **PRD directly** — specs may have lost parameters during distillation.
+**Do NOT use build artifacts (`build-context.md`, `specs/`) for investigating failures or classifying bugs.** These are derived from the PRD and may have lost parameters during distillation — using them for investigation would inherit the same blind spots that caused the bugs. Always cross-reference the PRD and architecture directly.
 
 ---
 
 ## Step 1: Baseline
 
-1. **Detect the stack.** If `build-plan.md` exists, read the **Build Config** table for pre-computed commands (test_command, language, package_manager, src_dir, test_dir). Otherwise, detect from the project manifest. Determine the test command, run command, and dependency isolation method.
+1. **Detect the stack.** Read the project manifest to determine language, package manager, test command, run command, and dependency isolation method. If `build-plan.md` exists, its **Build Config** table has pre-computed commands that can accelerate this step.
 2. **Run the full test suite.** Record the pass/fail count.
    - If tests fail, fix them before proceeding. Do not investigate test data with a broken test suite.
 3. **Identify the entry point** — how to execute the application against test data:
@@ -42,14 +42,14 @@ Check the project root for these files — if they exist, use them instead of re
    - Look for `main` files, CLI modules, `Makefile` targets, or run scripts.
    - Read the PRD or README for usage instructions.
    - If the application is a library (not a CLI/server), identify the top-level function that processes input and write a short runner script.
-4. **Smoke test** — run the application against **one** test input to verify it starts, processes without crashing, and produces output. If the smoke test fails (config errors, missing dependencies, startup exceptions), fix the blocker before running against all data. This catches environment and config issues cheaply.
+4. **Smoke test** — run the application against a **simple, representative** test input to verify it starts, processes without crashing, and produces output. If the smoke test fails (config errors, missing dependencies, startup exceptions), fix the blocker before running against all data.
 
 ---
 
 ## Step 2: Run Against All Test Data
 
-1. **Execute the application** against every input in the test data directory. **Capture output to a file** (e.g., `> validation-run-1.log 2>&1`) for reliable parsing.
-   - For **CLI/batch apps**: run the command against all input files.
+1. **Execute the application** against every input in the test data directory. **Capture all output (stdout+stderr) to a UTF-8 encoded file** (name: `validation-round-{N}.log`). Prefer batch/directory mode over per-file invocation if the app supports it — faster and catches cross-file state bugs.
+   - For **CLI/batch apps**: run the command against all input files (batch mode preferred).
    - For **APIs/servers**: start the server, send requests with each test input, capture responses.
    - For **libraries**: call the entry function with each test input.
 2. **Parse results programmatically.** Grep or regex the output file to extract tier counts. Do not manually read terminal output. Example approaches:
@@ -71,13 +71,13 @@ Check the project root for these files — if they exist, use them instead of re
 
 **Group failures by similarity first** — same error message, same failing function, same missing field. Investigate one representative per group, not every individual failure.
 
-**Scan for convention/ownership bugs** by analyzing the captured output file:
-- Extract all warning/error lines, group by error code.
-- Flag any error code that appears 2+ times for the same input (possible duplicate reporting).
-- Flag same condition reported with different wording from different modules.
-- Flag inconsistent message formatting (different prefixes, capitalization, templates).
+**Scan for convention/ownership bugs** in the captured output:
+- Group all warning/error lines by error code. Flag codes appearing 2+ times per input (duplicate reporting) or the same condition reported differently from different modules.
+- These are responsibility overlap bugs. Check the architecture doc for module boundaries and the PRD for side-effect ownership. Fix as code bugs before investigating data failures.
 
-These are **convention divergence or responsibility overlap bugs** — two modules independently detecting/reporting the same condition. If `build-context.md` exists, use its **Side-Effect Ownership** rules to quickly identify which module is the rightful owner. Classify and fix as code bugs before investigating data failures.
+**Scan for inconsistent handling patterns** across groups:
+- If field A is handled correctly in some representation (e.g., alternative format, nullable wrapper) but field B in the same data structure fails with the same representation, this signals inconsistent logic — a code bug, not a data issue.
+- If a field has a PRD-defined override/fallback that works for some inputs but not others, check pipeline ordering — the override may run after validation for the failing cases.
 
 ### Phase B: Quick triage (main agent)
 
@@ -85,15 +85,26 @@ For each group, do a **lightweight check** in main context before committing to 
 
 1. **Read the error message.** Identify the function and line where the non-ideal outcome originates.
 2. **Read the failing function** (~50 lines around the failure site). Do NOT trace the entire pipeline.
-3. **Quick data check** — write one **batch diagnostic script per group** (not per file). The script should process ALL files in the group and print a summary table. This is faster than individual scripts and reveals whether the issue is consistent across the group.
-   - Stack-agnostic framing: write a minimal script that reads the raw input at **both** the code's failure point **and** PRD-specified locations. Use whatever tool fits the stack (openpyxl for Excel, jq for JSON, DOM parser for XML, curl for APIs, etc.).
-   - Print values in **related fields** and at **PRD-specified locations** — the data may exist where the PRD says to look, not where the code currently searches.
-4. **Quick PRD check** — **read** the relevant PRD section (not just grep). Compare the PRD's specified algorithm (search ranges, patterns, columns, thresholds) against the code's actual implementation. Also check for fallbacks, overrides, defaults.
+3. **Quick data check** — write one **batch diagnostic script per group** (not per file) and save for reuse in later rounds. The script should process ALL files in the group and print a summary table comparing values at the code's failure point AND at PRD-specified locations. Use whatever tool fits the stack (openpyxl, jq, DOM parser, etc.). Data may exist where the PRD says to look, not where the code currently searches.
+4. **Quick PRD check** — **read** the relevant PRD section (not just grep). Compare the PRD's specified algorithm (search ranges, patterns, columns, thresholds) against the code's actual implementation. Check for fallbacks, overrides, defaults. Also check if the code makes positional assumptions (index-based computation) that break when upstream produces non-consecutive positions (skipped rows, filtered items).
+
+**Special protocol for "empty/missing required field" errors:**
+
+These errors are the most commonly misclassified. Before labeling ANY empty-field error as a data issue, complete this mandatory checklist:
+
+1. **Population source scan** — grep the PRD for ALL FRs that can populate this field. Search for the field name AND related/synonym terms. Any FR containing "override", "fallback", "default", "when empty", "use X as Y", "derive from" for this field is a population source. List every source found.
+2. **Pipeline ordering check** — if a population source exists, verify the code implements it AND that it runs BEFORE the validation that checks this field. Check for error short-circuits between the population step and validation that could prevent reaching the population step.
+3. **Raw data check** — verify the data is genuinely absent, not just in an alternative representation the code doesn't handle. Check the pre-processed state of the input (before any normalization, unmerging, flattening, or parsing). If the value exists in the raw input but disappears after processing, the code's processing logic is wrong.
+4. **Related field check** — inspect related fields in the same record. If the PRD defines any field as an override or alternative source for the failing field, check whether that field has data.
+
+Only classify as "data issue" if ALL four checks confirm the data genuinely cannot satisfy the requirement.
 
 After quick triage, classify each group into one of:
-- **Likely code bug** — PRD defines behavior the code doesn't implement, or implements with wrong parameters (search ranges, patterns). Fix immediately.
-- **Likely data issue** — input genuinely lacks required data. Needs confirmation but low priority.
+- **Likely code bug** — PRD defines behavior the code doesn't implement, or implements with wrong parameters. Fix immediately.
+- **Likely data issue** — input genuinely lacks required data and ALL population sources exhausted. Needs confirmation but low priority.
 - **Uncertain** — needs deep investigation to determine.
+
+**Dual-issue files:** If a file has both a code bug AND a data issue, track both separately. After the code bug is fixed, the data issue will remain — don't re-investigate it.
 
 ### Phase C: Fix-first loop
 
@@ -103,31 +114,29 @@ Only proceed to deep investigation for groups that survive the re-run.
 
 ### Phase D: Deep investigation (uncertain groups only)
 
-For groups still unresolved after the fix-first loop, investigate the representative thoroughly:
+For groups still unresolved after the fix-first loop, investigate thoroughly:
 
-1. **Inspect the actual input data** with a diagnostic script (if not already done in Phase B).
-2. **Cross-reference the PRD** — **read** the full PRD section for the failing feature (not just grep for keywords). Check for:
-   - **Algorithm match** — do the code's search ranges, patterns, column limits, and thresholds match the PRD? Parameter mismatches are code bugs even when "not found" seems like a data issue.
-   - **Fallbacks or overrides** — does the PRD define an alternative source, default, or override for this field?
-   - **Phase ordering / edge cases** — is the error firing before a required transformation? Does the PRD define behavior for empty/missing/malformed values?
-3. **Classify root cause** — one of:
-   - **Code bug** — the PRD defines behavior the code doesn't implement, implements with wrong parameters (ranges, patterns, thresholds), or in the wrong order. **Fix it.**
-   - **Legitimate data issue** — the input genuinely lacks required data and the PRD defines no mechanism to handle it. **Document it.**
-   - **PRD gap** — the PRD doesn't cover this edge case. **Flag it.**
-4. **Default assumption: code is wrong.** Only classify as "data issue" after confirming:
-   - You have inspected the actual input data at **PRD-specified locations** (not just where the code searches)
-   - You have verified the code's search parameters (ranges, patterns, columns) match the PRD specification
-   - You have checked PRD for fallback/override/default rules and verified correct implementation order
+1. **Inspect the actual input data** with a diagnostic script (reuse from Phase B if available).
+2. **Cross-reference the PRD** — **read** the full PRD section for the failing feature. Check: algorithm match (search ranges, patterns, thresholds vs code), fallbacks/overrides/defaults, phase ordering, and behavior for empty/missing/malformed values. Parameter mismatches are code bugs even when "not found" seems like a data issue.
+3. **Trace the pipeline** — for each failing field, identify EVERY pipeline step that reads or writes it. Check whether the code applies consistent handling across all steps (e.g., if one reader handles an alternative data representation, all readers of the same field must). Check for error short-circuits that prevent later population steps from running.
+4. **Classify root cause:**
+   - **Code bug** — PRD defines behavior the code doesn't implement or implements with wrong parameters. **Fix it.**
+   - **Legitimate data issue** — input genuinely lacks required data and PRD defines no mechanism. **Document it.**
+   - **PRD gap** — PRD doesn't cover this edge case. **Flag it.**
+5. **Default assumption: code is wrong.** Only classify as "data issue" after confirming ALL of these:
+   - Inspected data at PRD-specified locations (not just where code currently searches)
+   - Verified code parameters match PRD spec
+   - Checked for fallback/override/default rules across ALL FRs (not just the primary FR)
+   - Verified pipeline ordering allows all population sources to run before validation
+   - Checked whether "missing" data actually exists in an alternative representation (raw/pre-processed form, related field, encoded format) that the code should handle
    - The input genuinely cannot satisfy the requirement through any PRD-defined mechanism
 
 ### Investigation strategy: main agent vs subagents
 
 **Do NOT run parallel subagents AND investigate the same groups yourself.** Choose one:
 
-- **Main agent handles all** (preferred for <=5 groups): Faster, no stale notification overhead, direct fix-first loop.
-- **Delegate to subagents** (for >5 groups or very complex investigations): Launch subagents for uncertain groups only AFTER the fix-first loop. Do not investigate those groups yourself — wait for subagent results.
-
-**Never duplicate work** — if you delegate a group to a subagent, do not also investigate it in main context.
+- **Main agent handles all** (preferred for ≤5 groups): Faster, direct fix-first loop.
+- **Delegate to subagents** (for >5 groups): Launch for uncertain groups only AFTER the fix-first loop. Do not investigate those groups yourself.
 
 ---
 
@@ -144,16 +153,17 @@ For groups still unresolved after the fix-first loop, investigate the representa
 ### Re-running
 
 3. **Re-run the full test suite** to verify no regressions. All tests must pass.
-4. **Re-run against all test data** to check how many issues each fix resolved. Capture output to `validation-round-{N}.log`.
-5. **Compare with previous round** — diff the tier counts. Report the delta (e.g., "+2 SUCCESS, -1 ATTENTION, -1 FAILED").
+4. **Predict expected delta** — before re-running, list which files should change status and the expected new tier counts. This catches incomplete fixes and unexpected side effects.
+5. **Re-run against ALL test data** (not a sample — running everything gives complete comparison data). Capture output to `validation-round-{N}.log`.
+6. **Compare actual vs predicted** — diff tier counts against prediction. Any mismatch (file didn't improve, or a passing file regressed) must be investigated before proceeding.
 
 ### Iteration
 
-6. **Repeat Steps 2–4** for up to **3 rounds**. A round is "stable" when no new code bugs are found. Stop early if:
+7. **Repeat Steps 2–4** for up to **3 rounds**. A round is "stable" when no new code bugs are found. Stop early if:
    - All results are ideal, or
    - Only legitimate data issues and PRD gaps remain (no code bugs found this round), or
    - Tier counts are identical to the previous round.
-7. If round 3 still finds new code bugs, report this to the user — the codebase may need broader refactoring beyond validation scope.
+8. If round 3 still finds new code bugs, report this to the user — the codebase may need broader refactoring beyond validation scope.
 
 ---
 
@@ -172,6 +182,7 @@ Write the report to `{project_root}/validation-report.md`.
 | Success | X | X | ... | X |
 | Warning | X | X | ... | X |
 | Failed | X | X | ... | X |
+| **Automation rate** | X% | X% | ... | X% |
 | Code bugs found | X | X | ... | X |
 
 Stabilized in round {N} of 3.
@@ -197,8 +208,7 @@ Stabilized in round {N} of 3.
 ```
 
 Include:
-- **Round-over-round delta table** — shows improvement trajectory across rounds.
-- **Every non-ideal result** — even if grouped during investigation, list each input individually so nothing is silently dropped.
+- **Round-over-round deltas** — shows improvement trajectory. List every non-ideal result individually (even if grouped during investigation) so nothing is silently dropped.
 - **Every code bug** — with symptom, root cause, fix, and impact count.
 - **Test updates** — every test modified due to code fixes, with rationale.
 - **Recommendations** — actionable suggestions for remaining data issues and PRD gaps.

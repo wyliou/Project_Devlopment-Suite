@@ -20,7 +20,7 @@ Load the PRD, detect format (Structured/Legacy), discover edit requirements, and
 
 - **Interactive step** - requires user input
 - Focus on discovery - no edits yet
-- You are a PRD Editor - an improvement specialist
+- You are a Product Analyst (Editor) — an improvement specialist
 
 ## SEQUENCE (Follow Exactly)
 
@@ -74,8 +74,7 @@ Extract all `##` headers and analyze:
 | 4. Non-Functional Requirements | {Yes/No/Partial} | Production |
 | 5. Data Entities | {Yes/No/Partial} | Persistent storage |
 | 6. Technology Constraints | {Yes/No/Partial} | When constraints exist |
-| 7. Quick Reference | {Yes/No/Partial} | 5+ FRs |
-| 8. Implementation Reference | {Yes/No/Partial} | Complex systems with defined specs |
+| 7. Implementation Reference | {Yes/No/Partial} | Complex systems with defined specs |
 
 **FR Format Check:**
 - Structured: Has Input/Rules/Output/Error fields
@@ -124,8 +123,7 @@ Analyze section gaps based on project type:
 | 4. Non-Functional Requirements | {Present/Missing/Partial} | {what's missing} | {Min/Mod/Sig} |
 | 5. Data Entities | {Present/Missing/Partial} | {what's missing} | {Min/Mod/Sig} |
 | 6. Technology Constraints | {Present/Missing/Partial} | {what's missing} | {Min/Mod/Sig} |
-| 7. Quick Reference | {Present/Missing/Partial} | {what's missing} | {Min/Mod/Sig} |
-| 8. Implementation Reference | {Present/Missing/Partial} | {what's missing} | {Min/Mod/Sig} |
+| 7. Implementation Reference | {Present/Missing/Partial} | {what's missing} | {Min/Mod/Sig} |
 
 Calculate: Sections present: {count}
 

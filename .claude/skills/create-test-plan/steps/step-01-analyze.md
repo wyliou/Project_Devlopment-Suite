@@ -63,14 +63,13 @@ For each FR, create test cases:
 
 ### 4. Prioritize
 
-Assign priority based on PRD Quick Reference:
+Assign test priority based on FR characteristics:
 
-| PRD Priority | Test Priority |
-|--------------|---------------|
-| P0-Critical | P0 - Must pass for release |
-| P1-High | P1 - Should pass |
-| P2-Medium | P2 - Nice to verify |
-| P3-Low | P2 or skip |
+| Criteria | Test Priority |
+|----------|---------------|
+| Core user journey, data integrity, security | P0 - Must pass for release |
+| Important business logic, error handling | P1 - Should pass |
+| Edge cases, convenience features | P2 - Nice to verify |
 
 ---
 

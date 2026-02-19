@@ -30,8 +30,9 @@ outputFile: '{planning_artifacts}/architecture.md'
 
 3. Document rationale briefly
 
-**Categories (fill all that apply):**
+**Categories by project type (select the applicable set):**
 
+**Web App / Full Stack / API Service:**
 | Category | Selection Inputs |
 |----------|------------------|
 | Framework | Product category + PRD hints |
@@ -40,6 +41,65 @@ outputFile: '{planning_artifacts}/architecture.md'
 | Auth | Security requirements (Section 4) |
 | Styling | Frontend needs (if applicable) |
 | Testing | Framework ecosystem |
+
+**CLI Tool / Library/SDK / Plugin/Extension:**
+| Category | Selection Inputs |
+|----------|------------------|
+| Framework/Toolkit | Product category + distribution format |
+| Database | Only if persistent storage needed (Section 5) |
+| Testing | Framework ecosystem |
+| Packaging | Distribution requirements (executable, package registry) |
+
+**Data Pipeline:**
+| Category | Selection Inputs |
+|----------|------------------|
+| Orchestrator | Workflow complexity + scheduling needs |
+| Storage | Data volume + query patterns (Section 5) |
+| Message Queue | If async processing needed |
+| Data Validation | Data quality requirements |
+| Testing | Framework ecosystem |
+
+**ML Model/Service:**
+| Category | Selection Inputs |
+|----------|------------------|
+| Serving Framework | Inference latency (Section 4) + model type |
+| Training Framework | Model architecture requirements |
+| Model Registry | Versioning + deployment requirements |
+| Database | Feature store + metadata storage needs |
+| Testing | Framework ecosystem |
+
+**Infrastructure/IaC:**
+| Category | Selection Inputs |
+|----------|------------------|
+| IaC Tool | Cloud provider(s) + team familiarity |
+| State Backend | Collaboration + state management needs |
+| Policy/Compliance | Security requirements (Section 4) |
+| Testing | Infrastructure testing approach |
+
+**Microservices:**
+| Category | Selection Inputs |
+|----------|------------------|
+| Service Framework | Per-service, may vary by bounded context |
+| Database | Per-service, based on data ownership |
+| Service Communication | Sync (REST/gRPC) vs Async (message queue) |
+| Service Discovery | Deployment target (K8s, cloud-native) |
+| Auth | Inter-service + external auth |
+| Testing | Unit + contract + integration approach |
+
+**Desktop / Mobile:**
+| Category | Selection Inputs |
+|----------|------------------|
+| Framework | Target platforms + code sharing strategy |
+| Local Storage | Offline data needs |
+| Auth | Authentication flow (OAuth, biometric) |
+| Testing | Framework ecosystem + E2E |
+
+**Prototype/MVP:**
+| Category | Selection Inputs |
+|----------|------------------|
+| Framework | Speed of development + team familiarity |
+| Database | Simplest option that meets needs |
+| Testing | Minimal — core hypothesis validation |
 
 **Decision Rule:** If PRD clearly implies one choice, select it. Only ask user if multiple equally valid options exist—then present top 2 with your recommendation.
 
@@ -147,7 +207,7 @@ Define:
 - **What gets logged:** State transitions, external calls, errors. NOT: routine reads, internal calculations.
 - **Structured fields:** If applicable, define required fields per log entry.
 
-Derive from PRD Section 8 (if present) and FR Log fields.
+Derive from PRD Section 7 (if present) and FR Log fields.
 
 #### E. Side-Effect Ownership
 

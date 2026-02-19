@@ -38,21 +38,27 @@ description: Collaborative architectural decision facilitation for AI-agent cons
 
 ## Project Type Adaptation
 
-| Project Type | Has API Contracts | Has DB Schema | Has CLI Commands | Has Library API |
-|--------------|-------------------|---------------|------------------|-----------------|
-| Web App | Yes | Yes | No | No |
-| API Service | Yes | Yes | No | No |
-| CLI Tool | No | Maybe | Yes | No |
-| Library/SDK | No | No | No | Yes |
-| Desktop App | Maybe | Maybe | No | No |
-| Mobile App | Maybe | Maybe | No | No |
-| Full Stack | Yes | Yes | No | No |
+| Project Type | Has API Contracts | Has DB Schema | Has CLI Commands | Has Library API | Has Data Contracts | Has Resource Defs |
+|--------------|-------------------|---------------|------------------|-----------------|--------------------|--------------------|
+| Web App | Yes | Yes | No | No | No | No |
+| API Service | Yes | Yes | No | No | No | No |
+| CLI Tool | No | Maybe | Yes | No | No | No |
+| Library/SDK | No | No | No | Yes | No | No |
+| Desktop App | Maybe | Maybe | No | No | No | No |
+| Mobile App | Maybe | Maybe | No | No | No | No |
+| Full Stack | Yes | Yes | No | No | No | No |
+| Data Pipeline | Maybe | Yes | Maybe | No | Yes | No |
+| ML Model/Service | Yes | Yes | No | No | No | No |
+| Infrastructure/IaC | No | No | Maybe | No | No | Yes |
+| Microservices | Yes | Yes | No | No | No | No |
+| Plugin/Extension | Maybe | Maybe | No | Yes | No | No |
+| Prototype/MVP | Maybe | Maybe | Maybe | No | No | No |
 
 ---
 
 ## PRD Integration
 
-**Required Input:** PRD document (8 sections)
+**Required Input:** PRD document (up to 7 sections)
 
 | PRD Section | Architecture Uses For |
 |-------------|----------------------|
@@ -62,8 +68,7 @@ description: Collaborative architectural decision facilitation for AI-agent cons
 | 4. Non-Functional Requirements | Architecture decisions (scale, security, performance) |
 | 5. Data Entities | Database Schema generation |
 | 6. Technology Constraints | Stack selection (Decided = locked, Open = select) |
-| 7. Quick Reference | Priorities and dependencies |
-| 8. Implementation Reference | Config schemas, output formats, error catalogs, algorithms |
+| 7. Implementation Reference | Config schemas, output formats, error catalogs, algorithms |
 
 **Optional Input:** Project Charter with Brownfield Context (Section 7)
 

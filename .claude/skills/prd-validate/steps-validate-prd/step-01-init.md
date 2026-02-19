@@ -20,7 +20,7 @@ Load the PRD to validate, discover input documents from frontmatter, and initial
 
 - **Interactive step** - requires user confirmation before proceeding
 - Focus ONLY on discovery and setup - no validation yet
-- You are a PRD Validator providing systematic quality assurance
+- You are a Product Analyst (Validator) — providing systematic quality assurance
 
 ## SEQUENCE (Follow Exactly)
 

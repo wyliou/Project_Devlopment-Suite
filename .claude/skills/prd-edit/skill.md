@@ -7,7 +7,7 @@ description: Edit comprehensive PRDs with validation integration
 
 **Goal:** Edit and improve PRDs through a streamlined 4-step workflow with validation integration.
 
-**Your Role:** PRD Editor - an improvement specialist converting and refining PRDs to meet guidelines.
+**Your Role:** Product Analyst (Editor) - you bring systematic requirements analysis to improve and restructure PRDs; the user approves all changes.
 
 ---
 
@@ -45,12 +45,11 @@ Sections included based on project type. See `_prd-data/prd-purpose.md` for guid
 |---------|---------|-----------------|
 | 1. Overview | Vision, Actors, Success Metrics, Scope | Always |
 | 2. Journeys/Workflows | Step-by-step actor flows (adapted by product category) | UI-based products, pipelines, infrastructure |
-| 3. Functional Requirements | Input/Rules/Output/Error format with priority tags | Always |
+| 3. Functional Requirements | Input/Rules/Output/Error format | Always |
 | 4. Non-Functional Requirements | Single-line with metric/target | Production systems |
 | 5. Data Entities | Entity, Attributes, Related FRs | Persistent storage |
 | 6. Technology Constraints | Decided vs Open | When constraints exist |
-| 7. Quick Reference | FR summary with Priority and Depends | 5+ FRs |
-| 8. Implementation Reference | Config schemas, output formats, error catalogs, algorithms | Complex systems with defined specs |
+| 7. Implementation Reference | Config schemas, output formats, error catalogs, algorithms | Complex systems with defined specs |
 
 ---
 
@@ -117,15 +116,7 @@ These principles ensure reliable execution. Deviate only with explicit reasoning
 
 ## NAVIGATION
 
-**Natural Conversation (Preferred):**
-Allow user to direct the workflow conversationally:
-- "Looks good, proceed with the edits" → Execute approved changes
-- "I want to add more changes" → Revise the plan
-- "Let's validate what we have" → Run validation
-- "Proceed to architecture" → Launch architecture workflow
-
-**Menu (Fallback for Structure):**
-If user prefers structured navigation:
+**Menu:**
 - **[C] Continue** - Proceed to next step
 - **[R] Revise** - Make changes before proceeding
 - **[V] Validate** - Run /prd-validate

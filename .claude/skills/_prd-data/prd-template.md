@@ -1,6 +1,5 @@
 ---
 stepsCompleted: []
-capabilityAreas: []
 outputPath: ''
 ---
 
@@ -70,7 +69,7 @@ outputPath: ''
 
 ## 3. Functional Requirements
 
-### {{Capability Area 1}} [Must]
+### {{Capability Area 1}}
 
 **FR-001**: [Actor] [capability]
 - **Input:** field1 (constraints), field2 (constraints)
@@ -85,7 +84,7 @@ outputPath: ''
 - **Output:** success behavior
 - **Error:** error case → handling
 
-### {{Capability Area 2}} [Should]
+### {{Capability Area 2}}
 
 **FR-003**: [Actor] [capability]
 - **Input:** field1 (constraints)
@@ -139,16 +138,6 @@ outputPath: ''
 
 ---
 
-## 7. Quick Reference
-
-| FR ID | Summary | Capability Area | Priority | Depends |
-|-------|---------|----------------|----------|---------|
-| FR-001 | {{brief summary}} | {{area}} | Must | - |
-| FR-002 | {{brief summary}} | {{area}} | Must | FR-001 |
-| FR-003 | {{brief summary}} | {{area}} | Should | - |
-
----
-
-## 8. Implementation Reference (Optional)
+## 7. Implementation Reference (Optional)
 
 > *Include sub-sections as needed: Configuration Schema, Output Formats, Error/Status Code Catalog, Algorithm Details, Examples & Edge Cases. See prd-purpose.md for quality criteria.*

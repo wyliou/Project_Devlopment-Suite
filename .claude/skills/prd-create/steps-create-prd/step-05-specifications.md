@@ -17,8 +17,6 @@ Generate all derived and complementary specifications: Technology Constraints, N
 
 ## EXECUTION RULES
 
-- **Interactive step** — requires user feedback
-- You are a Product Analyst — deriving specifications from established FRs
 - Each sub-section builds on FR analysis from step 4
 
 ## SEQUENCE (Follow Exactly)
@@ -81,19 +79,7 @@ Derive NFRs from the combination of success metrics, actor types, FR analysis, a
 - **NFR-REL-001**: [metric] [target] under [condition]
 ```
 
-#### Categories
-| Category | Examples |
-|----------|----------|
-| PERF | Response time, throughput, batch processing time |
-| SEC | Encryption, authentication expiry, data protection |
-| SCALE | Concurrent users, data volume, horizontal scaling |
-| REL | Uptime, recovery time, data durability |
-| ACC | WCAG compliance level, screen reader support, keyboard navigation |
-| USE | Task completion rate, learning curve, error recovery |
-| MAINT | Code coverage, dependency freshness, deployment frequency |
-| COMPAT | Browser support, OS support, API version compatibility |
-
-Select categories relevant to the project — not all apply to every project type. PERF and at least one other are typically required.
+Select categories relevant to the project from prd-purpose.md's NFR Categories table. Not all apply to every project type. PERF and at least one other are typically required.
 
 **Present draft NFRs to user and ask for feedback.**
 
@@ -131,11 +117,7 @@ Then assess which sub-sections add value based on FR analysis and these notes (a
 
 Available sub-sections: Configuration Schema, Output Formats, Error Code Catalog, Algorithm Details, Examples & Edge Cases. Project-specific sub-sections can be added too.
 
-**Quality criteria** (from prd-purpose.md):
-- Algorithm steps must be ordered and unambiguous — an AI agent should reproduce the same logic from the description alone
-- Error codes must map to specific FR error conditions
-- Config schemas must specify types, defaults, and valid ranges
-- Examples must show both typical cases and boundary/edge cases
+**Quality criteria:** Apply the Section 7 quality criteria from prd-purpose.md.
 
 Present your recommendation to the user. For each approved sub-section, gather detail to populate it. If none needed, note "Section 7 not applicable" in the PRD.
 
@@ -145,8 +127,6 @@ Present your recommendation to the user. For each approved sub-section, gather d
 
 **Before presenting**, verify inline (fix issues during generation, not as a separate pass):
 - At least 2 NFRs (PERF + one other), each with metric + target + condition
-- Entity Related FRs exist in Section 3
-- Decided and Open sections present in Tech Constraints
 - Section 7 sub-sections meet quality criteria if applicable
 
 Show the user:
@@ -159,9 +139,3 @@ Show the user:
 
 **[C] Continue** - Proceed to Complete (Step 6)
 **[R] Revise** - Modify specifications
-**[X] Exit** - Save progress and stop
-*Always available: **[P] Party Mode** | **[D] Deep Dive***
-
-**On [P] Party Mode return:** Review the agents' recommendations. For each actionable item, ask the user: "The agents suggested {X}. Apply this change? [Y/N]" Apply approved changes, then return to this menu.
-
-**On [C]:** Update frontmatter (`stepsCompleted` add `'step-05-specifications'`), then load and execute `{nextStepFile}`.

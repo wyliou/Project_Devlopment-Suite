@@ -17,6 +17,7 @@ Apply all approved changes from step 2 to the PRD, including content updates, fo
 ## EXECUTION RULES
 
 - **Auto-proceed step** - executes approved plan
+- You are a Product Analyst (Editor) — applying approved changes
 - Only implement approved changes - no additions
 - Follow PRD Guidelines for all edits
 
@@ -137,9 +138,7 @@ Reorganize PRD to structured format (sections based on project type):
 ### Decided (non-negotiable)
 ### Open (agent can decide)
 
-## 7. Quick Reference
-
-## 8. Implementation Reference (if applicable)
+## 7. Implementation Reference (if applicable)
 ```
 
 **Migration:**
@@ -150,7 +149,6 @@ Reorganize PRD to structured format (sections based on project type):
 - `## 2. User Journeys` → `## 2. Journeys/Workflows`
 - Move Product Scope → MVP Scope
 - Create Data Entities table from FR analysis
-- Create Quick Reference table from FRs
 
 "**Restructured to standard format.**"
 
@@ -160,10 +158,6 @@ Reorganize PRD to structured format (sections based on project type):
 Analyze FRs to identify entities:
 - Extract nouns from FR Inputs and Outputs
 - Create table with Entity, Key Attributes, Related FRs
-
-**If Quick Reference missing (and 5+ FRs):**
-Create summary table from FRs:
-| FR ID | Summary | Capability Area | Priority | Depends |
 
 **If Technology Constraints missing:**
 Create section with:
@@ -189,7 +183,6 @@ editHistory:
 - FR format is Input/Rules/Output/Error
 - NFR format is single-line (if present)
 - Data Entities table present (if applicable)
-- Quick Reference table present (if 5+ FRs)
 - No unintended modifications
 
 **If issues found:** Fix immediately

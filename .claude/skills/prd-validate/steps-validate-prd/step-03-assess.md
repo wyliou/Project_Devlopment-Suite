@@ -17,6 +17,7 @@ Assess the PRD holistically: document flow, dual-audience effectiveness, archite
 ## EXECUTION RULES
 
 - **Auto-proceed step** - no user input required
+- You are a Product Analyst (Validator) — synthesizing holistic quality assessment
 - Evaluate the WHOLE document, not individual components
 - This is the synthesis step - answers "Is this a good PRD?"
 
@@ -30,8 +31,6 @@ Read entire PRD and evaluate:
 - Does Overview set up clear context?
 - Does Section 2 (Journeys/Commands/Scenarios) lead naturally to FRs?
 - Do FRs map to Data Entities (if applicable)?
-- Does Quick Reference summarize FRs accurately?
-
 **Narrative Coherence:**
 - Cohesive story from vision to requirements?
 - Consistent terminology throughout?
@@ -55,7 +54,6 @@ Rate: Strong / Adequate / Weak
 - FRs in consistent Input/Rules/Output/Error format?
 - Data Entities convertible to schema?
 - Technology Constraints clear for stack selection?
-- Quick Reference drives implementation prioritization?
 
 Rate: Strong / Adequate / Weak
 
@@ -69,7 +67,6 @@ Rate: Strong / Adequate / Weak
 | FR Error | → Error taxonomy | {Yes/Partial/No} |
 | Data Entities | → Database schema (if applicable) | {Yes/Partial/No/N/A} |
 | Technology Constraints | → Stack selection | {Yes/Partial/No} |
-| Quick Reference | → Implementation order | {Yes/Partial/No} |
 | FR Dependencies | → Build sequence | {Yes/Partial/No} |
 
 Calculate readiness: (Yes=1, Partial=0.5, No=0, N/A=excluded) / applicable count * 100
@@ -118,7 +115,6 @@ Identify the 3 most impactful improvements:
 | FR Error → Error taxonomy | {status} |
 | Data Entities → Schema | {status or N/A} |
 | Tech Constraints → Stack | {status} |
-| Quick Reference → FR Summary | {status} |
 | Dependencies → Sequence | {status} |
 
 **Readiness Score:** {percentage}%

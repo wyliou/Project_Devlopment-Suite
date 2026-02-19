@@ -47,8 +47,7 @@ Use one term per concept throughout the PRD. If the domain calls it an "order," 
 | **4. Non-Functional Requirements** | Production systems with quality constraints |
 | **5. Data Entities** | Systems with persistent storage |
 | **6. Technology Constraints** | Existing tech decisions, restrictions, or integration points |
-| **7. Quick Reference** | 5+ functional requirements |
-| **8. Implementation Reference** | Project has defined formats, codes, algorithms, or config schemas |
+| **7. Implementation Reference** | Project has defined formats, codes, algorithms, or config schemas |
 
 ### Section Applicability
 
@@ -60,8 +59,7 @@ Sections 1 (Overview) and 3 (Functional Requirements) are required for all proje
 | **4. Non-Functional Requirements** | Production system with quality constraints. Skip for prototypes. |
 | **5. Data Entities** | System has persistent storage |
 | **6. Technology Constraints** | Tech decisions are pre-made or integrations exist |
-| **7. Quick Reference** | 5+ functional requirements |
-| **8. Implementation Reference** | Defined formats, algorithms, or config schemas exist |
+| **7. Implementation Reference** | Defined formats, algorithms, or config schemas exist |
 
 ### Brownfield Projects
 
@@ -187,22 +185,7 @@ Skip this section if the implementer has full freedom and no integrations exist.
 
 ---
 
-## Quick Reference
-
-For projects with 5+ FRs, add a summary table:
-
-```markdown
-## Quick Reference
-
-| FR ID | Summary | Capability Area | Priority | Depends |
-|-------|---------|----------------|----------|---------|
-| FR-AUTH-001 | User registration | Authentication | Must | - |
-| FR-AUTH-002 | Password reset | Authentication | Must | FR-AUTH-001 |
-```
-
----
-
-## Implementation Reference (Section 8)
+## Implementation Reference (Section 7)
 
 Include when the project has defined formats, codes, algorithms, or config schemas that implementing agents need as reference. This section bridges the gap between "what" (FRs) and "how" by providing reference material without dictating implementation.
 
@@ -225,15 +208,11 @@ Include when the project has defined formats, codes, algorithms, or config schem
 
 ---
 
-## Capability Areas and Prioritization
+## Capability Areas
 
-Capability areas are logical groupings of related functional requirements. Each area is assigned a priority tag that informs implementation sequencing:
+Capability areas are logical groupings of related functional requirements. FRs are grouped under `### Capability Area Name` headers in Section 3.
 
-- **Must:** Core functionality required for MVP. Build batch 1.
-- **Should:** Important functionality expected in production. Build batch 2 (defer if necessary).
-- **Could:** Nice-to-have. Build batch 3 (implement if time/budget allows).
-
-FRs are grouped under `### Capability Area Name [Priority]` headers in Section 3. Capability areas are persisted in the PRD frontmatter `capabilityAreas` array for downstream tools (architecture generation, build planning).
+FRs are grouped under `### Capability Area Name` headers in Section 3. All FRs are implemented — scope is controlled at the MVP Scope level (Section 1), not per-FR.
 
 ---
 
@@ -273,7 +252,7 @@ Patterns that weaken PRD quality and cause implementation errors:
 | **Implementation leak** | "Use PostgreSQL JOIN to fetch..." in FR Rules | Rewrite as business logic: "Retrieve user's orders sorted by date" |
 | **Vague success metric** | "Improve user satisfaction" | Add target: "Increase NPS from 30 to 50 within 6 months" |
 | **Missing error path** | FR specifies happy path only | Add Error field with every failure condition |
-| **Scope creep via Could** | 10 Could-priority areas, 2 Must | Re-evaluate — most Could items belong in a future phase, not the PRD |
+| **Scope creep** | Too many capability areas for MVP | Re-evaluate — move non-essential items to Out of Scope |
 | **Copy-paste NFR** | "99.99% uptime" for an internal tool | Match NFR targets to actual project context |
 | **Ambiguous actor** | "The system processes..." | Specify: "System (triggered by cron schedule) processes..." |
 | **Untraceable requirement** | FR exists but connects to no journey or scope item | Either trace it or remove it |

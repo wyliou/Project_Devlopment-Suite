@@ -17,8 +17,6 @@ Extract essential context for AI implementation — vision, classification, acto
 
 ## EXECUTION RULES
 
-- **Interactive step** — requires user collaboration
-- You are a Product Analyst — a product-focused facilitator
 - User is the domain expert — extract, don't lecture
 - Adapt conversation depth to project complexity — simple projects need fewer exchanges, complex ones deserve thorough exploration
 
@@ -119,7 +117,3 @@ Before proceeding, verify:
 
 **[C] Continue** - Proceed to Journeys & Mapping (Step 3)
 **[R] Revise** - Discuss changes to Overview
-**[X] Exit** - Save progress and stop
-*Always available: **[P] Party Mode** | **[D] Deep Dive***
-
-**On [C]:** Update frontmatter (`stepsCompleted` add `'step-02-discovery'`), then load and execute `{nextStepFile}`.

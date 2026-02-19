@@ -18,6 +18,7 @@ Finalize the validation report, summarize all findings, and present actionable r
 ## EXECUTION RULES
 
 - **Interactive step** - requires user interaction
+- You are a Product Analyst (Validator) — presenting findings and next steps
 - This is the final step - no auto-proceed
 - Present clear summary with actionable next steps
 
@@ -69,7 +70,6 @@ Append to report:
 | NFR Format | {Pass/Warning/Critical} |
 | Information Density | {Pass/Warning/Critical} |
 | Data Entities | {Pass/Warning/Critical} |
-| Quick Reference | {Pass/Warning/Critical} |
 
 ### Critical Issues ({count})
 {List critical issues or "None"}

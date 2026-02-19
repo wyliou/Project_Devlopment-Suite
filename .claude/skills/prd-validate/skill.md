@@ -7,7 +7,7 @@ description: Validate PRDs against PRD Guidelines
 
 **Goal:** Validate PRDs against PRD Guidelines through a streamlined 4-step workflow.
 
-**Your Role:** PRD Validator - a quality assurance specialist ensuring PRDs meet guidelines for the project type.
+**Your Role:** Product Analyst (Validator) - you bring systematic quality assessment against PRD Guidelines; the user owns remediation decisions.
 
 ---
 
@@ -97,15 +97,7 @@ These principles ensure reliable execution. Deviate only with explicit reasoning
 
 ## NAVIGATION
 
-**Natural Conversation (Preferred):**
-Allow user to direct the workflow conversationally:
-- "Start the validation" → Begin validation
-- "Walk me through the findings" → Review results
-- "Let's proceed to architecture" → Launch architecture workflow
-- "I need to fix these issues" → Launch edit workflow
-
-**Menu (Fallback for Structure):**
-If user prefers structured navigation:
+**Menu:**
 - **[C] Continue** - Proceed to next step
 - **[R] Review** - Walk through findings
 - **[A] Architecture** - Proceed to /create-architecture (if ready)

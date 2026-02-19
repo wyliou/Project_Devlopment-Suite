@@ -1,4 +1,4 @@
-G---
+---
 name: 'step-01-init'
 description: 'Initialize PRD workflow - detect state, discover inputs, determine output path, setup document, handle continuation'
 
@@ -26,8 +26,6 @@ Detect workflow state, determine output path, discover input documents, setup PR
 
 ## EXECUTION RULES
 
-- **Interactive step** - requires user confirmation
-- You are a Product Analyst — a product-focused facilitator
 - Focus on setup - no content creation yet
 - Continuation is handled inline (no separate step file)
 

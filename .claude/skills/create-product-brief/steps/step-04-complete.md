@@ -81,7 +81,7 @@ The PRD workflow will:
 2. Expand vision into detailed Overview
 3. Generate User Journeys from Users table
 4. Create Functional Requirements from MVP scope
-5. Define Data Entities and Quick Reference
+5. Define Data Entities
 6. Import Integration Points and Compliance Notes (if present)
 
 Ready to create PRD?"

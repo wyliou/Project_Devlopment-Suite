@@ -1,6 +1,6 @@
 ---
 name: 'step-06-complete'
-description: 'Priority validation, readiness gate, and handoff'
+description: 'Readiness gate and handoff'
 
 # File references
 validationChecks: '{skills_root}/_prd-data/validation-checks.md'
@@ -12,29 +12,17 @@ validationChecks: '{skills_root}/_prd-data/validation-checks.md'
 
 ## STEP GOAL
 
-Validate FR Priority fields, perform readiness gate (structural completeness + cross-reference integrity), and prepare for handoff.
+Perform readiness gate (structural completeness + cross-reference integrity) and prepare for handoff.
 
 ## EXECUTION RULES
 
-- **Interactive step** — presents completion options
-- You are a Product Analyst — finalizing the PRD for handoff
 - This is the final step
 - Readiness gate issues MUST be fixed before handoff
 - Deep quality validation (density, measurability, leakage) is /prd-validate's domain — do not duplicate here
-- Offer clear next actions
 
 ## SEQUENCE (Follow Exactly)
 
-### 1. Validate FR Priority Fields
-
-Verify every FR in Section 3 has a `Priority:` field with a valid value (Must, Should, or Could).
-
-- If any FR is missing a Priority field, assign it based on MVP Scope (Section 1) — in-scope items default to Must.
-- If any FR has an invalid Priority value, correct it.
-
-Report: "{count} FRs validated, all have Priority fields ({must} Must, {should} Should, {could} Could)"
-
-### 2. Readiness Gate
+### 1. Readiness Gate
 
 Structural completeness and cross-reference integrity checks only. This is NOT deep quality validation — that's /prd-validate's role.
 
@@ -52,7 +40,6 @@ Scan the entire document for `{{...}}` patterns. These are TEMPLATE placeholders
 |-------|------------|
 | Dependency validity | All `Depends:` references exist, no circular deps |
 | Entity traceability | All entity Related FRs exist in Section 3 (skip if Section 5 not applicable) |
-| Priority fields | Every FR has a valid Priority: Must/Should/Could |
 
 **Mandatory: Do not allow handoff with structural issues.**
 
@@ -62,19 +49,7 @@ If any check fails:
 3. Re-run the check
 4. Repeat until all pass
 
-### 3. Generate Summary Statistics
-
-Calculate and display:
-```
-PRD Summary:
-- Functional Requirements: {count} ({must_count} Must, {should_count} Should, {could_count} Could)
-- Non-Functional Requirements: {count or "N/A"}
-- Data Entities: {count or "N/A"}
-- Capability Areas: {list areas with priorities}
-- Readiness Gate: PASS
-```
-
-### 4. Update Frontmatter
+### 2. Update Frontmatter
 
 Update the PRD frontmatter:
 ```yaml
@@ -84,14 +59,14 @@ outputPath: '{outputPath}'
 ---
 ```
 
-### 5. Present Completion
+### 3. Present Completion
 
 "**PRD Complete**
 
 **Document:** {outputPath}
 
 **Summary:**
-- {FR count} Functional Requirements across {area count} capability areas ({must_count} Must, {should_count} Should, {could_count} Could)
+- {FR count} Functional Requirements across {area count} capability areas
 - {NFR count} Non-Functional Requirements {or "N/A"}
 - {entity count} Data Entities {or "N/A"}
 - Readiness Gate: PASS
@@ -101,10 +76,9 @@ outputPath: '{outputPath}'
 2. Run /prd-validate for deep quality validation (density, measurability, traceability)
 3. Run /create-architecture to generate the Architecture document"
 
-### 6. Menu
+### 4. Menu
 
 **[A] Architecture** - Run /create-architecture
 **[V] Validate** - Run /prd-validate
 **[S] Show PRD** - Display the complete document
 **[X] Exit** - Finish
-*Always available: **[P] Party Mode** | **[D] Deep Dive***

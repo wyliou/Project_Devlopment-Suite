@@ -20,8 +20,7 @@ outputFile: '{planning_artifacts}/architecture.md'
 From PRD Section 3:
 - `### Capability Area` section headers → each becomes a potential module
 - FRs grouped under each header → define module responsibilities
-- Quick Reference dependencies → inform module dependency graph
-- Quick Reference priorities → inform build batch ordering
+- FR dependencies → inform module dependency graph
 - Journeys/Workflows → inform flow between modules
 
 ### 2. Define Module Boundaries
@@ -89,7 +88,7 @@ Group by resource. Use RESTful design (plural nouns, standard HTTP methods, nest
 - **Exit Codes:** `0: success, 1: {error type}, 2: usage error`
 ```
 
-#### Library/SDK: Public API Surface
+#### Library/SDK / Plugin/Extension: Public API Surface
 
 ```markdown
 ### functionName(params): ReturnType
@@ -100,6 +99,62 @@ Group by resource. Use RESTful design (plural nouns, standard HTTP methods, nest
 - **Throws:** `ErrorType - when condition`
 ```
 
+#### Data Pipeline: Data Flow Contracts
+
+```markdown
+### {Stage Name}
+- **FR:** FR-###
+- **Module:** {owning module from Section 4}
+- **Input:** {source system/format/schema}
+- **Transform:** {processing logic summary}
+- **Output:** {destination system/format/schema}
+- **Error:** {retry strategy, dead-letter handling}
+- **Schedule:** {trigger: cron/event/dependency}
+```
+
+#### Infrastructure/IaC: Resource Definitions
+
+```markdown
+### {Resource Group Name}
+- **FR:** FR-###
+- **Module:** {owning module from Section 4}
+- **Provider:** {cloud provider / platform}
+- **Resources:** {list of resources provisioned}
+- **Inputs:** {configurable parameters}
+- **Outputs:** {exported values for dependent resources}
+- **Dependencies:** {other resource groups this requires}
+```
+
+#### Microservices: Service Contracts
+
+Use REST Endpoint format (above) for external-facing APIs. For inter-service communication, add:
+
+```markdown
+### {Service} → {Service} ({sync|async})
+- **FR:** FR-###
+- **Protocol:** {REST/gRPC/message queue}
+- **Request/Event:** `{ field: type, ... }`
+- **Response/Result:** `{ field: type, ... }`
+- **Error/DLQ:** {error handling strategy}
+- **SLA:** {latency/throughput expectations from NFRs}
+```
+
+#### Desktop / Mobile: Screen Contracts
+
+```markdown
+### {Screen/View Name}
+- **FR:** FR-###
+- **Module:** {owning module from Section 4}
+- **Route/Navigation:** {how user reaches this screen}
+- **State:** {data this screen reads/writes}
+- **Actions:** {user interactions → resulting behavior}
+- **Error:** {error states and handling}
+```
+
+#### Prototype/MVP
+
+Use the simplest applicable format above (typically REST Endpoints or CLI Commands). Minimize contract detail — focus on core hypothesis validation flows only.
+
 **Every contract entry MUST include `Module:` mapping it to Section 4.**
 
 ### 5. Complete Error Taxonomy
@@ -108,7 +163,7 @@ After contract generation, revisit Section 3 error taxonomy:
 
 1. Review all error responses from contracts
 2. Add domain-specific error codes for every error case
-3. Cross-reference PRD Section 8.3 (Error Code Catalog) if present
+3. Cross-reference PRD Section 7.3 (Error Code Catalog) if present
 4. Ensure every error code used in contracts exists in the taxonomy
 
 Update Section 3 error taxonomy in `{outputFile}`.

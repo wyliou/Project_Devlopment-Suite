@@ -10,17 +10,17 @@
 
 | Project Type | Required | Recommended | Optional |
 |--------------|----------|-------------|----------|
-| **Web App / Mobile** | 1, 3 | 2, 4, 5, 7 | 6, 8 |
-| **API Service** | 1, 3 | 4, 5, 6, 7 | 2, 8 |
-| **CLI Tool** | 1, 3 | 4, 6 | 2, 5, 7, 8 |
-| **Library/SDK** | 1, 3 | 4, 6 | 2, 5, 7, 8 |
-| **Data Pipeline** | 1, 3 | 2, 4, 5, 7 | 6, 8 |
-| **ML Model/Service** | 1, 3 | 2, 4, 5, 7 | 6, 8 |
-| **Infrastructure/IaC** | 1, 3 | 2, 4, 6 | 5, 7, 8 |
-| **Microservices System** | 1, 3 | 2, 4, 5, 7 | 6, 8 |
-| **Plugin/Extension** | 1, 3 | 2, 4, 6 | 5, 7, 8 |
-| **Full Stack App** | 1, 3 | 2, 4, 5, 7 | 6, 8 |
-| **Prototype/MVP** | 1, 3 | 2 | 4, 5, 6, 7, 8 |
+| **Web App / Mobile** | 1, 3 | 2, 4, 5 | 6, 7 |
+| **API Service** | 1, 3 | 4, 5, 6 | 2, 7 |
+| **CLI Tool** | 1, 3 | 4, 6 | 2, 5, 7 |
+| **Library/SDK** | 1, 3 | 4, 6 | 2, 5, 7 |
+| **Data Pipeline** | 1, 3 | 2, 4, 5 | 6, 7 |
+| **ML Model/Service** | 1, 3 | 2, 4, 5 | 6, 7 |
+| **Infrastructure/IaC** | 1, 3 | 2, 4, 6 | 5, 7 |
+| **Microservices System** | 1, 3 | 2, 4, 5 | 6, 7 |
+| **Plugin/Extension** | 1, 3 | 2, 4, 6 | 5, 7 |
+| **Full Stack App** | 1, 3 | 2, 4, 5 | 6, 7 |
+| **Prototype/MVP** | 1, 3 | 2 | 4, 5, 6, 7 |
 
 ### Section Reference
 
@@ -32,8 +32,7 @@
 | 4 | Non-Functional Requirements | Quality constraints |
 | 5 | Data Entities | Persistent data structures |
 | 6 | Technology Constraints | Tech decisions/restrictions |
-| 7 | Quick Reference | FR summary table with priority |
-| 8 | Implementation Reference | Config schemas, output formats, error catalogs, algorithms |
+| 7 | Implementation Reference | Config schemas, output formats, error catalogs, algorithms |
 
 ### Classification Criteria
 
@@ -120,7 +119,7 @@ Severity: Warning (5-10 violations) / Info (<5)
 
 ### Implementation Leakage
 
-**Technology names in FRs (Sections 1-3, 5, 7):**
+**Technology names in FRs (Sections 1-5):**
 
 Flag as info/warning (not error) - sometimes intentional:
 - Frameworks: React, Django, FastAPI
@@ -145,16 +144,9 @@ Flag as info/warning (not error) - sometimes intentional:
 
 ### Capability Area Validation (If Section 3 Present)
 
-- FRs are grouped under `### Capability Area [Priority]` headers
+- FRs are grouped under `### Capability Area` headers
 - Every FR belongs to exactly one capability area
-- Priority tags (Must/Should/Could) are consistent within each area
-- At least one area is tagged Must (for MVP scope)
 - FR count >= capability area count (at least 1 FR per area)
-
-### Quick Reference Validation (If Section 7 Present)
-
-- All FRs from Section 3 should appear
-- Dependencies should reference valid FR IDs
 
 ---
 
@@ -208,7 +200,6 @@ Apply based on project context:
 | Data Entities | Database schema |
 | Technology Constraints | Stack selection |
 | FR Dependencies | Implementation order |
-| FR Priority tags | Build batch ordering |
 
 **Ready:** Core checks pass (FR structure, Data Entities if needed)
 **Needs Work:** Missing FR structure or required sections

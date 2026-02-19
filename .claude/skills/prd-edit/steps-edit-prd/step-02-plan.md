@@ -18,6 +18,7 @@ Deep review the PRD, analyze validation findings (if available), and build a det
 ## EXECUTION RULES
 
 - **Interactive step** - requires user approval of plan
+- You are a Product Analyst (Editor) — analyzing PRD and building change plan
 - Focus on analysis and planning - no edits yet
 - Plan must be approved before proceeding
 
@@ -55,7 +56,6 @@ Reference `{validationChecks}` and analyze based on project type:
 | FR Structure | {Input/Rules/Output/Error compliance} | {priority} |
 | NFR Format | {single-line compliance, if NFRs present} | {priority} |
 | Data Entities | {table with Related FRs, if applicable} | {priority} |
-| Quick Reference | {FR summary table, if 5+ FRs} | {priority} |
 | Information Density | {anti-patterns found} | {priority} |
 | Measurability | {unmeasurable items} | {priority} |
 

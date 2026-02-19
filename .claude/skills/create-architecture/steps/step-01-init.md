@@ -70,7 +70,7 @@ Pattern: `*prd*.md` or `prd.md`
 
 ### 3. Extract Constraints from All PRD Sections
 
-Read and extract from ALL PRD sections (1-8). Store as working set — do NOT fill the architecture document yet.
+Read and extract from ALL PRD sections (1-7). Store as working set — do NOT fill the architecture document yet.
 
 | PRD Section | Extract |
 |-------------|---------|
@@ -80,8 +80,7 @@ Read and extract from ALL PRD sections (1-8). Store as working set — do NOT fi
 | Section 4 (NFRs) | Performance, security, scale requirements |
 | Section 5 (Data Entities) | Entity count, entity names, key attributes |
 | Section 6 (Tech Constraints) | Decided (locked) vs Open (need selection) |
-| Section 7 (Quick Reference) | Dependencies overview |
-| Section 8 (Implementation Reference) | Config schemas, output formats, error catalogs, algorithms (if present) |
+| Section 7 (Implementation Reference) | Config schemas, output formats, error catalogs, algorithms (if present) |
 
 ---
 

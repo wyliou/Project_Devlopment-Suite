@@ -19,6 +19,7 @@ Present summary of completed edits and offer next steps including validation int
 ## EXECUTION RULES
 
 - **Interactive step** - requires user selection
+- You are a Product Analyst (Editor) — summarizing changes and preparing handoff
 - This is the final step
 - Offers seamless validation handoff
 
@@ -60,7 +61,6 @@ From step 3, gather:
 - FRs: {count} in Input/Rules/Output/Error format
 - NFRs: {count} in single-line format
 - Data Entities: {Present/Added/Missing}
-- Quick Reference: {Present/Added/Missing}
 
 **What's next?**"
 
@@ -85,7 +85,6 @@ From step 3, gather:
 - FR Input/Rules/Output/Error: {Yes/No}
 - Data Entities (if applicable): {Yes/No}
 - Technology Constraints: {Yes/No}
-- Quick Reference: {Yes/No}
 
 If all Yes: "PRD is ready for Architecture. Run /create-architecture?"
 If any No: "Address these gaps first: {list}"
@@ -112,8 +111,7 @@ Display detailed report:
 | 4. Non-Functional Requirements | {Present/Updated/Added/N/A} |
 | 5. Data Entities | {Present/Updated/Added/N/A} |
 | 6. Technology Constraints | {Present/Updated/Added/N/A} |
-| 7. Quick Reference | {Present/Updated/Added/N/A} |
-| 8. Implementation Reference | {Present/Updated/Added/N/A} |
+| 7. Implementation Reference | {Present/Updated/Added/N/A} |
 
 **Format Conversions:**
 - FRs: {count} converted to Input/Rules/Output/Error
