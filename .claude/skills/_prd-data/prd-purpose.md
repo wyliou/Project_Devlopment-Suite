@@ -205,6 +205,7 @@ Include when the project has defined formats, codes, algorithms, or config schem
 - Error codes must map to specific FR error conditions
 - Config schemas must specify types, defaults, and valid ranges
 - Examples must show both typical cases and boundary/edge cases
+- Test corpus notes must identify the file, the pattern, and the affected FR(s)
 
 ---
 

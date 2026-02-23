@@ -1,6 +1,6 @@
 ---
 name: 'step-01-init'
-description: 'Initialize architecture workflow - find PRD, detect continuation, extract constraints, detect brownfield'
+description: 'Initialize architecture workflow - find PRD, detect continuation, extract constraints, detect brownfield, strip N/A sections'
 nextStepFile: '{skill_base}/steps/step-02-foundation.md'
 outputFile: '{planning_artifacts}/architecture.md'
 templateFile: '{skill_base}/architecture-template.md'
@@ -8,9 +8,9 @@ templateFile: '{skill_base}/architecture-template.md'
 
 # Step 1: Init & Discovery
 
-**Progress:** Step 1 of 4 → Next: Technology & Foundation
+**Progress:** Step 1 of 5 → Next: Technology & Foundation
 
-**Goal:** Locate PRD, detect continuation state, extract constraints from all PRD sections, detect brownfield context, and initialize the architecture document structure.
+**Goal:** Locate PRD, detect continuation state, extract constraints from all PRD sections, detect brownfield context, initialize the architecture document structure, and strip irrelevant sections based on project type.
 
 ---
 
@@ -31,7 +31,7 @@ Search for existing architecture: `{planning_artifacts}/architecture.md`, `{outp
 Resuming architecture workflow:
 - Document: {path}
 - PRD: {prd_source}
-- Progress: Step {current_step} of 4
+- Progress: Step {current_step} of 5
 - Product Category: {product_category}
 - Completed: {list filled sections}
 
@@ -50,7 +50,8 @@ Continue from Step {current_step}?
 | 1 | Restart step 1 |
 | 2 | Load `step-02-foundation.md` |
 | 3 | Load `step-03-modules.md` |
-| 4 | Load `step-04-finalize.md` |
+| 4 | Load `step-04-testing.md` |
+| 5 | Load `step-05-finalize.md` |
 
 **If not found or `status: complete`:** Proceed to fresh setup.
 
@@ -129,12 +130,31 @@ Read and extract from ALL PRD sections (1-7). Store as working set — do NOT fi
 
 ---
 
-### 6. Checkpoint
+### 6. Strip Irrelevant Sections
+
+Based on `product_category` and project type, remove sections that don't apply. This keeps the document lean and prevents "N/A" boilerplate.
+
+**Section stripping rules:**
+
+| Condition | Action |
+|-----------|--------|
+| Greenfield project | Remove Section 10 (Legacy Integration) entirely |
+| CLI Tool, Library, Plugin without persistent storage | Remove Section 6 (Database Schema) entirely |
+| No external services or env vars needed | Replace Section 7 with "Configuration Files" table: `Config File / Path / Purpose` |
+| Project has persistent storage | Keep Section 6, remove SQL example comments (fill in Step 5) |
+| Brownfield project | Keep Section 10, remove placeholder values (fill in Step 5) |
+
+**Always keep:** Sections 1-5 (Stack, Structure, Patterns, Modules, Contracts), Section 8 (Testing), Section 9 (Implementation Order).
+
+---
+
+### 7. Checkpoint
 
 Present to user:
 - PRD summary: project name, product category, FR count, entity count
 - Technology constraints extracted (Decided vs Open)
 - Brownfield context (if applicable)
+- Sections stripped (list which sections were removed and why)
 
 > "PRD analyzed. Ready to select technology stack and define project foundation."
 

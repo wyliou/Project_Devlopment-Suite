@@ -140,4 +140,4 @@ outputPath: ''
 
 ## 7. Implementation Reference (Optional)
 
-> *Include sub-sections as needed: Configuration Schema, Output Formats, Error/Status Code Catalog, Algorithm Details, Examples & Edge Cases. See prd-purpose.md for quality criteria.*
+> *Include sub-sections as needed: Configuration Schema, Output Formats, Error/Status Code Catalog, Algorithm Details, Examples & Edge Cases, Test Corpus Notes (for data-processing projects with test data). See prd-purpose.md for quality criteria.*

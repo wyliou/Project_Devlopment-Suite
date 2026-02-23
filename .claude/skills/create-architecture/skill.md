@@ -17,10 +17,12 @@ description: Collaborative architectural decision facilitation for AI-agent cons
 |--------|---------|
 | Technology Stack + Build Commands | Specific choices with versions and exact build/test/lint commands |
 | Project Structure | Exact directory layout with src/test markers |
-| Coding Patterns | Naming, error format, logging pattern, side-effect ownership |
+| Coding Patterns | Naming, error format, error propagation, logging pattern, side-effect ownership |
 | Module Boundaries | What code goes where, with paths, exports, and dependencies |
 | Contracts | Project-type-adaptive: REST endpoints, CLI commands, or library API surface |
-| Database Schema | Actual definitions from Data Entities |
+| Testing Strategy | Test tiers, fixture strategy, high-risk areas, golden files |
+| Implementation Order | Build batch sequence derived from module dependency graph |
+| Database Schema | Actual definitions from Data Entities (if applicable) |
 | Legacy Integration | (Brownfield) Integration points, adapters, constraints |
 
 ---
@@ -29,10 +31,11 @@ description: Collaborative architectural decision facilitation for AI-agent cons
 
 | Step | Name | Purpose | Mode |
 |------|------|---------|------|
-| 1 | **Init & Discovery** | Find PRD, detect state/continuation, extract constraints, detect brownfield | Derive + Confirm |
-| 2 | **Technology & Foundation** | Stack selection, build commands, project structure, coding patterns | Derive + Confirm |
-| 3 | **Modules & Contracts** | Module boundaries, inter-module interfaces, project-type-adaptive contracts | Generate |
-| 4 | **Schema & Finalize** | DB schema, env vars, brownfield section, build-from-prd readiness validation | Generate |
+| 1 | **Init & Discovery** | Find PRD, detect state/continuation, extract constraints, detect brownfield, strip N/A sections | Derive + Confirm |
+| 2 | **Technology & Foundation** | Stack selection, build commands, project structure, coding patterns, error propagation | Derive + Confirm |
+| 3 | **Modules & Contracts** | Module boundaries, inter-module interfaces, project-type-adaptive contracts, cross-validation | Generate |
+| 4 | **Testing & Build Order** | Test strategy, fixture plan, high-risk areas, implementation batch sequence | Generate |
+| 5 | **Schema & Finalize** | DB schema, env vars, brownfield section, build-from-prd readiness validation | Generate |
 
 ---
 
@@ -106,12 +109,12 @@ Checkpoints use consistent menu patterns:
 
 - **[C] Continue** - Proceed to next step
 - **[R] Revise** - Make changes before proceeding
-- **[P] Party Mode** - Multi-agent discussion (Step 2 only)
-- **[D] Deep Dive** - Advanced elicitation methods (Step 2 only)
+- **[P] Party Mode** - Multi-agent discussion (Steps 2, 3, 4)
+- **[D] Deep Dive** - Advanced elicitation methods (Steps 2, 3, 4)
 - **[X] Exit** - Stop workflow (state saved in frontmatter)
 
-**Step 2 Enhancement Options:**
-- **Party Mode:** Get perspectives from architect and dev agents on tech stack decisions
+**Enhancement Options (Steps 2, 3, 4):**
+- **Party Mode:** Get perspectives from architect, dev, and test agents on decisions
 - **Deep Dive:** Apply technical, risk, and competitive analysis methods to validate choices
 
 ---

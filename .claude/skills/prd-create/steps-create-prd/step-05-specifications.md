@@ -115,13 +115,36 @@ Update the PRD Section 5 with generated entities.
 
 Then assess which sub-sections add value based on FR analysis and these notes (algorithms, error codes, format specifications discovered in user answers).
 
-Available sub-sections: Configuration Schema, Output Formats, Error Code Catalog, Algorithm Details, Examples & Edge Cases. Project-specific sub-sections can be added too.
+Available sub-sections: Configuration Schema, Output Formats, Error Code Catalog, Algorithm Details, Examples & Edge Cases, **Test Corpus Notes** (data-processing projects with test data). Project-specific sub-sections can be added too.
 
 **Quality criteria:** Apply the Section 7 quality criteria from prd-purpose.md.
 
 Present your recommendation to the user. For each approved sub-section, gather detail to populate it. If none needed, note "Section 7 not applicable" in the PRD.
 
+**Test Corpus Notes (data-processing projects only):** When real data examination was performed in step 4 (section 2c), incorporate the Data Variation Catalog findings into a "Test Corpus Notes" sub-section. For each file or file group with notable patterns, document:
+- File identifier and the specific pattern (e.g., "vendor X uses merged cells for brand+brand_type")
+- Which FR(s) the pattern affects
+- How the pattern should be handled (reference the relevant FR rule)
+
+This sub-section serves as a regression reference during implementation and validation. Skip if no real data examination was performed.
+
 **After writing Section 7:** Remove the `_Section 7 Notes (Temporary)` section from the PRD if it exists — its content has been incorporated into the final Section 7.
+
+#### Section 6 × Section 7 Compatibility Check
+
+After writing Section 7, cross-reference output format specifications against platform constraints:
+
+| Signal in Section 6 | Check in Section 7 / FRs |
+|---------------------|--------------------------|
+| Target OS: Windows | Console output uses only ASCII-safe characters? Non-ASCII handling specified? |
+| Target: embedded / IoT | Output size constraints? Character set limitations? |
+| Target: headless server | No interactive terminal assumptions? No color codes without fallback? |
+| Multi-platform deployment | Path separators, line endings, encoding specified? |
+| Browser-based | HTML rendering across browsers? CSS compatibility? |
+
+If a conflict is found, ask the user how to resolve it (e.g., "Your FRs specify emoji in console output, but the target is Windows which has limited Unicode support in default console. How should non-ASCII output be handled?"). Update the relevant FR or add a note to Section 7.
+
+Skip this check if Section 7 has no Output Formats sub-section or if Section 6 specifies no platform constraints.
 
 ### 5. Present & Menu
 

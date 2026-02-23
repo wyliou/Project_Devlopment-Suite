@@ -1,15 +1,15 @@
 ---
 name: 'step-03-modules'
-description: 'Define module boundaries, inter-module interfaces, and project-type-adaptive contracts'
-nextStepFile: '{skill_base}/steps/step-04-finalize.md'
+description: 'Define module boundaries, inter-module interfaces, project-type-adaptive contracts, and cross-validate'
+nextStepFile: '{skill_base}/steps/step-04-testing.md'
 outputFile: '{planning_artifacts}/architecture.md'
 ---
 
 # Step 3: Modules & Contracts
 
-**Progress:** Step 3 of 4 → Next: Schema & Finalize
+**Progress:** Step 3 of 5 → Next: Testing & Build Order
 
-**Goal:** Define module boundaries with paths/exports/dependencies, inter-module interfaces, and project-type-adaptive contracts.
+**Goal:** Define module boundaries with paths/exports/dependencies, inter-module interfaces, project-type-adaptive contracts, and cross-validate consistency.
 
 ---
 
@@ -39,6 +39,17 @@ Create the enhanced module table with all columns build-from-prd needs:
 - **Exports:** List the public functions/classes/types this module exposes. Derive from FR outputs — what other modules need to call.
 - **Depends On:** List other modules this one imports from. Derive from FR dependency chains and data flow between areas.
 
+**FR-to-module responsibility validation:** For each module, verify that every listed FR's Input/Rules logically belong to this module's responsibility. If an FR depends on another FR in the same capability area, they should be in the same module. If an FR's logic is split across two modules, document which part belongs where.
+
+**Orchestrator module guidance:** If the project has a pipeline/batch/request flow, one module should be the thin orchestrator:
+- It coordinates the sequence of module calls
+- It contains NO business logic (no regex, no math, no parsing)
+- It owns error collection, status aggregation, and pipeline short-circuit decisions
+- It owns path construction and file I/O delegation
+- Document these responsibilities explicitly in the orchestrator's Responsibility column
+
+**Module size warning:** Flag any module with 5+ FRs as potentially exceeding file size limits. Add a split note: identify a clean boundary for splitting if the module exceeds the project's line limit during implementation. Ensure the split wouldn't change public exports (exports should already be separated).
+
 ### 3. Define Inter-Module Interfaces
 
 For each dependency edge in the module table, document the interface:
@@ -47,8 +58,10 @@ For each dependency edge in the module table, document the interface:
 ### {Consumer Module} → {Provider Module}
 - **Provider function:** {function name from exports}
 - **Data flow:** {what data passes between them}
-- **Error propagation:** {how errors from provider surface in consumer}
+- **Error propagation:** {how errors from provider surface in consumer — raise or collect pattern from Section 3}
 ```
+
+**For orchestrator modules:** Additionally document any orchestration logic (decision sequences, fallback chains, conditional calls) that the orchestrator owns. Example: "batch.py resolves inv_no: check ColumnMapping → if absent, call fallback → pass result to extraction."
 
 This ensures subagents in build-from-prd know exactly how to wire modules together.
 
@@ -181,20 +194,27 @@ module-b → module-c (uses: functionZ)
 
 Verify graph is acyclic. If cycles found, restructure modules (extract shared code into a common module).
 
-### 7. Validation
+### 7. Cross-Validation
 
-Before checkpoint, verify:
+Before checkpoint, run ALL validation checks. **Fix any failures before presenting.**
 
 | Check | Requirement |
 |-------|-------------|
 | FR Coverage | Every FR has at least one contract |
 | Contract Mapping | Every contract maps to exactly one module |
 | Module Graph | Acyclic — no circular dependencies |
-| Path Consistency | Module paths match directory structure from Section 2 |
+| **Path Consistency** | Every module Path in Section 4 appears in the Section 2 directory tree |
+| **Test Path Consistency** | Every module Test Path in Section 4 appears in the Section 2 directory tree |
 | Export Completeness | Every module has at least one export |
 | Dependency Validity | Every "Depends On" entry references an existing module |
+| **FR Responsibility** | Every FR assigned to a module logically belongs there (inputs/rules match module scope) |
+| **Orchestrator Purity** | If an orchestrator module exists, verify it has no business logic in its responsibility |
 
-**If gaps found:** Fix before presenting checkpoint.
+**If gaps found:** Fix before presenting checkpoint. Common fixes:
+- Missing test files in tree → add to Section 2
+- FR in wrong module → reassign and update contracts
+- Missing export → add to module table
+- Cycle in graph → extract shared code into leaf module
 
 ### 8. Checkpoint
 
@@ -203,10 +223,19 @@ Present to user:
 - Import graph
 - Contract summary (count by type)
 - Coverage: FRs without contracts (should be 0)
+- Cross-validation results (all checks should pass)
 
 **Menu:**
-- **[C] Continue** - Proceed to Step 4: Schema & Finalize
+- **[C] Continue** - Proceed to Step 4: Testing & Build Order
 - **[R] Revise** - Adjust modules, interfaces, or contracts
+- **[P] Party Mode** - Discuss module decisions with architect/dev agents
+- **[D] Deep Dive** - Analyze module boundaries with advanced methods
 - **[X] Exit** - Save progress and stop
+
+**On [P] Party Mode:**
+Invoke `_party-mode` skill with:
+- `topic`: "Module boundaries and contracts for [project name]"
+- `content`: Module table + import graph + contract summary
+- `focus_agents`: `architect`, `dev`
 
 **On Continue:** Update frontmatter `current_step: 4`, load `{nextStepFile}`

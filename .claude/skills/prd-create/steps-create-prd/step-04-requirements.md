@@ -91,16 +91,23 @@ If any FR does double duty (by heuristic or quantitative signal), recommend spli
 When not applicable (e.g., web app, library, internal API without file processing), skip this section entirely.
 
 **Process:**
-1. Identify 2-3 representative input files, configs, or data sources from the project (ask the user to point you to them if not already known)
-2. Examine each file and document observed patterns:
-   - Format variations (e.g., different column layouts, optional sections, encoding differences)
-   - Edge cases (e.g., empty fields, merged regions, unexpected delimiters)
-   - Structural quirks (e.g., multi-row headers, embedded metadata, inconsistent naming)
-3. Summarize findings to the user: "I examined {files}. Key patterns: {list}. Edge cases: {list}."
-4. Use findings to:
+1. Ask the user to identify input files, data sources, or sample data available for examination
+2. **Adaptive sampling** — scale examination breadth to corpus variability:
+   - Small corpus (≤5 files) or uniform format: examine all or most
+   - Medium corpus (6-20 files): examine 4-6 files spanning known format clusters
+   - Large corpus (>20 files): examine 6-10 files, biased toward variety. Ask the user: "Which files have the most unusual or different formats?" and prioritize those
+3. For each file, systematically document:
+   - **Structural patterns:** header layout, row organization, section boundaries, stop markers
+   - **Cell merging:** horizontal merges (adjacent columns merged), vertical merges (same column spanning rows), and their semantics after unmerging (value propagation vs. empty artifacts)
+   - **Data representation variants:** same field appearing in different forms across files (e.g., empty = missing vs. empty = continuation vs. empty = merged artifact; ditto marks; encoded values in unexpected columns)
+   - **Encoding and platform:** character sets, special characters, platform-specific I/O considerations
+   - **Edge cases:** empty fields, optional sections, unexpected delimiters, numeric precision differences
+4. Summarize findings as a **Data Variation Catalog** — a structured list of observed patterns grouped by category. Present to user: "I examined {N} files. Here are the patterns I found: {catalog}. Any patterns I missed?"
+5. Use findings to:
    - Inform deepening questions in section 3 (ask about real patterns, not hypotheticals)
-   - Generate additional FRs if new behaviors are discovered (e.g., a format variation that requires distinct handling)
-   - Identify Section 7 candidates (exact parsing rules, format specifications)
+   - Generate additional FRs if new behaviors are discovered
+   - Seed the **Test Corpus Notes** sub-section for Section 7 (see step 5 changes)
+   - Identify cross-FR consistency requirements (when two FRs read the same field, both must handle all observed variants)
 
 If new FRs are generated, apply the same coverage checks from section 2 and get user approval before proceeding to deepening.
 
@@ -187,6 +194,13 @@ Pick the most relevant question for the area. Wait for the user's answer before 
 
 For areas containing only Standard tier FRs, skip failure-mode probing for that area.
 
+**Cross-FR field consistency:** After failure-mode probing, identify fields or data structures that are produced by one FR and consumed by another (e.g., extracted values fed into validation or allocation). For each such handoff, verify that the producer and consumer agree on:
+- Data representation (same precision, same handling of empty/null/zero)
+- Edge case semantics (what does empty mean — missing data, continuation, merged artifact?)
+- Error propagation (if producer marks a value as provisional, does consumer know?)
+
+If inconsistencies are found, add explicit rules to the relevant FRs or note them in Section 7. This prevents cross-module bugs that only surface during integration testing.
+
 #### Section 7 Discovery Capture
 
 During deepening, the user's answers often reveal implementation-level detail that belongs in Section 7 (Implementation Reference) rather than in the FR body. Capture these proactively.
@@ -247,6 +261,16 @@ Don't wait for the user to volunteer implementation detail. During deepening, pr
 When captured, add a cross-reference in the FR: `See Section 7: {topic}` in the relevant field.
 
 Step 5 consumes and replaces this temporary section with the final Section 7. Do not write Section 7 proper yet.
+
+### 3b. Post-Deepening Granularity Re-Check
+
+After deepening, re-evaluate FRs that grew significantly. For each FR where deepening added substantial new rules (2+ new bullet points in Rules, or new sub-behaviors like fallback handling, continuation logic, or multi-strategy detection):
+
+1. Re-apply the quantitative splitting signals from section 2b
+2. If an FR now exceeds the thresholds, recommend splitting to the user
+3. Apply the same splitting convention (keep first half as FR-NNN, second half gets next sequential ID)
+
+This catch prevents single FRs from becoming implementation-blocking monoliths. Skip if no FRs grew significantly during deepening.
 
 ### 4. Write to Document
 
